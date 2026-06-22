@@ -1,0 +1,66 @@
+.setting-nav {
+  background: #ffffff;
+  box-shadow: 0px 20px 27px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(13.5914px);
+  border-radius: 8px;
+  max-height: 400px;
+}
+
+.its-active {
+  color: #7cb305;
+}
+.its-active:hover {
+  color: #7cb305;
+}
+.setting-nav-item {
+  list-style: none;
+  padding: 20px 0px;
+}
+.setting-nav-item:hover {
+  background-color: #fbfff6;
+}
+
+.shadowed-input {
+  box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+  padding: 20px 20px;
+  outline: none;
+  border: none;
+  margin: 20px 0px;
+}
+.form-control {
+  outline: #7cb305;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+  border-bottom: 2px solid #7cb305;
+  border-left: 2px solid #7cb305;
+  border-right: 2px solid #7cb305;
+}
+.green-text {
+  color: #7cb305;
+}
+
+.inputdiv {
+  width: 40%;
+  margin: 0px 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .inputdiv {
+        width: 100%;
+      }
+      .setting-nav {
+        max-height: 500px;
+      }
+      
+
+}
+/* for tablet */
+@media screen and (min-width: 768px) and (max-width: 1160px) {
+  .inputdiv {
+    width: 100%;
+  }
+}
+

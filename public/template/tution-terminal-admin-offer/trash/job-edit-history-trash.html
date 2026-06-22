@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/color_palets.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/owl/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/owl/owl.theme.default.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/assets/style.css" />
+    <title>Admin - Offer</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <img src="/images/logo.svg" alt="logo" />
+        <button
+          class="navbar-toggler d-md-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+      <ul class="navbar-nav ml-auto d-none d-md-lg">
+        <li class="nav-item">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Super Admin
+          </a>
+
+          <div
+            class="dropdown-menu dropdown-menu-end me-2 mt-2"
+            aria-labelledby="navbarDropdown"
+          >
+            <a class="dropdown-item dropdown" href="#"> Edit settings </a>
+            <a class="dropdown-item" href="#"> Edit profile page </a>
+            <a class="dropdown-item" href="#"> Show profile page </a>
+            <a class="dropdown-item" href="#"> Logout </a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!-- navbar ends here -->
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse sidebar-width"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3 d-flex align-items-center">
+                <i
+                  class="bi bi-speedometer me-3 fs-4"
+                  style="color: #898e99"
+                ></i>
+
+                <a
+                  href="#"
+                  class="text-decoration-none text-gray-800 align-items-center"
+                  style="cursor: pointer"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-sliders fs-5 me-3" style="color: #898e99"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#config-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Config
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="config-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="index.html"
+                        class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-person-fill-lock fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#admin-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Admin User
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="admin-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-clipboard-fill fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Job Offer
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="index.html"
+                        class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Available Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Applications</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Add Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-credit-card fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#payment-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Payment
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="payment-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-person-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#tutor-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Tutor
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="tutor-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-people-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#parent-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Parent
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="parent-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-gear-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#setting-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Settings
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="setting-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3 d-flex align-items-center">
+                    <i
+                      class="bi bi-door-open-fill me-3 fs-4"
+                      style="color: #898e99"
+                    ></i>
+
+                    <a
+                      href="#"
+                      class="text-decoration-none text-gray-800 align-items-center"
+                      style="cursor: pointer"
+                    >
+                      Logout
+                    </a>
+                  </li>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div class="col-md-9 ms-sm-auto col-lg-10" style="margin-top: 60px">
+            <!-- main content section starts here -->
+            <div class="py-4 px-3">
+              <div class="row row-cols-1 row-cols-lg-2 mt-2">
+                <!-- First column -->
+                <div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Parents Information</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4 edited"
+                        >
+                          <p class="fw-semibold">Name</p>
+                          <p class="">Abdur Rahman</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Parents ID</p>
+                          <p class="">2345</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Job ID</p>
+                          <p class="">2345</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Number</p>
+                          <p class="">01685696300</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">
+                            When are you looking to hire?
+                          </p>
+                          <p class="">03/06/2023</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Student Information-1</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Name</p>
+                          <p class="">Abdur Rahman</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Gender</p>
+                          <p class="">Male</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Name of Institute</p>
+                          <p class="">Pithaka High School</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Category</p>
+                          <p class="">Bangla Medium</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Course</p>
+                          <p class="">Class-8</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Subjects</p>
+                          <p class="">Bangla</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Location</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Country</p>
+                          <p class="">Bangladesh</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4 edited"
+                        >
+                          <p class="fw-semibold">City</p>
+                          <p class="">Dhaka</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Location</p>
+                          <p class="">Tolarbarg</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Details Address</p>
+                          <p class="">10/5, Tolarbagh, Mirpur-1</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Tutor Requirement -1</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Preferred Tutoring Category</p>
+                          <p class="">Professional Skills Mastery</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Course</p>
+                          <p class="">N/A</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Subjects</p>
+                          <p class="">Math</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Tutor's Gender</p>
+                          <p class="">Male</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4 edited"
+                        >
+                          <p class="fw-semibold">Tutor's Religion</p>
+                          <p class="">Islam</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Tutor Requirement -3</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">School</p>
+                          <p class="">B A D C High School</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">College</p>
+                          <p class="">Dhaka College</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Board</p>
+                          <p class="">Dhaka</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4 edited"
+                        >
+                          <p class="fw-semibold">Group</p>
+                          <p class="">Science</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Background Curriculum</p>
+                          <p class="">Bangla Medium</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Second column -->
+
+                <div>
+                  <div class="mb-4">
+                    <div class="mb-4">
+                      <div class="bg-white py-4 shadow-lg rounded-3">
+                        <h5 class="mb-4 ms-4">Reference Information</h5>
+                        <div class="">
+                          <div
+                            class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4 edited"
+                          >
+                            <p class="fw-semibold">Reference Name</p>
+                            <p class="">Abdur Rahman</p>
+                          </div>
+                          <div
+                            class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                          >
+                            <p class="fw-semibold">Reference ID</p>
+                            <p class="">2345</p>
+                          </div>
+                          <div
+                            class="m-4 p-4 rounded-3 d-flex justify-content-between align-items-center flex-column"
+                            style="
+                              box-shadow: 0px 4px 30px 0px
+                                rgba(59, 60, 61, 0.15);
+                            "
+                          >
+                            <p class="">
+                              Sms Send (Are you sure to send sms to this offer)
+                            </p>
+                            <div class="mt-3 bg-info text-white rounded px-2">
+                              <i class="bi bi-check-lg fs-5"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Student Information-2</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Days in Week</p>
+                          <p class="">4 Days</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Tutoring Time</p>
+                          <p class="">N/A</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Tutoring Duration</p>
+                          <p class="">2 Hour</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Teaching Method</p>
+                          <p class="">Student's Home</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Maximum Salary</p>
+                          <p class="">10000</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Number of Students</p>
+                          <p class="">2</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Title Note</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Tutor Requirement</p>
+                          <p class="">
+                            Lorem Ipsum is simply dummy text of the printing and
+                            typesetting industry.
+                          </p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Special Note</p>
+                          <p class="">
+                            Lorem Ipsum is simply dummy text of the printing and
+                            typesetting industry.
+                          </p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Staff Note</p>
+                          <p class="">N/A</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Tutor Requirement -2</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">University</p>
+                          <p class="">Dhaka University</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">University Type</p>
+                          <p class="">Public University</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Study Type</p>
+                          <p class="">Bsc</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Departments</p>
+                          <p class="">Bangla</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Year</p>
+                          <p class="">2015</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Number of Students</p>
+                          <p class="">2</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <div class="bg-white py-4 shadow-lg rounded-3">
+                      <h5 class="mb-4 ms-4">Source Information</h5>
+                      <div class="">
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Source</p>
+                          <p class="">Affiliate marketing</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Source Name</p>
+                          <p class="">Rohim</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Source ID</p>
+                          <p class="">23456</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Offer Created By</p>
+                          <p class="">Riya</p>
+                        </div>
+                        <div
+                          class="row row-cols-2 border-bottom border-1 mb-3 g-0 mx-4"
+                        >
+                          <p class="fw-semibold">Offer Created At</p>
+                          <p class="">06-14-2023, 10:04:14 AM</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- main content section ends here -->
+          </div>
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+      integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/owl/owl.carousel.min.js"></script>
+    
+  </body>
+</html>

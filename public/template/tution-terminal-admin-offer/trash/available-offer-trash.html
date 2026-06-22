@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/color_palets.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/owl/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/owl/owl.theme.default.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/assets/style.css" />
+    <title>Admin - Offer</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a href="index.html"><img src="/images/logo.svg" alt="logo" /></a>
+        <button
+          class="navbar-toggler d-md-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+      <ul class="navbar-nav ml-auto d-none d-md-lg">
+        <li class="nav-item">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Super Admin
+          </a>
+
+          <div
+            class="dropdown-menu dropdown-menu-end me-2 mt-2"
+            aria-labelledby="navbarDropdown"
+          >
+            <a class="dropdown-item dropdown" href="#"> Edit settings </a>
+            <a class="dropdown-item" href="#"> Edit profile page </a>
+            <a class="dropdown-item" href="#"> Show profile page </a>
+            <a class="dropdown-item" href="#"> Logout </a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!-- navbar ends here -->
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse sidebar-width shadow-lg"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3 d-flex align-items-center">
+                <i
+                  class="bi bi-speedometer me-3 fs-4"
+                  style="color: #898e99"
+                ></i>
+
+                <a
+                  href="#"
+                  class="text-decoration-none text-gray-800 align-items-center"
+                  style="cursor: pointer"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-sliders fs-5 me-3" style="color: #898e99"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#config-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Config
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="config-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-person-fill-lock fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#admin-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Admin User
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="admin-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-clipboard-fill fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Job Offer
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="available-offer.html"
+                        class="text-gray-800 text-decoration-none"
+                        >Available Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Applications</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Add Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-credit-card fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#payment-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Payment
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="payment-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-person-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#tutor-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Tutor
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="tutor-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-people-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#parent-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Parent
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="parent-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-gear-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#setting-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Settings
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="setting-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3 d-flex align-items-center">
+                    <i
+                      class="bi bi-door-open-fill me-3 fs-4"
+                      style="color: #898e99"
+                    ></i>
+
+                    <a
+                      href="#"
+                      class="text-decoration-none text-gray-800 align-items-center"
+                      style="cursor: pointer"
+                    >
+                      Logout
+                    </a>
+                  </li>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div class="col-md-9 ms-sm-auto col-lg-10" style="margin-top: 60px">
+            <!-- mini nav starts here -->
+            <div class="d-flex gap-4 flex-column flex-md-row p-3 mb-2">
+              <a class="text-decoration-none text-gray-800" href="index.html"
+                >All offers</a
+              >
+              <a
+                class="text-decoration-none text-gray-800 active-border"
+                href="available-offer.html"
+                >Available offers</a
+              >
+              <a class="text-decoration-none text-gray-800" href="index.html"
+                >Aplications</a
+              >
+              <a
+                class="text-decoration-none text-gray-800"
+                href="available.html"
+                >Add New offers</a
+              >
+            </div>
+            <!-- mini nav ends here -->
+            <!-- main content section starts here -->
+            <div class="ps-3" style="padding-right: 13px">
+              <div class="owl-carousel">
+                <div
+                  class="bg-white p-3 rounded-3 shadow-lg d-flex justify-content-center align-items-center flex-column mb-2"
+                >
+                  <p class="fw-bold fs-5 mb-1 mt-3">234567</p>
+                  <p class="">Available offer</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-3 shadow-lg d-flex justify-content-center align-items-center flex-column mb-2"
+                >
+                  <p class="fw-bold fs-5 mb-1 mt-3">23567</p>
+                  <p class="">Todays Offer</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-3 shadow-lg d-flex justify-content-center align-items-center flex-column mb-2"
+                >
+                  <p class="fw-bold fs-5 mb-1 mt-3">567</p>
+                  <p class="">Khulna</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-3 shadow-lg d-flex justify-content-center align-items-center flex-column mb-2"
+                >
+                  <p class="fw-bold fs-5 mb-1 mt-3">30067</p>
+                  <p class="">Dinajpur</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-3 shadow-lg d-flex justify-content-center align-items-center flex-column mb-2"
+                >
+                  <p class="fw-bold fs-5 mb-1 mt-3">100</p>
+                  <p class="">Pabna</p>
+                </div>
+              </div>
+              <div
+                class="d-flex justify-content-between flex-column flex-lg-row gap-2 gap-lg-0"
+              >
+                <div class="d-flex justify-content-between gap-3">
+                  <button
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                  >
+                    <i class="bi bi-sliders2 me-1"></i>Filter
+                  </button>
+                  <button class="btn btn-outline-dark">Send Bulk SMS</button>
+                </div>
+                <div class="d-flex gap-3">
+                  <input
+                    type="text"
+                    class="form-control rounded"
+                    placeholder="Search"
+                  />
+                  <select class="form-select rounded" style="width: 100px">
+                    <option selected>100</option>
+                    <option value="1">200</option>
+                    <option value="2">400</option>
+                    <option value="3">500</option>
+                  </select>
+                </div>
+              </div>
+              <div class="bg-white shadow-lg rounded-3 p-2 my-4">
+                <div class="bg-white pb-4 mb-b">
+                  <div class="table-responsive">
+                    <table
+                      class="table table-hover bg-white shadow-none"
+                      style="border-collapse: collapse"
+                    >
+                      <thead
+                        class="text-dark"
+                        style="border-bottom: 1px solid #c8ced3"
+                      >
+                        <tr>
+                          <th scope="col" class="text-nowrap">
+                            <input
+                              class="form-check-input me-2 ms-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />Date
+                          </th>
+                          <th scope="col" class="text-nowrap">Parents ID</th>
+                          <th scope="col" class="text-nowrap">Job ID</th>
+                          <th scope="col" class="text-nowrap">Course</th>
+                          <th scope="col" class="text-nowrap">Location</th>
+                          <th scope="col" class="text-nowrap">Salary</th>
+                          <th scope="col">EM</th>
+                          <th scope="col" class="text-nowrap">Created By</th>
+                          <th scope="col" class="text-nowrap">Aplied Tutors</th>
+                          <th scope="col" class="text-nowrap">Live</th>
+                          <th scope="col" class="text-nowrap">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              6
+                            </a>
+
+                            <a
+                              class="bg-primary text-white rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              4
+                            </a>
+                          </td>
+                          <td>
+                            <!-- <div class="switch-toggle">
+                              <div class="button-check" id="button-check">
+                                <input
+                                  type="checkbox"
+                                  class="checkbox"
+                                  checked
+                                />
+                                <span class="switch-btn"></span>
+                                <span class="layer"></span>
+                              </div>
+                            </div> -->
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              6
+                            </a>
+                            <a
+                              class="bg-white text-primary rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              4
+                            </a>
+                          </td>
+                          <td>
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              645
+                            </a>
+
+                            <a
+                              class="bg-primary text-white rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              4
+                            </a>
+                          </td>
+                          <td>
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              6
+                            </a>
+                            <a
+                              class="bg-white text-primary rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              4234
+                            </a>
+                          </td>
+                          <td>
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              6
+                            </a>
+
+                            <a
+                              class="bg-primary text-white rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              4234
+                            </a>
+                          </td>
+                          <td>
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              6
+                            </a>
+                            <a
+                              class="bg-white text-primary rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              4
+                            </a>
+                          </td>
+                          <td>
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              123
+                            </a>
+
+                            <a
+                              class="bg-primary text-white rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              4234
+                            </a>
+                          </td>
+                          <td>
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <td
+                            scope="row "
+                            class="text-center text-nowrap"
+                            style="padding: 30px 18px"
+                          >
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
+                            />
+                            <a
+                              type="button"
+                              class="text-decoration-none text-gray-700"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal2"
+                            >
+                              06-06-2023
+                            </a>
+                          </td>
+                          <td class="text-info">
+                            <a href="#" class="text-decoration-none text-info"
+                              >12345</a
+                            >
+                          </td>
+                          <td class="text-info">
+                            <a
+                              href="job.html"
+                              class="p-1 rounded text-info text-decoration-none"
+                              style="background-color: #e6eef7"
+                              >23457</a
+                            >
+                          </td>
+                          <td class="">Class-8</td>
+                          <td class="text-wrap">Tolarbag, Mirpur</td>
+                          <td>5000</td>
+                          <td class="text-info">
+                            <a
+                              type="button"
+                              class="text-decoration-none text-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal3"
+                            >
+                              EM
+                            </a>
+                          </td>
+                          <td class="text-nowrap">Khalid Rahman</td>
+                          <td class="text-center">
+                            <a
+                              class="text-primary rounded-pill text-decoration-none me-2"
+                              style="width: fit-content"
+                              href="aplicant-list.html"
+                            >
+                              6124
+                            </a>
+                            <a
+                              class="bg-white text-primary rounded-pill text-decoration-none border border-primary"
+                              style="padding: 0px 5px 0px 5px"
+                              href="aplicant-list.html"
+                            >
+                              43566
+                            </a>
+                          </td>
+                          <td>
+                            <div class="form-check form-switch">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                style="transform: scale(1.5)"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary py-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal5"
+                            >
+                              Action
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div
+                    class="d-flex justify-content-center align-items-center gap-2"
+                  >
+                    <button
+                      class="btn btn-outline-primary py-1 px-2 text-gray-500"
+                    >
+                      <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button
+                      class="btn btn-outline-primary py-1 text-gray-500"
+                      style="padding: 0 13px"
+                    >
+                      1
+                    </button>
+
+                    <button
+                      class="btn btn-outline-primary py-1 text-gray-500"
+                      style="padding: 0 13px"
+                    >
+                      2
+                    </button>
+                    <button
+                      class="btn btn-outline-primary py-1 text-gray-500"
+                      style="padding: 0 13px"
+                    >
+                      ..
+                    </button>
+
+                    <button
+                      class="btn btn-outline-primary py-1 text-gray-500"
+                      style="padding: 0 13px"
+                    >
+                      34
+                    </button>
+
+                    <button
+                      class="btn btn-outline-primary py-1 px-2 text-gray-500"
+                    >
+                      <i class="bi bi-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- main content section ends here -->
+          </div>
+          <!-- Filter model starts here -->
+          <div
+            class="modal fade font-pop"
+            id="exampleModal"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered px-3"
+              style="max-width: 1100px"
+            >
+              <div class="modal-content px-4 pt-3 pb-4">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    Filter
+                    <span class="text-muted fw-light" style="font-size: 12">
+                    </span>
+                  </h1>
+
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body py-0">
+                  <div class="row row-cols-2 row-cols-lg-4 pb-2">
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">Date from</label>
+                      <input
+                        type="date"
+                        class="form-control shadow rounded-2"
+                        id="date"
+                      />
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">Country</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>Bangladesh</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">Category</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>Bangla Medium</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3">
+                      <label for="date" class="form-label">Source</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>Affiliate Marcketing</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">Date To</label>
+                      <input
+                        type="date"
+                        class="form-control shadow rounded-2"
+                        id="date"
+                      />
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">City</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>Dhaka</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">Course</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>HSC</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3">
+                      <label for="date" class="form-label">Source ID</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>23456</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="name" class="form-label">Created By</label>
+                      <input
+                        type="text"
+                        class="form-control shadow rounded-2"
+                        id="name"
+                        placeholder="Yasin Ahammed"
+                      />
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">Location</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>Mirpur 1</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3 border-end border-2">
+                      <label for="date" class="form-label">Subjects</label>
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>Bangla</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="pb-3">
+                      <label for="date" class="form-label"
+                        >Tutoring Method</label
+                      >
+
+                      <select
+                        class="shadow rounded-2 form-select"
+                        aria-label="Default select example"
+                      >
+                        <option selected>Select Method</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div
+                    class="collapse border-top border-2 pt-1"
+                    id="collapseExample"
+                  >
+                    <div class="row row-cols-2 row-cols-lg-4 pt-2">
+                      <div class="pb-3 border-end border-2">
+                        <label for="date" class="form-label">Salary</label>
+
+                        <input
+                          type="text"
+                          class="form-control shadow rounded-2"
+                          id="name"
+                          placeholder="5000"
+                        />
+                      </div>
+                      <div class="pb-3 border-end border-2">
+                        <label for="date" class="form-label">
+                          Gender Requirement
+                        </label>
+
+                        <select
+                          class="shadow rounded-2 form-select"
+                          aria-label="Default select example"
+                        >
+                          <option selected>Male</option>
+                          <option value="1">Female</option>
+                        </select>
+                      </div>
+                      <div class="pb-3 border-end border-2">
+                        <label for="date" class="form-label"
+                          >Student Gender</label
+                        >
+
+                        <select
+                          class="shadow rounded-2 form-select"
+                          aria-label="Default select example"
+                        >
+                          <option selected>Male</option>
+                          <option value="1">Femake</option>
+                        </select>
+                      </div>
+                      <div class="pb-3">
+                        <label for="date" class="form-label">
+                          Institute Name
+                        </label>
+
+                        <select
+                          class="shadow rounded-2 form-select"
+                          aria-label="Default select example"
+                        >
+                          <option selected>School And College</option>
+                          <option value="1">One</option>
+                          <option value="2">Two</option>
+                          <option value="3">Three</option>
+                        </select>
+                      </div>
+                      <div class="pb-3 border-end border-2">
+                        <label for="date" class="form-label">Channel</label>
+
+                        <select
+                          class="shadow rounded-2 form-select"
+                          aria-label="Default select example"
+                        >
+                          <option selected>Website</option>
+                          <option value="1">Facebook</option>
+                          <option value="2">Twitter</option>
+                          <option value="3">Three</option>
+                        </select>
+                      </div>
+                      <div class="pb-3 border-end border-2">
+                        <label for="date" class="form-label"
+                          >Days and Week</label
+                        >
+
+                        <select
+                          class="shadow rounded-2 form-select"
+                          aria-label="Default select example"
+                        >
+                          <option selected>4 days</option>
+                          <option value="1">5 days</option>
+                        </select>
+                      </div>
+                      <div class="pb-3 border-end border-2">
+                        <label for="date" class="form-label">Religion</label>
+
+                        <select
+                          class="shadow rounded-2 form-select"
+                          aria-label="Default select example"
+                        >
+                          <option selected>Islam</option>
+                          <option value="1">Hindu</option>
+                        </select>
+                      </div>
+                      <div class="pb-3">
+                        <label for="date" class="form-label">Hide Offer</label>
+
+                        <select
+                          class="shadow rounded-2 form-select"
+                          aria-label="Default select example"
+                        >
+                          <option selected>Hide</option>
+                          <option value="1">Nothing</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="modal-footer d-flex justify-content-between align-items-center"
+                >
+                  <div>
+                    <a
+                      data-bs-toggle="collapse"
+                      href="#collapseExample"
+                      role="button"
+                      aria-expanded="false"
+                      aria-controls="collapseExample"
+                      class="mb-0"
+                    >
+                      <i class="bi bi-caret-down-fill"></i>
+                    </a>
+                  </div>
+                  <div>
+                    <button type="button" class="btn btn-danger py-1 me-2">
+                      Clear
+                    </button>
+                    <button type="button" class="btn btn-primary py-1">
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Filter Model ends here -->
+
+          <!--Date model starts here-->
+          <div
+            class="modal fade"
+            id="exampleModal2"
+            tabindex="-1"
+            aria-labelledby="dateModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog model-sm modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body pt-5 pb-4">
+                  <p class="text-center text-info fs-3">7 June 2023</p>
+                  <p class="text-center text-gray-700 border-top fs-1 pt-1">
+                    03:30 PM
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Date model ends here-->
+          <!--ME model starts here-->
+          <div
+            class="modal fade"
+            id="exampleModal3"
+            tabindex="-1"
+            aria-labelledby="emModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body p-0">
+                  <div class="row row-cols-2 g-0">
+                    <div class="d-flex flex-column border-end">
+                      <div
+                        class="text-white px-4"
+                        style="
+                          border-radius: 8px 0 0 0;
+                          padding: 35px 0;
+                          background-color: #3378c2;
+                        "
+                      >
+                        EM-1
+                      </div>
+                      <div class="px-4 pt-4 pb-3">
+                        <p class="mb-0 fw-semibold">Sagid SDY</p>
+                        <p style="font-size: 12px">14-06-2023</p>
+                      </div>
+                    </div>
+                    <div class="d-flex flex-column">
+                      <div
+                        class="text-white px-4"
+                        style="
+                          border-radius: 0 8px 0 0;
+                          padding: 35px 0;
+                          background-color: #3378c2;
+                        "
+                      >
+                        EM-2
+                      </div>
+                      <div class="px-4 pt-4 pb-3">
+                        <p class="mb-0 fw-semibold">Shahriar Ripon</p>
+                        <p style="font-size: 12px">14-06-2023</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--ME model ends here-->
+          <!--Action model starts here-->
+          <div
+            class="modal fade"
+            id="exampleModal5"
+            tabindex="-1"
+            aria-labelledby="dateModalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered"
+              style="max-width: fit-content"
+            >
+              <div class="modal-content">
+                <div class="modal-body p-4">
+                  <div
+                    class="d-flex justify-content-center align-items-center gap-3"
+                  >
+                    <a class="btn btn-dark" href="see-condition.html"
+                      >See Condition</a
+                    >
+                    <a class="btn btn-dark" href="status-log.html"
+                      >Status Log</a
+                    >
+                    <button class="btn btn-warning">Edit</button>
+                    <button class="btn btn-pink">Hide</button>
+
+                    <a class="btn btn-dark" href="search-tutor.html"
+                      >Search Tutor</a
+                    >
+                    <a class="btn btn-dark" href="sms-log.html">SMS Log</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Action model ends here-->
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+      integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/owl/owl.carousel.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $(".owl-carousel").owlCarousel({
+          loop: true,
+          autoplay: true,
+          autoplayTimeout: 1500,
+          autoplayHoverPause: true,
+          autoplaySpeed: 1000,
+          margin: 10,
+          responsiveClass: true,
+          nav: true,
+          navText: [
+            "<i class='bi bi-chevron-right arrow-icon'></i>",
+            "<i class='bi bi-chevron-left arrow-icon'></i>",
+          ],
+          navClass: ["carousel-nav-btn-prev", "carousel-nav-btn-next"],
+          responsive: {
+            0: {
+              items: 1,
+              nav: true,
+              loop: true,
+            },
+            600: {
+              items: 2,
+              loop: true,
+            },
+            1000: {
+              items: 4,
+              nav: true,
+              loop: true,
+            },
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

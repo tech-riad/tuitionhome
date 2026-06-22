@@ -1,0 +1,61 @@
+.plan-btn {
+  background: #f8f4ff;
+  border-radius: 16px;
+  border: none;
+  outline: none;
+  font-weight: bold;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  transition: all 0.3s ease-in-out;
+}
+.plan-btn:hover {
+  border-radius: 16px;
+  border: none;
+  outline: none;
+  font-weight: bold;
+  background-color: #7cb305;
+  color: white;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.green-plan-btn {
+  background-color: #7cb305;
+  border-radius: 16px;
+  color: white;
+  border: 2px solid #7cb305;
+  outline: none;
+  font-weight: bold;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  transition: all 0.3s ease-in-out;
+}
+.green-plan-btn:hover {
+    
+  border-radius: 16px;
+  border: none;
+  outline: none;
+  font-weight: bold;
+  background: #f8f4ff;
+  color: #7cb305;
+  border: 2px solid #7cb305;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.bg-image {
+  background-color: white;
+  /* background-image: url(../assets/green.jpg); */
+  border: 2px solid #7cb305;
+  background-size: cover;
+  border-radius: 30px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
+    rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+  scale: 1.1;
+  transition: all 0.3s ease-in-out;
+}
+
+.bg-image:hover {
+  scale: 1.2;
+}
+
+@media screen and (max-width: 768px) {
+    .plan-item{
+        width: 100%;
+    }
+}

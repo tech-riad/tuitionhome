@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/color_palets.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/owl/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/owl/owl.theme.default.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/assets/style.css" />
+    <title>Admin - Offer</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a href="index.html"><img src="/images/logo.svg" alt="logo" /></a>
+        <button
+          class="navbar-toggler d-md-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+      <ul class="navbar-nav ml-auto d-none d-md-lg">
+        <li class="nav-item">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Super Admin
+          </a>
+
+          <div
+            class="dropdown-menu dropdown-menu-end me-2 mt-2"
+            aria-labelledby="navbarDropdown"
+          >
+            <a class="dropdown-item dropdown" href="#"> Edit settings </a>
+            <a class="dropdown-item" href="#"> Edit profile page </a>
+            <a class="dropdown-item" href="#"> Show profile page </a>
+            <a class="dropdown-item" href="#"> Logout </a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!-- navbar ends here -->
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse sidebar-width shadow-lg"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3 d-flex align-items-center">
+                <i
+                  class="bi bi-speedometer me-3 fs-4"
+                  style="color: #898e99"
+                ></i>
+
+                <a
+                  href="#"
+                  class="text-decoration-none text-gray-800 align-items-center"
+                  style="cursor: pointer"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-sliders fs-5 me-3" style="color: #898e99"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#config-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Config
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="config-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-person-fill-lock fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#admin-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Admin User
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="admin-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-clipboard-fill fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Job Offer
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Available Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Applications</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Add Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-credit-card fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#payment-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Payment
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="payment-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-person-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#tutor-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Tutor
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="tutor-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-people-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#parent-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Parent
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="parent-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-gear-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#setting-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Settings
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="setting-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3 d-flex align-items-center">
+                    <i
+                      class="bi bi-door-open-fill me-3 fs-4"
+                      style="color: #898e99"
+                    ></i>
+
+                    <a
+                      href="#"
+                      class="text-decoration-none text-gray-800 align-items-center"
+                      style="cursor: pointer"
+                    >
+                      Logout
+                    </a>
+                  </li>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div class="col-md-9 ms-sm-auto col-lg-10" style="margin-top: 60px">
+            <!-- main content section starts here -->
+            <div class="py-4 ps-3" style="padding-right: 13px">
+              <div
+                class="d-flex justify-content-between bg-white p-4 rounded-3 shadow-lg align-items-center mb-4"
+              >
+                <p class="fs-3 m-0 fw-bold">Total Applications List-1</p>
+                <button
+                  class="btn btn-info text-nowrap"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal4"
+                >
+                  + Add New
+                </button>
+              </div>
+              <div class="bg-white p-4 rounded-3 shadow-lg">
+                <div class="row row-cols-1 row-cols-lg-2 pt-2">
+                  <div class="">
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Job ID</p>
+                      <p class="text-info">
+                        <a
+                          href="
+                        job.html"
+                          class="text-decoration-none text-info"
+                          >12345</a
+                        >
+                      </p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Category</p>
+                      <p class="">English Version</p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Course</p>
+                      <p class="">Class 8</p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Subjects</p>
+                      <p class="">English</p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Salary</p>
+                      <p class="">10000</p>
+                    </div>
+                  </div>
+                  <div class="">
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Country</p>
+                      <p class="">Bangladesh</p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">City</p>
+                      <p class="">Dhaka</p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Location</p>
+                      <p class="">Mirpur 1</p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Number Of Student's</p>
+                      <p class="">02</p>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-1 mb-3 g-0">
+                      <p class="fw-semibold">Phone</p>
+                      <p class="">01645631203</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button class="btn btn-outline-ndark">Send Bulk SMS</button>
+                  <select class="form-select rounded" style="width: 100px">
+                    <option selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                  </select>
+                </div>
+                <div class="mt-4 table-responsive">
+                  <table
+                    class="table table-hover bg-white shadow-none"
+                    style="border-collapse: collapse; width: 100%"
+                  >
+                    <thead
+                      class="text-dark"
+                      style="border-bottom: 1px solid #c8ced3"
+                    >
+                      <tr>
+                        <th
+                          scope="col"
+                          class="text-nowrap ms-0"
+                          style="padding-left: 0px"
+                        >
+                          <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value=""
+                            id="flexCheckDefault"
+                          />Date
+                        </th>
+                        <th scope="col" class="text-nowrap">Job ID</th>
+                        <th class="text-nowrap">Apply ID</th>
+                        <th class="text-nowrap">Tutor Name</th>
+                        <th class="text-nowrap">Tutor ID</th>
+                        <th class="text-nowrap">Match</th>
+                        <th class="text-nowrap">Taken By</th>
+                        <th class="text-nowrap">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="" style="vertical-align: middle">
+                        <td
+                          scope="row "
+                          class="text-center text-nowrap"
+                          style="padding: 30px 0px"
+                        >
+                          <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value=""
+                            id="flexCheckDefault"
+                          />
+                          <a
+                            type="button"
+                            class="text-decoration-none text-gray-700"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal2"
+                          >
+                            16-06-2023
+                          </a>
+                        </td>
+                        <td class="">
+                          <a
+                            href="job.html"
+                            class="text-decoration-none text-info"
+                            >34582</a
+                          >
+                        </td>
+                        <td class="">225878</td>
+                        <td class="text-info text-nowrap">Farhia Afrin Ema</td>
+                        <td>
+                          <span class="green-border">62851</span>
+                        </td>
+                        <td>35</td>
+
+                        <td class="text-nowrap">Fahmida...</td>
+
+                        <td class="text-nowrap">
+                          <button class="btn btn-ndark py-1 px-2">Take</button>
+                          <button class="btn btn-pink py-1 px-2 mx-2">
+                            Shortlist
+                          </button>
+
+                          <button
+                            class="btn btn-primary py-1 px-2 me-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal5"
+                          >
+                            Note
+                          </button>
+                          <button
+                            class="btn btn-info py-1 px-2 me-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal6"
+                          >
+                            Create A Note
+                          </button>
+
+                          <button
+                            class="btn btn-warning py-1 px-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal7"
+                          >
+                            Log
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="" style="vertical-align: middle">
+                        <td
+                          scope="row "
+                          class="text-center text-nowrap"
+                          style="padding: 30px 0px"
+                        >
+                          <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value=""
+                            id="flexCheckDefault"
+                          />
+                          <a
+                            type="button"
+                            class="text-decoration-none text-gray-700"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal2"
+                          >
+                            06-06-2023
+                          </a>
+                        </td>
+                        <td class="">
+                          <a
+                            href="job.html"
+                            class="text-decoration-none text-info"
+                            >12345</a
+                          >
+                        </td>
+                        <td class="">23456</td>
+                        <td class="text-info text-nowrap">
+                          Abdul Hatem<i class="bi bi-patch-check ms-1"></i
+                          ><i class="bi bi-star-fill ms-1 text-warning"></i>
+                        </td>
+                        <td>
+                          <span class="">23456</span>
+                        </td>
+                        <td>23</td>
+
+                        <td class="text-nowrap">Khalid Rahman</td>
+
+                        <td class="text-nowrap">
+                          <button class="btn btn-ndark py-1 px-2">Take</button>
+                          <button class="btn btn-pink py-1 px-2 mx-2">
+                            Shortlist
+                          </button>
+
+                          <button class="btn btn-primary py-1 px-2 me-2">
+                            Note
+                          </button>
+                          <button class="btn btn-info py-1 px-2 me-2">
+                            Create A Note
+                          </button>
+
+                          <button class="btn btn-warning py-1 px-2">Log</button>
+                        </td>
+                      </tr>
+                      <tr class="" style="vertical-align: middle">
+                        <td
+                          scope="row "
+                          class="text-center text-nowrap"
+                          style="padding: 30px 0px"
+                        >
+                          <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value=""
+                            id="flexCheckDefault"
+                          />
+                          <a
+                            type="button"
+                            class="text-decoration-none text-gray-700"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal2"
+                          >
+                            06-06-2023
+                          </a>
+                        </td>
+                        <td class="">
+                          <a
+                            href="job.html"
+                            class="text-decoration-none text-info"
+                            >12345</a
+                          >
+                        </td>
+                        <td class="">23456</td>
+                        <td class="text-info text-nowrap">
+                          Abdul Hatem<i class="bi bi-patch-check ms-1"></i>
+                        </td>
+                        <td>
+                          <span class="">23456</span>
+                        </td>
+                        <td>23</td>
+
+                        <td class="text-nowrap">Khalid Rahman</td>
+
+                        <td class="text-nowrap">
+                          <button class="btn btn-outline-ndark py-1 px-2">
+                            Taken
+                          </button>
+                          <button class="btn btn-outline-pink py-1 px-2">
+                            Shortlisted
+                          </button>
+
+                          <button class="btn btn-primary py-1 px-2">
+                            Note
+                          </button>
+                          <button class="btn btn-info py-1 px-2">
+                            Create A Note
+                          </button>
+
+                          <button class="btn btn-warning py-1 px-2">Log</button>
+                        </td>
+                      </tr>
+                      <tr class="" style="vertical-align: middle">
+                        <td
+                          scope="row "
+                          class="text-center text-nowrap"
+                          style="padding: 30px 0px"
+                        >
+                          <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value=""
+                            id="flexCheckDefault"
+                          />
+                          <a
+                            type="button"
+                            class="text-decoration-none text-gray-700"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal2"
+                          >
+                            06-06-2023
+                          </a>
+                        </td>
+                        <td class="">
+                          <a
+                            href="job.html"
+                            class="text-decoration-none text-info"
+                            >12345</a
+                          >
+                        </td>
+                        <td class="">23456</td>
+                        <td class="text-info text-nowrap">
+                          Abdul Hatem<i class="bi bi-patch-check ms-1"></i>
+                        </td>
+                        <td>
+                          <span class="">23456</span>
+                        </td>
+                        <td>23</td>
+
+                        <td class="text-nowrap">Khalid Rahman</td>
+
+                        <td class="text-nowrap">
+                          <button class="btn btn-ndark py-1 px-2">Take</button>
+                          <button class="btn btn-outline-pink py-1 px-2 mx-1">
+                            Shortlisted
+                          </button>
+
+                          <button class="btn btn-primary py-1 px-2">
+                            Note
+                          </button>
+                          <button class="btn btn-info py-1 px-2">
+                            Create A Note
+                          </button>
+
+                          <button class="btn btn-warning py-1 px-2">Log</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- main content section ends here -->
+            <!--Date model starts here-->
+            <div
+              class="modal fade"
+              id="exampleModal2"
+              tabindex="-1"
+              aria-labelledby="dateModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog model-sm modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-body pt-5 pb-4">
+                    <p class="text-center text-info fs-3">7 June 2023</p>
+                    <p class="text-center text-gray-700 border-top fs-1 pt-1">
+                      03:30 PM
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Date model ends here-->
+            <!-- Add AplicationModal -->
+            <div
+              class="modal fade"
+              id="exampleModal4"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-4">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      Add New Aplication
+                    </h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label for="name" class="form-label"
+                        >Tutor Id/Phone</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control mb-3 shadow-none rounded-2"
+                        placeholder="Ex : 23467"
+                      />
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light shadow-lg"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                      Save change
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Note model -->
+            <div
+              class="modal fade"
+              id="exampleModal5"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel5"
+              aria-hidden="true"
+            >
+              <div
+                class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel5">
+                      Note Details
+                    </h5>
+                  </div>
+                  <div class="modal-body">
+                    <div>
+                      <div
+                        class="p-3 bg-light rounded-3 border border-1 border-dark mb-3"
+                      >
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <p class="mb-0 text-dark fs-5">Fahmida Tayba</p>
+                            <p class="text-info" style="font-size: 12px">
+                              ID-34582
+                            </p>
+                          </div>
+                          <div><p>July 14, 2023</p></div>
+                        </div>
+                        <div>
+                          <p class="" style="font-size: 16px; color: #3b3c3d">
+                            Note Title
+                          </p>
+                          <p>
+                            doloremque dolorem dolor, delectus repellendus
+                            expedita modi distinctio voluptate voluptas impedit.
+                            Corrupti est expedita non qui accusamus illum quam,
+                            cum cumque saepe excepturi rem.
+                          </p>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <p style="font-size: 16px; color: #3b3c3d">
+                              Read More
+                            </p>
+                          </div>
+                          <div>
+                            <button class="btn btn-primary py-1">Edit</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="p-3 bg-light rounded-3 border border-1 border-dark mb-3"
+                      >
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <p class="mb-0 text-danger fs-5">Sajid HDY</p>
+                            <p class="text-info" style="font-size: 12px">
+                              ID-31934
+                            </p>
+                          </div>
+                          <div><p>June 29, 2023</p></div>
+                        </div>
+                        <div>
+                          <p class="text-gay-900" style="font-size: 16px">
+                            Note Title
+                          </p>
+                          <p>
+                            doloremque dolorem dolor, delectus repellendus
+                            expedita modi distinctio voluptate voluptas impedit.
+                            Corrupti est expedita non qui accusamus illum quam,
+                            cum cumque saepe excepturi rem.
+                          </p>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <p>Read More</p>
+                          </div>
+                          <div>
+                            <button class="btn btn-primary py-1">Edit</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="p-3 bg-light rounded-3 border border-1 border-dark mb-3"
+                      >
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <p class="mb-0 text-dark fs-5">Fahmida Tayba</p>
+                            <p class="text-info" style="font-size: 12px">
+                              ID-34582
+                            </p>
+                          </div>
+                          <div><p>July 14, 2023</p></div>
+                        </div>
+                        <div>
+                          <p class="" style="font-size: 16px; color: #3b3c3d">
+                            Note Title
+                          </p>
+                          <p>
+                            doloremque dolorem dolor, delectus repellendus
+                            expedita modi distinctio voluptate voluptas impedit.
+                            Corrupti est expedita non qui accusamus illum quam,
+                            cum cumque saepe excepturi rem.
+                          </p>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <p>Read More</p>
+                          </div>
+                          <div>
+                            <button class="btn btn-warning py-1">Edited</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <div class="py-2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Create Note model -->
+            <div
+              class="modal fade"
+              id="exampleModal6"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel6"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-3">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel6">
+                      Make A Note
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="">
+                      <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label"
+                          >Note Title</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control shadow-none rounded-3"
+                          id="exampleFormControlInput1"
+                          placeholder="Maximum 8 words can be given "
+                        />
+                      </div>
+                      <div>
+                        <label
+                          for="exampleFormControlTextarea1"
+                          class="form-label"
+                          >Note Details</label
+                        >
+                        <textarea
+                          class="form-control shadow-none rounded-3"
+                          id="exampleFormControlTextarea1"
+                          rows="3"
+                          placeholder="Maximum 30 words can be given"
+                        ></textarea>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-light shadow-lg"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="button" class="btn btn-primary">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Log model -->
+            <div
+              class="modal fade"
+              id="exampleModal7"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel7"
+              aria-hidden="true"
+            >
+              <div
+                class="modal-dialog modal-dialog-centered"
+                style="max-width: 900px"
+              >
+                <div class="modal-content mx-4">
+                  <div class="modal-body p-0">
+                    <table class="table shadow-none">
+                      <thead
+                        class="text-white"
+                        style="background-color: #3378c2"
+                      >
+                        <tr class="">
+                          <th
+                            scope="col"
+                            class="border-end border-1"
+                            style="border-top-left-radius: 8px"
+                          >
+                            Name
+                          </th>
+                          <th
+                            scope="col"
+                            class="text-nowrap border-end border-1"
+                          >
+                            Em ID
+                          </th>
+                          <th scope="col" class="border-end border-1">Date</th>
+                          <th
+                            scope="col"
+                            class="text-nowrap"
+                            style="border-top-right-radius: 8px"
+                          >
+                            Note Before Edit
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="" style="vertical-align: middle">
+                          <th
+                            scope="row"
+                            class="text-nowrap border-end border-1"
+                          >
+                            Fahmida Tayba
+                          </th>
+                          <td class="text-info border-end border-1">56123</td>
+                          <td class="text-nowrap border-end border-1">
+                            <p class="mb-0">14-07-2023</p>
+                            <p class="mb-0 text-muted">47: 15: 12 PM</p>
+                          </td>
+                          <td>
+                            <p class="border border-info p-2 rounded-3">
+                              Lorem ipsum dolor sit amet consectetur adipisicing
+                              elit. Reprehenderit molestias magnam doloribus
+                              impedit sunt ducimus inventore voluptas numquam
+                              eum ad corporis aperiam harum quo, explicabo
+                              officiis suscipit, reiciendis architecto veniam
+                              amet sequi, facere placeat illo veritatis.
+                              Dignissimos eius quibusdam tempora!
+                            </p>
+                          </td>
+                        </tr>
+                        <tr class="" style="vertical-align: middle">
+                          <th
+                            scope="row"
+                            class="text-nowrap border-end border-1"
+                          >
+                            Sajid HDY
+                          </th>
+                          <td class="text-info border-end border-1">56145</td>
+                          <td class="text-nowrap border-end border-1">
+                            <p class="mb-0">29-06-2023</p>
+                            <p class="mb-0 text-muted">47: 15: 12 PM</p>
+                          </td>
+                          <td>Seen Profile</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+      integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/owl/owl.carousel.min.js"></script>
+  </body>
+</html>

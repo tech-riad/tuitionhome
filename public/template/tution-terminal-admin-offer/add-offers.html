@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/color_palets.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/owl/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/owl/owl.theme.default.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+        integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/assets/style.css" />
+
+    <title>Admin - Ofer</title>
+</head>
+
+<body>
+    <!-- navbar starts here -->
+
+    <nav class="navbar navbar-expand-lg bg-white shadow-lg fixed-top" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a href="index.html"><img src="/images/logo.svg" alt="logo" /></a>
+            <button class="navbar-toggler d-md-none collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#sidebarMenu" aria-controls="navbarColor02" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="bi bi-caret-down-fill"></i>
+            </button>
+        </div>
+        <ul class="navbar-nav ml-auto d-none d-md-lg">
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Super Admin
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-end me-2 mt-2" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item dropdown" href="#"> Edit settings </a>
+                    <a class="dropdown-item" href="#"> Edit profile page </a>
+                    <a class="dropdown-item" href="#"> Show profile page </a>
+                    <a class="dropdown-item" href="#"> Logout </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <!-- navbar ends here -->
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- sidebar starts here -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse sidebar-width shadow-lg"
+                style="height: 100vh; margin-top: 60px; position: fixed">
+                <div class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3">
+                    <div class="mb-2">
+                        <img src="/images/boy.jpg" alt="image" class="profile-img" style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                " />
+                    </div>
+                    <h5 class="text-gray-800 mt-3">Super Admin</h5>
+                </div>
+                <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+                    <ul class="list-unstyled px-3 mt-2">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-speedometer me-3 fs-4" style="color: #898e99"></i>
+
+                            <a href="#" class="text-decoration-none text-gray-800 align-items-center"
+                                style="cursor: pointer">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-sliders fs-5 me-3" style="color: #898e99"></i>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="text-decoration-none text-gray-800 align-items-center collapsed"
+                                        data-bs-toggle="collapse" data-bs-target="#config-collapse"
+                                        aria-expanded="false" style="cursor: pointer">
+                                        Config
+                                    </a>
+                                    <i class="bi bi-chevron-left arrow-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="config-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li class="ms-4 px-3 py-1 mt-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">All Job Offers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-fill-lock fs-5 me-3" style="color: #898e99"></i>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="text-decoration-none text-gray-800 align-items-center collapsed"
+                                        data-bs-toggle="collapse" data-bs-target="#admin-collapse" aria-expanded="false"
+                                        style="cursor: pointer">
+                                        Admin User
+                                    </a>
+                                    <i class="bi bi-chevron-left arrow-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="admin-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li class="ms-4 px-3 py-1 mt-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">All Job Offers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clipboard-fill fs-5 me-3" style="color: #898e99"></i>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="text-decoration-none text-gray-800 align-items-center collapsed"
+                                        data-bs-toggle="collapse" data-bs-target="#offer-collapse" aria-expanded="false"
+                                        style="cursor: pointer">
+                                        Job Offer
+                                    </a>
+                                    <i class="bi bi-chevron-left arrow-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="offer-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li class="ms-4 px-3 py-1 my-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">All Job Offers</a>
+                                    </li>
+                                    <li class="ms-4 px-3 py-1 my-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">Available Offers</a>
+                                    </li>
+                                    <li class="ms-4 px-3 py-1 my-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">Applications</a>
+                                    </li>
+                                    <li class="ms-4 px-3 py-1 mt-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">Add Offers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-credit-card fs-5 me-3" style="color: #898e99"></i>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="text-decoration-none text-gray-800 align-items-center collapsed"
+                                        data-bs-toggle="collapse" data-bs-target="#payment-collapse"
+                                        aria-expanded="false" style="cursor: pointer">
+                                        Payment
+                                    </a>
+                                    <i class="bi bi-chevron-left arrow-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="payment-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li class="ms-4 px-3 py-1 mt-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">All Job Offers</a>
+                                    </li>
+                                </ul>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-fill fs-5 me-3" style="color: #898e99"></i>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="text-decoration-none text-gray-800 align-items-center collapsed"
+                                        data-bs-toggle="collapse" data-bs-target="#tutor-collapse" aria-expanded="false"
+                                        style="cursor: pointer">
+                                        Tutor
+                                    </a>
+                                    <i class="bi bi-chevron-left arrow-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="tutor-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li class="ms-4 px-3 py-1 mt-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">All Job Offers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-people-fill fs-5 me-3" style="color: #898e99"></i>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="text-decoration-none text-gray-800 align-items-center collapsed"
+                                        data-bs-toggle="collapse" data-bs-target="#parent-collapse"
+                                        aria-expanded="false" style="cursor: pointer">
+                                        Parent
+                                    </a>
+                                    <i class="bi bi-chevron-left arrow-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="parent-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li class="ms-4 px-3 py-1 mt-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">All Job Offers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-gear-fill fs-5 me-3" style="color: #898e99"></i>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a class="text-decoration-none text-gray-800 align-items-center collapsed"
+                                        data-bs-toggle="collapse" data-bs-target="#setting-collapse"
+                                        aria-expanded="false" style="cursor: pointer">
+                                        Settings
+                                    </a>
+                                    <i class="bi bi-chevron-left arrow-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="setting-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li class="ms-4 px-3 py-1 mt-3" style="border-left: 3px solid #898e99">
+                                        <a href="#" class="text-gray-800 text-decoration-none">All Job Offers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-door-open-fill me-3 fs-4" style="color: #898e99"></i>
+
+                            <a href="#" class="text-decoration-none text-gray-800 align-items-center"
+                                style="cursor: pointer">
+                                Logout
+                            </a>
+                        </li>
+                </div>
+                </li>
+                </ul>
+        </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+            <div class="col-md-9 ms-sm-auto col-lg-10" style="margin-top: 60px">
+                <!-- main content section starts here -->
+                <div class="ps-3 py-3 py-lg-4" style="padding-right: 13px">
+                    <div class="row row-cols-lg-2 row-cols-1">
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <p class="mb-4 fw-semibold fs-5 required">Parents</p>
+
+                                <div class="">
+                                    <div class="d-flex justify-content-center align-items-center px-2 rounded-3"
+                                        style="border: 1px solid #cfdfdb">
+                                        <i class="bi bi-search text-muted ms-1"></i>
+                                        <input type="text" class="form-control shadow-none rounded-3 border-0"
+                                            placeholder="Search" style="padding: 12px 18px" value="01846583745" />
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="d-flex justify-content-start align-items-center gap-3">
+                                            <img src="https://th.bing.com/th/id/OIP.VqzttYBT7iSOHw-XV5k5_QHaHx?pid=ImgDet&rs=1"
+                                                alt="map" class="img-fluid rounded-circle mb-3 shadow-lg"
+                                                style="width: 40px; height: 40px" />
+                                            <div>
+                                                <p class="fw-semibold mb-0">Yousuf Ali</p>
+                                                <p class="text-muted" style="font-size: 12px">
+                                                    Class-10, Mirpur-1,dhaka
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button class="btn shadow-none text-info" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal2">
+                                            <i class="bi bi-plus-lg fw-bold me-3"></i>Add New
+                                            Parent
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <p class="mb-4 fw-semibold fs-5">Reference</p>
+
+                                <div class="">
+                                    <div class="d-flex justify-content-center align-items-center px-2 rounded-3"
+                                        style="border: 1px solid #cfdfdb">
+                                        <i class="bi bi-search text-muted ms-1"></i>
+                                        <input type="text" class="form-control shadow-none rounded-3 border-0"
+                                            placeholder="Search" style="padding: 12px 18px" value="01797354637" />
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="d-flex justify-content-start align-items-center gap-3">
+                                            <img src="https://th.bing.com/th/id/OIP.VqzttYBT7iSOHw-XV5k5_QHaHx?pid=ImgDet&rs=1"
+                                                alt="map" class="img-fluid rounded-circle mb-3 shadow-lg"
+                                                style="width: 40px; height: 40px" />
+                                            <div>
+                                                <p class="fw-semibold mb-0">Yousuf Ali</p>
+                                                <p class="text-muted" style="font-size: 12px">
+                                                    Class-10, Mirpur-1,dhaka
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button class="btn shadow-none text-info" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal3">
+                                            <i class="bi bi-plus-lg fw-bold me-3"></i>Add New
+                                            Reference
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <p class="mb-4 fw-semibold fs-5">Student Information-1</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                            placeholder="Mehidi Hasan" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label required">Gender</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="gender" style="padding: 14px 18px">
+                                            <option selected>Male</option>
+                                            <option value="1">Fmale</option>
+                                            <option value="2">Two</option>
+                                            <option value="3">Three</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="institute" class="form-label">Name of Institute</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="institute"
+                                            placeholder="Institute Name" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label required">Category</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="category" style="padding: 14px 18px">
+                                            <option selected>Bangla Medium</option>
+                                            <option value="1">English Medium</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label required">Course</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="category" style="padding: 14px 18px">
+                                            <option selected>Class-10</option>
+                                            <option value="1">Class-9</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label required">Subjects</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                            placeholder="Bangla" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                        <a id="add_new_student_button" class="btn btn-info py-1 px-2">Add New</a>
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <p class="mb-4 fw-semibold fs-5">Student Information-2</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="day" class="form-label required">Days In Week</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="gender" style="padding: 14px 18px" form="day">
+                                            <option selected>4 Days</option>
+                                            <option value="1">5 Days</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="date" class="form-label required">Tutoring Time</label>
+                                        <input type="date" class="form-control rounded-3 shadow-none" id="date"
+                                            placeholder="Bangla" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="due" class="form-label required">Tutoring Duration</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="due" style="padding: 14px 18px">
+                                            <option selected>2 Hour</option>
+                                            <option value="1">3 Hour</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label required">Teaching Method</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="category" style="padding: 14px 18px">
+                                            <option selected>Student's Home</option>
+                                            <option value="1">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="salary" class="form-label required">Maximum Salary</label>
+                                        <input type="number" class="form-control rounded-3 shadow-none" id="salary"
+                                            placeholder="12000" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="snum" class="form-label required">Number Of Students</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="snum"
+                                            placeholder="2" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="student_info_form_one_point_one" class="d-none">
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <p class="mb-4 fw-semibold fs-5">
+                                        Student Information-1.1
+                                    </p>
+                                    <button class="btn-ghost" id="student_info_form_one_point_one_close">
+                                        <i class="bi bi-x-circle fs-5"></i>
+                                    </button>
+                                </div>
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                            placeholder="Mehidi Hasan" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="gender" style="padding: 14px 18px">
+                                            <option>Male</option>
+                                            <option selected value="1">Fmale</option>
+                                            <option value="2">Two</option>
+                                            <option value="3">Three</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="institute" class="form-label">Name of Institute</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="institute"
+                                            placeholder="Institute Name" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label required">Category</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="category" style="padding: 14px 18px">
+                                            <option selected>Bangla Medium</option>
+                                            <option value="1">English Medium</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label required">Course</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="category" style="padding: 14px 18px">
+                                            <option selected>Class-8</option>
+                                            <option value="1">Class-9</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label required">Subjects</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                            placeholder="Bangla" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="nwfild" class="form-label required">New Field</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="nwfild"
+                                            placeholder="New field placeholder" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="student_info_form_one_point_two" class="d-none">
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <p class="mb-4 fw-semibold fs-5">
+                                        Student Information-1.2
+                                    </p>
+                                    <button class="btn-ghost" id="student_info_form_one_point_two_close">
+                                        <i class="bi bi-x-circle fs-5"></i>
+                                    </button>
+                                </div>
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                            placeholder="Mehidi Hasan" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="gender" style="padding: 14px 18px">
+                                            <option>Male</option>
+                                            <option selected value="1">Fmale</option>
+                                            <option value="2">Two</option>
+                                            <option value="3">Three</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="institute" class="form-label">Name of Institute</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="institute"
+                                            placeholder="Institute Name" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label required">Category</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="category" style="padding: 14px 18px">
+                                            <option selected>Bangla Medium</option>
+                                            <option value="1">English Medium</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label required">Course</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="category" style="padding: 14px 18px">
+                                            <option selected>Class-8</option>
+                                            <option value="1">Class-9</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label required">Subjects</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                            placeholder="Bangla" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="nwfild2" class="form-label required">New Field</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="nwfild2"
+                                            placeholder="New field placeholder" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4" style="height: 776px">
+                                <p class="mb-4 fw-semibold fs-5">Location</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="cun" class="form-label required">Country</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="cun" style="padding: 14px 18px">
+                                            <option selected>Bangladesh</option>
+                                            <option value="1">India</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="city" class="form-label required">City</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="city" style="padding: 14px 18px">
+                                            <option selected>Dhaka</option>
+                                            <option value="1">Pabna</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="loc" class="form-label required">Location</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="loc" style="padding: 14px 18px">
+                                            <option selected>Tolarbarg</option>
+                                            <option value="1">Mirpur</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add" class="form-label required">Details Address</label>
+                                        <div class="d-flex justify-content-center align-items-center px-2 rounded-3"
+                                            style="border: 1px solid #1890ff">
+                                            <i class="bi bi-geo-alt-fill text-info ms-1"></i>
+                                            <input type="text" class="form-control shadow-none rounded-3 border-0"
+                                                placeholder="10/5, Tolarbag, Mirpur-1" style="padding: 12px 18px"
+                                                id="add" />
+                                        </div>
+                                    </div>
+                                    <!-- Map placeholder -->
+                                    <div>
+                                        <!-- place holder image for map -->
+                                        <img src="https://via.placeholder.com/600x252/87CEFA/000000" alt="map"
+                                            class="img-flui rounded-3" height="230px" width="100%" />
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4" style="height: 776px">
+                                <p class="mb-4 fw-semibold fs-5">Title Note</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="requ" class="form-label required">Tutor Requirement</label>
+                                        <textarea class="form-control rounded-3 shadow-none" id="requ" style="
+                            overflow-y: scroll;
+                            resize: none;
+                            height: 165px;
+                          ">
+                        Bootstrap is developed mobile first, a strategy in which we optimize code for mobile devices first and then scale up components as necessary using CSS media queries. To ensure proper rendering and touch zooming for all devices, add the responsive viewport meta tag to your
+                      </textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="spn" class="form-label">Special Note</label>
+                                        <textarea class="form-control rounded-3 shadow-none" id="spn" style="
+                            overflow-y: scroll;
+                            resize: none;
+                            height: 165px;
+                          ">
+                        Bootstrap is developed mobile first, a strategy in which we optimize code for mobile devices first and then scale up components as necessary using CSS media queries. To ensure proper rendering and touch zooming for all devices, add the responsive viewport meta tag to your
+                      </textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="staff" class="form-label required">Staff Note</label>
+                                        <textarea class="form-control rounded-3 shadow-none" id="staff" style="
+                            overflow-y: scroll;
+                            resize: none;
+                            height: 165px;
+                          ">
+                        Bootstrap is developed mobile first, a strategy in which we optimize code for mobile devices first and then scale up components as necessary using CSS media queries. To ensure proper rendering and touch zooming for all devices, add the responsive viewport meta tag to your
+                      </textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <p class="mb-4 fw-semibold fs-5">Tutor Requirement-1</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="cat" class="form-label">Preferred Tutoring Category</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="cat" style="padding: 14px 18px">
+                                            <option selected>Professional Skills Mastery</option>
+                                            <option value="1">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="course" class="form-label">Course </label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="course" style="padding: 14px 18px">
+                                            <option selected>N/A</option>
+                                            <option value="1">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sub" class="form-label">Subjects</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="sub"
+                                            placeholder="Maths" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="due" class="form-label required">Tutor's Gender</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="due" style="padding: 14px 18px">
+                                            <option selected>Male</option>
+                                            <option value="1">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="due" class="form-label">Tutor's Religion
+                                        </label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="due" style="padding: 14px 18px">
+                                            <option selected>Islam</option>
+                                            <option value="1">Hindu</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <p class="mb-4 fw-semibold fs-5">Tutor Requirement-2</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="uni" class="form-label">University</label>
+                                        <input type="text" class="form-control rounded-3 shadow-none" id="uni"
+                                            placeholder="Dhaka University" style="padding: 14px 18px" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="utype" class="form-label">University Type</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="utype" style="padding: 14px 18px">
+                                            <option selected>Public University</option>
+                                            <option value="1">National University</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="stype" class="form-label">Study Type
+                                        </label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="stype" style="padding: 14px 18px">
+                                            <option selected>BSC</option>
+                                            <option value="1">BA</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="due" class="form-label">Departments</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="due" style="padding: 14px 18px">
+                                            <option selected>Bangla</option>
+                                            <option value="1">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="year" class="form-label">Year </label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="year" style="padding: 14px 18px">
+                                            <option selected>2015</option>
+                                            <option value="1">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4" style="height: 635px">
+                                <p class="mb-4 fw-semibold fs-5">Tutor Requirement-3</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="scl" class="form-label">School</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="scl" style="padding: 14px 18px">
+                                            <option selected>B A D C E High School</option>
+                                            <option value="1">Other Schools</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="clg" class="form-label">College </label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="clg" style="padding: 14px 18px">
+                                            <option selected>Dakha College</option>
+                                            <option value="1">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="board" class="form-label">Board</label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="board" style="padding: 14px 18px">
+                                            <option selected>Dhaka</option>
+                                            <option value="1">Pabna</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="group" class="form-label">Group </label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="group" style="padding: 14px 18px">
+                                            <option selected>Science</option>
+                                            <option value="1">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bc" class="form-label">Background Curriculum
+                                        </label>
+                                        <select class="form-select rounded-3 shadow-none" aria-label="Default select "
+                                            id="bc" style="padding: 14px 18px">
+                                            <option selected>
+                                                Select Your Background Curriculum
+                                            </option>
+                                            <option value="1">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-5" style="height: 635px">
+                                <p class="mb-4 fw-semibold fs-5">Others</p>
+
+                                <div class="">
+                                    <div class="mb-3">
+                                        <label for="hire" class="form-label">When are you looking to hire?</label>
+                                        <input type="date" class="form-control rounded-3 shadow-none" id="hire"
+                                            placeholder="Institute Name" style="padding: 14px 18px" />
+                                    </div>
+                                    <div class="p-4 rounded-3 d-flex justify-content-center align-items-center flex-column"
+                                        style="
+                          box-shadow: 0px 4px 30px 0px rgba(59, 60, 61, 0.15);
+                          height: 380px;
+                        ">
+                                        <p class="">
+                                            Sms Send (Are you sure to send sms to this offer)
+                                        </p>
+                                        <div class="mt-3 bg-info text-white rounded px-2">
+                                            <i class="bi bi-check-lg fs-5"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end align-items-center mt-4">
+                                        <button class="btn btn-primary py-1 px-2">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-4 d-flex justify-content-end align-items-center">
+                                <button class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <p class="fw-semibold fs-5 mb-0">Parent Note</p>
+                                        <p class="text-info" style="font-size: 12px">
+                                            Guardian ID-31934
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="">
+                                    <div class="mb-4 border-bottom border-2">
+                                        <div class="bg-light rounded-3 p-3 my-3"
+                                            style="height: 150px; overflow-y: scroll">
+                                            Lorem Ipsum is simply dummy text of the printing and
+                                            typesetting industry. Lorem Ipsum has been the
+                                            industry's standard dummy text ever since the 1500s,
+                                            when an unknown printer took a galley of type and
+                                            scrambled it to make a type specimen book. industry's
+                                            standard dummy text ever since the 1500s, when an
+                                            unknown printer took a galley of type and scrambled it
+                                            to make a type specimen book.
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex justify-content-between align-items-center gap-3">
+                                                <img src="https://th.bing.com/th/id/OIP.VqzttYBT7iSOHw-XV5k5_QHaHx?pid=ImgDet&rs=1"
+                                                    alt="map" class="img-fluid rounded-3 mb-3 shadow-lg"
+                                                    style="width: 40px; height: 40px" />
+                                                <div>
+                                                    <p class="fw-semibold mb-0">Yousuf Ali</p>
+                                                    <p class="text-muted" style="font-size: 12px">
+                                                        Sales & Operation Dep:
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted mb-0" style="font-size: 12px">
+                                                    Employee ID-32585
+                                                </p>
+                                                <p class="text-muted" style="font-size: 12px">
+                                                    June 6, 2023 at 03:30 PM
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4 border-bottom border-2">
+                                        <div class="bg-light rounded-3 p-3 my-3"
+                                            style="height: 150px; overflow-y: scroll">
+                                            Lorem Ipsum is simply dummy text of the printing and
+                                            typesetting industry. Lorem Ipsum has been the
+                                            industry's standard dummy text ever since the 1500s,
+                                            when an unknown printer took a galley of type and
+                                            scrambled it to make a type specimen book. Lorem Ipsum
+                                            is simply dummy text of the printing and typesetting
+                                            industry. Lorem Ipsum has been the industry's standard
+                                            dummy text ever since the 1500s, when an unknown
+                                            printer took a galley of type and scrambled it to make
+                                            a type specimen book.
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex justify-content-between align-items-center gap-3">
+                                                <img src="https://th.bing.com/th/id/OIP.VqzttYBT7iSOHw-XV5k5_QHaHx?pid=ImgDet&rs=1"
+                                                    alt="map" class="img-fluid rounded-3 mb-3 shadow-lg"
+                                                    style="width: 40px; height: 40px" />
+                                                <div>
+                                                    <p class="fw-semibold mb-0">Yousuf Ali</p>
+                                                    <p class="text-muted" style="font-size: 12px">
+                                                        Sales & Operation Dep:
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted mb-0" style="font-size: 12px">
+                                                    Employee ID-32585
+                                                </p>
+                                                <p class="text-muted" style="font-size: 12px">
+                                                    June 6, 2023 at 03:30 PM
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        <button class="btn btn-dark me-2 px-2 py-1">
+                                            More
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4">
+                                <div class="mt-4">
+                                    <div class="d-flex gap-4 flex-column flex-md-row p-3 mb-2">
+                                        <a class="text-decoration-none text-gray-800 active-border" href="#">Current
+                                            Pending</a>
+                                        <a class="text-decoration-none text-gray-800" href="#">Closed (2)</a>
+                                        <a class="text-decoration-none text-gray-800" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal">Status</a>
+                                    </div>
+                                    <div class="col bg-white px-4 py-5 mt-4 mb-5 me-1 border rounded-3" style="
+                          box-shadow: 0px 4px 30px 0px rgba(59, 60, 61, 0.15);
+                        ">
+                                        <div class="d-flex justify-content-between align-items-start mb-4">
+                                            <h4 class="text-gray-800 fs-mobile-8">Class-10</h4>
+                                            <div>
+                                                <h6 class="text-muted fs-mobile-7">Job ID 23451</h6>
+
+                                                <h6 class="text-muted fs-mobile-7">
+                                                    <i class="bi bi-clock-fill me-2"></i>20 minutes
+                                                    ago
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 d-flex mb-5 align-items-center gap-3">
+                                                <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                    style="height: 30px; min-width: 30px">
+                                                    <i class="bi bi-geo-alt-fill"></i>
+                                                </div>
+                                                <span class="fw-600 text-nowrap fs-mobile-7">
+                                                    Mirpur-1, Dhaka Mar 28,2023
+                                                </span>
+                                            </div>
+
+                                            <div class="col-6 d-flex align-items-center mb-5 gap-3">
+                                                <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                    style="height: 30px; min-width: 30px">
+                                                    <i class="bi bi-file-text-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-600 text-nowrap fs-mobile-7">
+                                                        Subjects
+                                                    </span>
+                                                    <br />
+                                                    <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                        All
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 d-flex align-items-center mb-5 gap-3">
+                                                <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                    style="height: 30px; min-width: 30px">
+                                                    <i class="bi bi-calendar-week-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-600 text-nowrap fs-mobile-7">
+                                                        Per Week
+                                                    </span>
+                                                    <br />
+                                                    <span class="text-nowrap fs-mobile-7 text-gray-600">
+                                                        4 Days
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 d-flex align-items-center gap-3 mb-5">
+                                                <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                    style="height: 30px; min-width: 30px">
+                                                    <i class="bi bi-gender-ambiguous"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-600 text-nowrap fs-mobile-8">
+                                                        Tutor Gender
+                                                    </span>
+                                                    <br />
+                                                    <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                        Male
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 d-flex align-items-center mb-5 gap-3">
+                                                <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                    style="height: 30px; min-width: 30px">
+                                                    <i class="bi bi-wallet-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-600 text-nowrap fs-mobile-7">Salary</span>
+                                                    <br />
+                                                    <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                        BDT 50000 Tk
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <button class="btn btn-dark me-2 px-2 py-1" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal1">
+                                                View
+                                            </button>
+                                            <button class="btn btn-primary px-2 py-1">
+                                                Restore
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- main content section ends here -->
+                <!-- Modal for add parents-->
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content p-4">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">Parents</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label required">Name</label>
+                                    <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                        placeholder="Mehedi Hasan" style="padding: 14px 18px" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control rounded-3 shadow-none" id="email"
+                                        placeholder="example@gmail.com" style="padding: 14px 18px" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="num1" class="form-label required">Number</label>
+                                    <input type="text" class="form-control rounded-3 shadow-none" id="num1"
+                                        placeholder="01658963122" style="padding: 14px 18px" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="num2" class="form-label">Additional Number</label>
+                                    <input type="text" class="form-control rounded-3 shadow-none" id="num2"
+                                        placeholder="01658963122" style="padding: 14px 18px" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal for add ref-->
+                <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content p-4">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel3">
+                                    Reference
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label required">Name</label>
+                                    <input type="text" class="form-control rounded-3 shadow-none" id="name"
+                                        placeholder="Mehedi Hasan" style="padding: 14px 18px" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control rounded-3 shadow-none" id="email"
+                                        placeholder="example@gmail.com" style="padding: 14px 18px" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="num1" class="form-label required">Number</label>
+                                    <input type="text" class="form-control rounded-3 shadow-none" id="num1"
+                                        placeholder="01658963122" style="padding: 14px 18px" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="num2" class="form-label">Additional Number</label>
+                                    <input type="text" class="form-control rounded-3 shadow-none" id="num2"
+                                        placeholder="01658963122" style="padding: 14px 18px" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal for status-->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered mx-4 mx-lg-auto" style="max-width: 870px">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="rounded-3 shadow-lg mb-3">
+                                    <div class="bg-primary text-white rounded-top px-4 py-4">
+                                        Profile Status
+                                    </div>
+                                    <div class="p-4">
+                                        <p class="mb-2 text-primary">
+                                            Your profile has no issues
+                                        </p>
+                                        <p class="border-top border-2 pt-2 mb-0">
+                                            Your profile is now unlocked, you can update it
+                                            whenever you want.
+                                        </p>
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <button class="btn btn-primary px-4">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rounded-3 shadow-lg mb-3">
+                                    <div class="bg-warning text-white rounded-top px-4 py-4">
+                                        Profile Status
+                                    </div>
+                                    <div class="p-4">
+                                        <p class="mb-2 text-warning">
+                                            Your profile has some issues
+                                        </p>
+                                        <p class="border-top border-2 pt-2 mb-0">
+                                            Your profile has been violating our terms & policies,
+                                            so be aware of using it features.
+                                        </p>
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <button class="btn btn-warning px-4">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rounded-3 shadow-lg">
+                                    <div class="bg-danger text-white rounded-top px-4 py-4">
+                                        Profile Status
+                                    </div>
+                                    <div class="p-4">
+                                        <p class="mb-2 text-danger">Your profile is locked</p>
+                                        <p class="border-top border-2 pt-2 mb-0">
+                                            To unlock your profile, please contact with the
+                                            administrator 09678 444477.
+                                        </p>
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <button class="btn btn-danger px-4">Contact</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal for job details-->
+                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered mx-4 mx-lg-auto" style="max-width: 1100px">
+                        <div class="modal-content">
+                            <div class="modal-body p-lg-5">
+                                <div class="row">
+                                    <div class="col-12 col-lg-8">
+                                        <div class="p-4 rounded-3 shadow-lg mb-4">
+                                            <p class="text-primary fs-5">Student Information</p>
+
+                                            <div class="row row-cols-lg-3 row-cols-2 mt-5">
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-tags-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Category
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            Bangla Medium
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-file-text-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Course
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            HSC first year
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-file-text-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Subjects
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            All
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-calendar-week-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Days and week
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            4 Days
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-clock-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Tutoring Time
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            1.30 pm
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-hourglass-top"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Tutoring Duration
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            1.50 Hour
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-back"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Tutor Method
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            Online
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-wallet-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Maximum Salary
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            BDT 3000 Tk
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-gender-ambiguous"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Student Gender
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            Male
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-4 rounded-3 shadow-lg mb-4">
+                                            <p class="text-primary fs-5">Tutor Requirements</p>
+
+                                            <div class="row mt-5">
+                                                <div class="d-flex align-items-center mb-5 gap-3 col-6 col-lg-4">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-gender-ambiguous"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Tutor Gender
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            ANy
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3 col-6 col-lg-4">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-calendar-date-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Hiring From
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            2023-04-01
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3 col-12">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-palette2"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Other Requirement
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 fs-mobile-7">
+                                                            Tutor must be experienced at teaching english
+                                                            version student
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-4 rounded-3 shadow-lg mb-4">
+                                            <p class="text-primary fs-5">Contact Information</p>
+
+                                            <div class="row row-cols-lg-3 row-cols-2 mt-5">
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-globe"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Country
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            Bangladesh
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-buildings-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            City
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            Dhaka
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-geo-alt-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Location
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            Mirpur 1
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-5 gap-3">
+                                                    <div class="text-white bg-primary rounded shadow-lg d-flex justify-content-center align-items-center"
+                                                        style="height: 30px; min-width: 30px">
+                                                        <i class="bi bi-person-vcard-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-600 text-nowrap fs-mobile-7">
+                                                            Full Address
+                                                        </span>
+                                                        <br />
+                                                        <span class="text-gray-600 text-nowrap fs-mobile-7">
+                                                            Mirpur, Tolarbarg
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="p-4 rounded-3 flex-column flex-lg-row shadow-lg d-flex justify-content-between align-items-center">
+                                            <p class="text-uppercase m-0">job id</p>
+                                            <p class="text-uppercase m-0">Total Views-1</p>
+
+                                            <p class="text-uppercase m-0">
+                                                total applications-23
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-12 mt-4 mt-lg-0">
+                                        <div class="rounded-3 shadow-lg" style="
+                            padding: 30px 70px;
+                            opacity: 0.4;
+                            pointer-events: none;
+                          ">
+                                            <div class="d-flex flex-column justify-content-center gap-3">
+                                                <button class="btn btn-dark">Get Direction</button>
+                                                <button class="btn btn-secondary shadow-lg">
+                                                    Location
+                                                </button>
+
+                                                <button class="btn btn-secondary shadow-lg">
+                                                    Copy Link
+                                                </button>
+
+                                                <button class="btn btn-primary">Apply Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/owl/owl.carousel.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var clickCount = 0;
+            $("#add_new_student_button").click(function () {
+                clickCount++;
+                if (clickCount === 1) {
+                    $("#student_info_form_one_point_one").removeClass("d-none");
+                } else if (clickCount === 2) {
+                    $("#student_info_form_one_point_two").removeClass("d-none");
+                    clickCount = 0;
+                }
+            });
+            $("#student_info_form_one_point_one_close").click(function () {
+                $("#student_info_form_one_point_one").addClass("d-none");
+            });
+
+            $("#student_info_form_one_point_two_close").click(function () {
+                $("#student_info_form_one_point_two").addClass("d-none");
+            });
+        });
+
+    </script>
+</body>
+
+</html>

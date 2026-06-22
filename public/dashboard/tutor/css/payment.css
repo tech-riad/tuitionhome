@@ -1,0 +1,153 @@
+.balance-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: flex-end; */
+  padding: 24px;
+  gap: 24px;
+  /*     
+    position: absolute; */
+  width: 388px;
+  height: 174px;
+  left: 15px;
+  top: 0px;
+
+  /* gray/1 */
+
+  background: #ffffff;
+  /* 1 */
+
+  box-shadow: 0px 1px 2px rgba(9, 30, 66, 0.25);
+}
+.pay-detail-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 8px 19px;
+  gap: 10px;
+  font-size: 12px;
+  width: 104px;
+  color: #666666;
+  height: 34px;
+
+  background: #fafafa;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+}
+
+.money-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 3px 19px;
+  gap: 10px;
+  width: 100px;
+  height: 24px;
+  background: #f3f5f6;
+  border-radius: 5px;
+  border: none;
+  font-size: 12px;
+  color: #666666;
+}
+.money-text {
+  color: #666666;
+}
+
+.payment-painding {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center;
+align-items: flex-start; */
+  padding: 24px;
+  gap: 24px;
+
+  /* position: absolute; */
+  width: 767px;
+  height: 155px;
+  left: 0px;
+  top: 0px;
+
+  /* Error/50 */
+
+  background: #fceaea;
+  /* 1 */
+
+  box-shadow: 0px 1px 2px rgba(97, 99, 102, 0.25);
+}
+
+.deu-card {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-end;
+align-items: flex-end; */
+  /* padding: 24px; */
+  padding: 15px 24px;
+  gap: 24px;
+
+  /* position: absolute; */
+  width: 388px;
+  height: 155px;
+  left: 770px;
+  top: 0px;
+  background: #ffffff;
+  box-shadow: 0px 82px 54px rgba(57, 78, 119, 0.07),
+    0px 37.9111px 24.9658px rgba(57, 78, 119, 0.0519173),
+    0px 21.6919px 14.2849px rgba(57, 78, 119, 0.0438747),
+    0px 13.1668px 8.67082px rgba(57, 78, 119, 0.0377964),
+    0px 7.93358px 5.22455px rgba(57, 78, 119, 0.0322036),
+    0px 4.41793px 2.90937px rgba(57, 78, 119, 0.0261253),
+    0px 1.90012px 1.2513px rgba(57, 78, 119, 0.06);
+}
+
+.invoice-card {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center;
+align-items: flex-start; */
+  padding: 24px 32px;
+
+  /* position: absolute;
+width: 1158px; */
+  height: 194px;
+  left: 20px;
+  top: 150px;
+
+  background: #ffffff;
+  /* 1 */
+
+  box-shadow: 0px 1px 2px rgba(9, 30, 66, 0.25);
+  border-radius: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .payment-painding {
+    height: inherit;
+    width: 100%;
+  }
+  .deu-card {
+    height: inherit;
+    width: 100%;
+  }
+  .balance-card {
+    height: inherit;
+    width: 100%;
+  }
+  .invoice-card{
+    height: inherit;
+    width: 100%;
+  }
+  .invoice-date{
+    margin-bottom: 10px;
+  }
+  .coin-view-btn{
+    margin-top: 100px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1160px) {
+    .invoice-card{
+        height: inherit;
+        width: 100%;
+      }
+
+}

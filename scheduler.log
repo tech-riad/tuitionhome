@@ -1,0 +1,4 @@
+[32m[2024-02-18T12:23:06+06:00] Running scheduled command:[39m '/usr/local/apps/php73/bin/php' 'artisan' bulksms:send > '/dev/null' 2>&1
+[32m[2024-02-18T12:23:07+06:00] Running scheduled command:[39m '/usr/local/apps/php73/bin/php' 'artisan' smsModulSms:send > '/dev/null' 2>&1
+[32m[2024-02-18T12:23:07+06:00] Running scheduled command:[39m '/usr/local/apps/php73/bin/php' 'artisan' advanceSearchsms:send > '/dev/null' 2>&1
+[32m[2024-02-18T12:23:07+06:00] Running scheduled command:[39m '/usr/local/apps/php73/bin/php' 'artisan' tutor:deactive > '/dev/null' 2>&1

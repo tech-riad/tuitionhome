@@ -1,0 +1,52 @@
+
+.button{
+    padding: 50px;
+}
+#allPost{
+
+  padding-top: 30px;
+  padding-right: 80px;
+  padding-left: 80px;
+}
+.col{
+  padding: 30px;
+}
+.card-img-top{
+  height: 250px;
+}
+.card {
+  max-height: 700px;
+}
+
+.zoom-in-out-box {
+  /* margin: 24px;
+  width: 50px;
+  height: 50px; */
+  background: #1fcf13;
+  animation: zoom-in-zoom-out 5s ease infinite;
+}
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.1, 1.1);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+.zoom:hover {
+  transform: scale(1.07); 
+}
+
+.zoom {
+  background-color: green;
+  transition: transform .2s; /* Animation */
+}
+#comment{
+  padding-right: 40px;
+}
+

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/color_palets.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/custom-switch-and-checkbox.css" />
+
+    <link rel="stylesheet" href="/css/owl/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/owl/owl.theme.default.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/assets/style.css" />
+    <title>Admin - Offer</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a href="index.html"><img src="/images/logo.svg" alt="logo" /></a>
+        <button
+          class="navbar-toggler d-md-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+      <ul class="navbar-nav ml-auto d-none d-md-lg">
+        <li class="nav-item">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Super Admin
+          </a>
+
+          <div
+            class="dropdown-menu dropdown-menu-end me-2 mt-2"
+            aria-labelledby="navbarDropdown"
+          >
+            <a class="dropdown-item dropdown" href="#"> Edit settings </a>
+            <a class="dropdown-item" href="#"> Edit profile page </a>
+            <a class="dropdown-item" href="#"> Show profile page </a>
+            <a class="dropdown-item" href="#"> Logout </a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!-- navbar ends here -->
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse sidebar-width shadow-lg"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3 d-flex align-items-center">
+                <i
+                  class="bi bi-speedometer me-3 fs-4"
+                  style="color: #898e99"
+                ></i>
+
+                <a
+                  href="#"
+                  class="text-decoration-none text-gray-800 align-items-center"
+                  style="cursor: pointer"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-sliders fs-5 me-3" style="color: #898e99"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#config-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Config
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="config-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-person-fill-lock fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#admin-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Admin User
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="admin-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-clipboard-fill fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Job Offer
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Available Offers</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Applications</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >Add Offers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i
+                    class="bi bi-credit-card fs-5 me-3"
+                    style="color: #898e99"
+                  ></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#payment-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Payment
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse" id="payment-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 mt-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a href="#" class="text-gray-800 text-decoration-none"
+                        >All Job Offers</a
+                      >
+                    </li>
+                  </ul>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-person-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#tutor-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Tutor
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="tutor-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-people-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#parent-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Parent
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="parent-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <i
+                        class="bi bi-gear-fill fs-5 me-3"
+                        style="color: #898e99"
+                      ></i>
+                      <div class="d-flex w-100 justify-content-between">
+                        <a
+                          class="text-decoration-none text-gray-800 align-items-center collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#setting-collapse"
+                          aria-expanded="false"
+                          style="cursor: pointer"
+                        >
+                          Settings
+                        </a>
+                        <i class="bi bi-chevron-left arrow-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="collapse" id="setting-collapse">
+                      <ul
+                        class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
+                      >
+                        <li
+                          class="ms-4 px-3 py-1 mt-3"
+                          style="border-left: 3px solid #898e99"
+                        >
+                          <a href="#" class="text-gray-800 text-decoration-none"
+                            >All Job Offers</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-3 d-flex align-items-center">
+                    <i
+                      class="bi bi-door-open-fill me-3 fs-4"
+                      style="color: #898e99"
+                    ></i>
+
+                    <a
+                      href="#"
+                      class="text-decoration-none text-gray-800 align-items-center"
+                      style="cursor: pointer"
+                    >
+                      Logout
+                    </a>
+                  </li>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div class="col-md-9 ms-sm-auto col-lg-10" style="margin-top: 60px">
+            <!-- main content section starts here -->
+            <div class="py-lg-4 py-md-3 py-3 px-md-2 px-lg-5 mx-lg-5">
+              <div class="px-lg-5">
+                <div class="shadow-lg rounded-3 bg-white p-3 p-lg-5 mx-lg-5">
+                  <div
+                    class="d-flex justify-content-between align-items-start flex-column flex-lg-row align-items-lg-center"
+                  >
+                    <p class="text-nowrap fs-5 text-dark">Search Tutors</p>
+                    <div class="d-flex gap-3">
+                      <a
+                        href="alltutors.html"
+                        class="btn btn-gdark text-center"
+                        style="height: 52px"
+                      >
+                        <p style="margin-top: 7px">All Tutors</p>
+                      </a>
+                      <button
+                        class="btn btn-outline-primary py-1"
+                        style="
+                          box-shadow: 0px 4px 7px 0px rgba(59, 60, 61, 0.75);
+                        "
+                      >
+                        <p class="p-0 m-0">SMS Ranges</p>
+                        <p class="p-0 m-0">5</p>
+                      </button>
+                      <button
+                        class="btn btn-outline-info py-1"
+                        style="
+                          box-shadow: 0px 4px 7px 0px rgba(59, 60, 61, 0.75);
+                        "
+                      >
+                        <p class="p-0 m-0">SMS Send</p>
+                        <p class="p-0 m-0">50</p>
+                      </button>
+                      <button class="btn btn-gdark" style="height: 52px">
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                  <div class="mt-5">
+                    <select class="form-select shadow-none rounded-3">
+                      <option value="Latest Created Tutor">
+                        Latest Created Tutor
+                      </option>
+                      <option value="2nd Latest Created Tutor">
+                        2nd Latest Created Tutor
+                      </option>
+                      <option value="Random Tutor">Random Tutor</option>
+                      <option value="Bottom Tutor">Bottom Tutor</option>
+                      <option value="2nd Bottom Tutor">2nd Bottom Tutor</option>
+                    </select>
+                  </div>
+                  <!-- result box -->
+                  <div class="mt-4">
+                    <!-- Here gose the result box -->
+                  </div>
+                </div>
+                <div
+                  class="shadow-lg rounded-3 bg-white p-3 p-lg-5 mx-lg-5 mt-5"
+                >
+                  <div
+                    class="d-flex justify-content-between align-items-start flex-column flex-lg-row align-items-lg-center"
+                  >
+                    <p class="text-nowrap fs-5 text-dark">Search Tutors</p>
+                    <div class="d-flex gap-3">
+                      <a
+                        href="alltutors.html"
+                        class="btn btn-gdark text-center"
+                        style="height: 52px"
+                      >
+                        <p class="" style="margin-top: 7px">All Tutors</p>
+                      </a>
+                      <button
+                        class="btn btn-outline-primary py-1"
+                        style="
+                          box-shadow: 0px 4px 7px 0px rgba(59, 60, 61, 0.75);
+                        "
+                      >
+                        <p class="p-0 m-0">SMS Ranges</p>
+                        <p class="p-0 m-0">5</p>
+                      </button>
+                      <button
+                        class="btn btn-outline-info py-1"
+                        style="
+                          box-shadow: 0px 4px 7px 0px rgba(59, 60, 61, 0.75);
+                        "
+                      >
+                        <p class="p-0 m-0">SMS Send</p>
+                        <p class="p-0 m-0">50</p>
+                      </button>
+                      <button class="btn btn-gdark" style="height: 52px">
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                  <div class="mt-5">
+                    <select class="form-select shadow-none rounded-3">
+                      <option value="Latest Created Tutor">
+                        Latest Created Tutor
+                      </option>
+                      <option value="2nd Latest Created Tutor">
+                        2nd Latest Created Tutor
+                      </option>
+                      <option value="Random Tutor">Random Tutor</option>
+                      <option value="Bottom Tutor">Bottom Tutor</option>
+                      <option value="2nd Bottom Tutor">2nd Bottom Tutor</option>
+                    </select>
+                  </div>
+                  <!-- result box -->
+                  <div class="mt-4">
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <p>Search Result 6 Tutors</p>
+                      <button class="btn btn-primary">Mark All</button>
+                    </div>
+                    <div>
+                      <div>
+                        <div
+                          class="d-flex justify-content-between align-items-start gap-3 gap-lg-0 align-items-lg-center border-bottom border-2 py-3"
+                        >
+                          <div class="">
+                            <p class="text-info mb-0 fw-semibold">
+                              Abdul Hatem<i class="bi bi-patch-check ms-1"></i
+                              ><i class="bi bi-star-fill ms-1 text-warning"></i>
+                            </p>
+                            <p class="mb-0 text-muted">
+                              Stamford University Bangladesh
+                            </p>
+                            <div class="d-flex gap-1">
+                              <i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-gray-500"></i>
+                            </div>
+                          </div>
+                          <p class="text-muted mb-0">Mirpur , Dhaka</p>
+                          <p
+                            class="rounded px-1 text-muted mb-0"
+                            style="border: 2px solid #8a8f98"
+                          >
+                            100%
+                          </p>
+
+                          <div class="checkbox-wrapper-13">
+                            <input id="c1-13" type="checkbox" checked />
+                          </div>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between align-items-start gap-3 gap-lg-0 align-items-lg-center border-bottom border-2 py-3"
+                        >
+                          <div class="">
+                            <p class="text-info mb-0 fw-semibold">
+                              Abdul Kapa<i class="bi bi-patch-check ms-1"></i
+                              ><i class="bi bi-star-fill ms-1 text-warning"></i>
+                            </p>
+                            <p class="mb-0 text-muted">
+                              Stamford University Bangladesh
+                            </p>
+                            <div class="d-flex gap-1">
+                              <i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                          </div>
+                          <p class="text-muted mb-0">Mirpur , Dhaka</p>
+                          <p
+                            class="rounded px-1 text-muted mb-0"
+                            style="border: 2px solid #8a8f98"
+                          >
+                            100%
+                          </p>
+                          <div class="checkbox-wrapper-13">
+                            <input id="c1-13" type="checkbox" checked />
+                          </div>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between align-items-start gap-3 gap-lg-0 align-items-lg-center border-bottom border-2 py-3"
+                        >
+                          <div class="">
+                            <p class="text-info mb-0 fw-semibold">
+                              Mulla Hatem<i class="bi bi-patch-check ms-1"></i
+                              ><i class="bi bi-star-fill ms-1 text-warning"></i>
+                            </p>
+                            <p class="mb-0 text-muted">
+                              Stamford University Bangladesh
+                            </p>
+                            <div class="d-flex gap-1">
+                              <i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-gray-500"></i
+                              ><i class="bi bi-star-fill text-gray-500"></i>
+                            </div>
+                          </div>
+                          <p class="text-muted mb-0">Mirpur , Dhaka</p>
+                          <p
+                            class="rounded px-1 text-muted mb-0"
+                            style="border: 2px solid #8a8f98"
+                          >
+                            100%
+                          </p>
+                          <div class="checkbox-wrapper-13">
+                            <input id="c1-13" type="checkbox" checked />
+                          </div>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between align-items-start gap-3 gap-lg-0 align-items-lg-center border-bottom border-2 py-3"
+                        >
+                          <div class="">
+                            <p class="text-info mb-0 fw-semibold">
+                              Abdul Hatem<i class="bi bi-patch-check ms-1"></i
+                              ><i class="bi bi-star-fill ms-1 text-warning"></i>
+                            </p>
+                            <p class="mb-0 text-muted">
+                              Stamford University Bangladesh
+                            </p>
+                            <div class="d-flex gap-1">
+                              <i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-gray-500"></i>
+                            </div>
+                          </div>
+                          <p class="text-muted mb-0">Mirpur , Dhaka</p>
+                          <p
+                            class="rounded px-1 text-muted mb-0"
+                            style="border: 2px solid #8a8f98"
+                          >
+                            100%
+                          </p>
+                          <div class="checkbox-wrapper-13">
+                            <input id="c1-13" type="checkbox" checked />
+                          </div>
+                        </div>
+                        <div
+                          class="disabled d-flex justify-content-between align-items-start gap-3 gap-lg-0 align-items-lg-center border-bottom border-2 py-3"
+                        >
+                          <div class="">
+                            <p class="text-info mb-0 fw-semibold">
+                              Abdul Kapa<i class="bi bi-patch-check ms-1"></i
+                              ><i class="bi bi-star-fill ms-1 text-warning"></i>
+                            </p>
+                            <p class="mb-0 text-muted">
+                              Stamford University Bangladesh
+                            </p>
+                            <div class="d-flex gap-1">
+                              <i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                          </div>
+                          <p class="text-muted mb-0">Mirpur , Dhaka</p>
+                          <p
+                            class="rounded px-1 text-muted mb-0"
+                            style="border: 2px solid #8a8f98"
+                          >
+                            100%
+                          </p>
+                          <div class="checkbox-wrapper-13">
+                            <input id="c1-13" type="checkbox" />
+                          </div>
+                        </div>
+                        <div
+                          class="disabled d-flex justify-content-between align-items-start gap-3 gap-lg-0 align-items-lg-center border-bottom border-2 py-3"
+                        >
+                          <div class="">
+                            <p class="text-info mb-0 fw-semibold">
+                              Mulla Hatem<i class="bi bi-patch-check ms-1"></i
+                              ><i class="bi bi-star-fill ms-1 text-warning"></i>
+                            </p>
+                            <p class="mb-0 text-muted">
+                              Stamford University Bangladesh
+                            </p>
+                            <div class="d-flex gap-1">
+                              <i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-warning"></i
+                              ><i class="bi bi-star-fill text-gray-500"></i
+                              ><i class="bi bi-star-fill text-gray-500"></i>
+                            </div>
+                          </div>
+                          <p class="text-muted mb-0">Mirpur , Dhaka</p>
+                          <p
+                            class="rounded px-1 text-muted mb-0"
+                            style="border: 2px solid #8a8f98"
+                          >
+                            100%
+                          </p>
+                          <div class="checkbox-wrapper-13">
+                            <input id="c1-13" type="checkbox" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex justify-content-between align-items-center mt-4"
+                    >
+                      <button class="btn btn-primary">Send SMS</button>
+                      <button class="btn btn-danger border shadow-lg">
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- main content section ends here -->
+          </div>
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+      integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/owl/owl.carousel.min.js"></script>
+  </body>
+</html>

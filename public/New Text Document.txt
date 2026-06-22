@@ -1,0 +1,12 @@
+if ($request->hasFile('ssc_m')) {
+                    $image = $request->file('ssc_m');
+                    $imageName = time() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('Uploads/ssc'), $imageName);
+                    $t_certificate->ssc_c = $imageName;
+                }
+                if ($request->hasFile('hsc_c')) {
+                    $image = $request->file('hsc_c');
+                    $imageName = time() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('Uploads/hsc'), $imageName);
+                    $t_certificate->ssc_c = $imageName;
+                }

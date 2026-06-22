@@ -1,0 +1,66 @@
+/* a global css file */
+
+/* text colors */
+.t-text-gray{
+    color: #727272;
+}
+
+.t-text-primary{
+    color: #81cd1d;
+}
+.t-text-white{
+    color: white;
+}
+
+/* bg colors */
+.t-bg-white{
+    background-color: white;
+}
+.t-bg-primary{
+    background-color: #81cd1d;
+}
+/* btns */
+.t-btn-primary{
+    background-color: #81cd1d;
+    color: white;
+}
+.t-btn-primary:hover{
+    color: white;
+    background-color: #73c903;
+}
+
+/* utils */
+
+.t-line-height{
+    line-height: 1px;
+}
+.its-active {
+    color: #7cb305;
+  }
+  .its-active:hover {
+    color: #7cb305;
+  }
+  .t-w-40{
+    width: 40% !important;
+  }
+
+
+/* form */
+.t-shadow {
+    box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+    padding: 20px 20px;
+    outline: none;
+    border: none;
+    margin: 20px 0px;
+  }
+  .form-control {
+    outline: #7cb305;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .form-control:focus {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+    border-bottom: 2px solid #7cb305;
+    border-left: 2px solid #7cb305;
+    border-right: 2px solid #7cb305;
+  }
