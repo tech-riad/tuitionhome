@@ -56,9 +56,17 @@ return [
             'driver' => 'session',
             'provider' => 'affiliates',
         ],
+        'corporate_partner' => [
+            'driver' => 'session',
+            'provider' => 'corporate_partners',
+        ],
         'a-api' => [
             'driver' => 'passport',
             'provider' => 'affiliates',
+        ],
+        'c-api' => [
+            'driver' => 'passport',
+            'provider' => 'corporate_partners',
         ],
         'p-api' => [
             'driver' => 'passport',
@@ -112,6 +120,10 @@ return [
         'affiliates' => [
             'driver' => 'eloquent',
             'model' => App\Models\AffiliateUser::class,
+        ],
+        'corporate_partners' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\CorporatePartner::class,
         ],
 
         // 'users' => [

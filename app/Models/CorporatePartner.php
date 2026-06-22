@@ -62,4 +62,9 @@ class CorporatePartner extends Authenticatable
         $this->save();
         return true;
     }
+
+    public function get_corporate_partner_unique_id()
+    {
+        return $this->get_affiliate_unique_id();
+    }
 }

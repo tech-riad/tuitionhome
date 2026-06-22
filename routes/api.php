@@ -29,6 +29,7 @@ include ("api/tutorsms.php");
 include ("api/blogpost.php");
 include ("api/payment.php");
 include ("api/affiliate.php");
+include ("api/corporatepartner.php");
 include ("api/membership.php");
 include ("api/verify.php");
 include ("api/boost.php");
