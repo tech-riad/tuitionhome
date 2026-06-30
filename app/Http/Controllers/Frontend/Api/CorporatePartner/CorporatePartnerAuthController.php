@@ -9,6 +9,7 @@ use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash as FacadesHash;
 use phpseclib3\Crypt\Hash;
 
@@ -72,6 +73,95 @@ class CorporatePartnerAuthController extends Controller
         ];
 
         return response()->json(['status'=>true,'message'=>'Registration Successfully!','data' =>$data]);
+
+    }
+    public function VerifyPhone(Request $request)
+    {
+
+        try{
+
+            $validator = Validator()->make($request->all(),[
+                'otp' => 'required|numeric',
+            ]);
+            if ($validator->fails())
+            {
+                return response()->json(['status'=>false,'error'=>$validator->errors()]);
+            }
+            $check_Otp = CorporatePartner::where('phone',$request->phone)->first();
+            if ($check_Otp->phone_verified_at)
+            {
+                return response()->json(['status'=>false,'error'=>'your Phone Number Already Verified! ']);
+            }
+             if($check_Otp->otp && Carbon::now()->lt($check_Otp->otp_expiry))
+                {
+                if ($check_Otp->otp == $request->otp)
+                {
+                    $check_Otp->phone_verified_at =now();
+                    $check_Otp->save();
+
+                    // $token = $this->createCustomToken($check_Otp, 'affiliates');
+
+
+                    return response()->json(['status'=>true,'message'=>'Phone verified successfully!','id'=>$check_Otp->id]);
+                }else
+                {
+                    return response()->json(['status'=>false,'error'=>'your otp is invalid!']);
+                }
+            }else
+            {
+                return $this->resposeError('Your Otp is expired! resend again','');
+            }
+
+
+
+        }catch(Exception $e)
+        {
+            return $this->resposeError('',$e->getMessage());
+        }
+
+    }
+    public function login(Request $request)
+    {
+        try {
+            $validator = Validator()->make($request->all(), [
+                'phone'    => 'required',
+                'password' => 'required|min:6',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'message' => $validator->errors()->first()]);
+            }
+
+            $credentials = [
+                'password' => $request->password,
+            ];
+
+            if (is_numeric($request->get('phone'))) {
+                $credentials['phone'] = $request->phone;
+            } elseif (filter_var($request->get('phone'), FILTER_VALIDATE_EMAIL)) {
+                $credentials['email'] = $request->phone;
+            } else {
+                return response()->json(['status' => false, 'message' => 'Invalid phone number or email format']);
+            }
+
+            if (Auth::guard('corporate_partner')->attempt($credentials)) {
+                $corporate_partner = Auth::guard('corporate_partner')->user();
+
+                if($corporate_partner->phone_verified_at != null)
+                {
+                    $token = $this->createCustomToken($corporate_partner, 'corporate_partners');
+                    return response()->json(['status' => true, 'message' => 'Login Successfully!', 'token' => $token, 'user' => $corporate_partner]);
+                }else
+                {
+                 return response()->json(['status'=>false,'message'=>'Please verified your phone']);
+                }
+
+            } else {
+                return response()->json(['status' => false, 'message' => 'Username or password invalid']);
+            }
+        } catch (Exception $e) {
+            return $this->resposeError('', $e->getMessage());
+        }
 
     }
 

@@ -31,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
             'parents' => 'parents user Type',
             'tutors' => 'tutors user Type',
             'affiliates' => 'tutors user Type',
+            'corporate_partners' => 'corporate partners user Type',
             'inactive_tutors' => 'inactive tutors user Type',
         ]);
 
