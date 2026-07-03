@@ -25,7 +25,7 @@ class CreateUnverifiedCorporatePartnersTable extends Migration
             $table->timestamp('otp_expiry')->nullable();
             $table->timestamp('last_otp_resend')->nullable();
             $table->string('otp')->nullable();
-            $table->string('otp_resend_count')->nullable();
+            $table->integer('otp_resend_count')->default(0);
             $table->timestamps();
         });
     }

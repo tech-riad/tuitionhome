@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash as FacadesHash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -177,6 +178,109 @@ class CorporatePartnerAuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'error' => 'Internal Server Error'], 500);
         }
+    }
+    public function verifyOtpAndSave(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required|exists:unverified_corporate_partners,phone',
+                'otp'   => 'required|numeric',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $unverifiedCorporatePartner = UnverifiedCorporatePartner::where('phone', $request->phone)->first();
+
+            if (!$unverifiedCorporatePartner || $unverifiedCorporatePartner->otp !== $request->otp || $unverifiedCorporatePartner->otp_expiry < now()) {
+                return response()->json(['status' => false, 'error' => 'Invalid OTP']);
+            }
+
+            $corporatePartner = new CorporatePartner();
+            $corporatePartner->name               = $unverifiedCorporatePartner->name;
+            $corporatePartner->phone              = $unverifiedCorporatePartner->phone;
+            $corporatePartner->email              = $unverifiedCorporatePartner->email;
+            $corporatePartner->gender             = $unverifiedCorporatePartner->gender;
+            $corporatePartner->otp                = $unverifiedCorporatePartner->otp;
+            $corporatePartner->otp_expiry         = $unverifiedCorporatePartner->otp_expiry;
+            $corporatePartner->role_id            = $unverifiedCorporatePartner->role_id;
+            $corporatePartner->password           = $unverifiedCorporatePartner->password;
+            $corporatePartner->login_at           = now();
+            $corporatePartner->phone_verified_at  = now();
+            $corporatePartner->save();
+            $corporatePartner->get_corporate_partner_unique_id();
+
+
+
+            $token = $this->createCustomToken($corporatePartner, 'corporate_partners');
+
+            $data = [
+                "id" => $corporatePartner->id,
+                "token" => $token,
+            ];
+
+
+            return response()->json(['status' => true, 'message' => 'Your profile registration has been verified successfully.', 'data' => $data]);
+
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => 'Internal Server Error'], 500);
+        }
+    }
+    public function resendRegisterOtp(Request $request)
+    {
+        try {
+            $phone = $request->phone;
+            $unverifiedCorporatePartner = UnverifiedCorporatePartner::where('phone',$phone)->first();
+
+            if ($unverifiedCorporatePartner) {
+                $otpRequestLimit = 1;
+                $otpRequestTimeFrame = 120;
+
+                $cacheKey = 'otp_request_count_' . $unverifiedCorporatePartner->phone;
+                $otpRequestCount = Cache::get($cacheKey, 0);
+
+                if ($otpRequestCount >= $otpRequestLimit) {
+                    return $this->resposeError('You can only request one OTP every 2 minutes. Please try again later.', '');
+                }
+
+
+                Cache::put($cacheKey, $otpRequestCount + 1, now()->addSeconds($otpRequestTimeFrame));
+
+
+                $otpResendLimit = 3;
+                $otpResendTimeFrame = 24 * 60;
+
+                if ($unverifiedCorporatePartner->otp_resend_count >= $otpResendLimit && Carbon::now()->diffInMinutes($unverifiedCorporatePartner->last_otp_resend) < $otpResendTimeFrame) {
+                    return $this->resposeError('You have reached the maximum OTP resend limit for today. Please try again after 24 hours.Or Contact with Tuition Home Admin Over The Phone', '');
+                }
+
+
+                $unverifiedCorporatePartner->increment('otp_resend_count');
+                $unverifiedCorporatePartner->last_otp_resend = now();
+                $unverifiedCorporatePartner->save();
+
+                $expiry = Carbon::now()->addMinutes(10);
+                $dateTime = new DateTime($expiry);
+                $minutes = $dateTime->format('h:i');
+
+                $unverifiedCorporatePartner->otp = rand(1234, 9999);
+                $unverifiedCorporatePartner->otp_expiry = $expiry;
+                $unverifiedCorporatePartner->save();
+
+                $resend_otp_information = [
+                    'corporate_partner_phone' => $unverifiedCorporatePartner->phone,
+                ];
+
+                return $this->resposeSuccess('Otp Resend Successfully', $resend_otp_information);
+            } else {
+                return $this->resposeError('User Not Found!', '');
+            }
+        } catch (Exception $e) {
+            return $this->resposeError('An error occurred while resending OTP.', '');
+        }
+
     }
 
 }
