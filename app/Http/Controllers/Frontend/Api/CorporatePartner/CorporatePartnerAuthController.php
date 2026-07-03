@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Api\CorporatePartner;
 
 use App\Http\Controllers\Controller;
 use App\Models\CorporatePartner;
+use App\Models\UnverifiedCorporatePartner;
 use App\Services\AdnSmsService;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
@@ -11,7 +12,8 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash as FacadesHash;
-use phpseclib3\Crypt\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class CorporatePartnerAuthController extends Controller
 {
@@ -30,50 +32,6 @@ class CorporatePartnerAuthController extends Controller
         $token->token->save();
 
         return $token->accessToken;
-    }
-    public function register(Request $request)
-    {
-        $validator = Validator()->make($request->all(),[
-            'name' => 'required',
-            'email' => 'nullable',
-            'phone'=> 'required|regex:/(01)[0-9]{9}/|unique:corporate_partners',
-            'password' => 'required|min:8',
-            'confirm_password' =>'same:password'
-        ]);
-        if ($validator->fails())
-        {
-            return response()->json(['status'=>false,'error'=>$validator->errors()]);
-        }
-
-        $expiry = Carbon::now()->addMinutes(10);
-        $dateTime = new DateTime($expiry);
-        $minutes = $dateTime->format('h:i');
-
-
-        $corporatePartner = new CorporatePartner();
-        $corporatePartner->name = $request->name;
-        $corporatePartner->phone = $request->phone;
-        $corporatePartner->email = $request->email;
-        $corporatePartner->gender = $request->gender;
-        $corporatePartner->password = FacadesHash::make($request->password);
-        $corporatePartner->otp = rand(1234,9999);
-        $corporatePartner->otp_expiry=$expiry;
-        $corporatePartner->save();
-
-        $corporatePartner->get_corporate_partner_unique_id();
-
-
-        $data = [
-
-            "id" => $corporatePartner->id,
-            "name" => $corporatePartner->name,
-            "phone" => $corporatePartner->phone,
-            "otp" => $corporatePartner->otp,
-
-        ];
-
-        return response()->json(['status'=>true,'message'=>'Registration Successfully!','data' =>$data]);
-
     }
     public function VerifyPhone(Request $request)
     {
@@ -163,6 +121,62 @@ class CorporatePartnerAuthController extends Controller
             return $this->resposeError('', $e->getMessage());
         }
 
+    }
+
+    public function register(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name'             => 'required',
+                'phone'            => 'required|regex:/(01)[0-9]{9}/|unique:unverified_corporate_partners,phone|unique:unverified_corporate_partners,phone',
+                'email'            => 'required|email|unique:unverified_corporate_partners,email|unique:unverified_corporate_partners,email',
+                'gender'           => 'required',
+                'password'         => 'required|min:6',
+                'confirm_password' => 'required|same:password',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $registeredCorporatePartner = CorporatePartner::where('phone', $request->phone)->first();
+
+            if ($registeredCorporatePartner) {
+                return response()->json(['status' => true, 'message' => 'You Are Already Registered Please Login!']);
+            }
+
+            $existingUnverifiedCorporatePartner = UnverifiedCorporatePartner::where('phone', $request->phone)->first();
+
+            if ($existingUnverifiedCorporatePartner) {
+                return response()->json(['status' => true, 'message' => 'Corporate Partner Already Exists Please Verify Your Phone!']);
+            }
+
+            $unverifiedCorporatePartner = new UnverifiedCorporatePartner();
+            $expiry = Carbon::now()->addMinutes(10);
+
+            $unverifiedCorporatePartner->otp          = rand(1234, 9999);
+            $unverifiedCorporatePartner->otp_expiry   = $expiry;
+            $unverifiedCorporatePartner->name         = $request->name;
+            $unverifiedCorporatePartner->phone        = $request->phone;
+            $unverifiedCorporatePartner->email        = $request->email;
+            $unverifiedCorporatePartner->gender       = $request->gender;
+            $unverifiedCorporatePartner->role_id      = 3;
+            $unverifiedCorporatePartner->password     = Hash::make($request->password);
+            $unverifiedCorporatePartner->save();
+
+                $data = [
+
+                    "id" => $unverifiedCorporatePartner->id,
+                    "name" => $unverifiedCorporatePartner->name,
+                    "phone" => $unverifiedCorporatePartner->phone,
+                    "otp" => $unverifiedCorporatePartner->otp,
+
+                ];
+
+            return response()->json(['status' => true, 'message' => 'Corporate Partner Registration Successful!', 'data' => $data]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => 'Internal Server Error'], 500);
+        }
     }
 
 }
