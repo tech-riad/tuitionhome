@@ -6,6 +6,7 @@ use App\Models\Tutor;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class ClearLog extends Command
 {
@@ -58,6 +59,29 @@ class ClearLog extends Command
             'boost_package' => null,
             'boost_expire' => null,
         ]);
+
+        $tutorIds = DB::table('tutor_status_notes')
+        ->where('changed_by', 'By Tutor Own')
+        ->distinct()
+        ->pluck('tutor_id');
+
+        // dd($tutorIds);
+
+        foreach ($tutorIds as $tutorId) {
+
+            $latestIds = DB::table('tutor_status_notes')
+                ->where('tutor_id', $tutorId)
+                ->where('changed_by', 'By Tutor Own')
+                ->orderByDesc('id')
+                ->limit(2)
+                ->pluck('id');
+
+            DB::table('tutor_status_notes')
+                ->where('tutor_id', $tutorId)
+                ->where('changed_by', 'By Tutor Own')
+                ->whereNotIn('id', $latestIds)
+                ->delete();
+        }
 
         return 0;
     }
