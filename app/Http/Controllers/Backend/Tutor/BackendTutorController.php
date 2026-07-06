@@ -2309,6 +2309,7 @@ public function updateStatus(Request $request, $id)
     public function verifyTutor($tutor,Request $request)
     {
         $tutor= Tutor::where('id',$tutor)->firstOrFail();
+
         if($request->transction_id){
 
             $updatedRows = VerificationRequest::where('tutor_id', $tutor->id)->whereNull('payment_status')->update([
@@ -2321,7 +2322,7 @@ public function updateStatus(Request $request, $id)
             $tutor->is_verified = 1;
             $tutor->verified_by = auth()->user()->id;
             $tutor->verify_date = now();
-            $tutor->save();
+            $tutor->update();
 
 
             $transction = new ApplicationPayment();
@@ -2332,7 +2333,7 @@ public function updateStatus(Request $request, $id)
             $transction->payment_method      = $request->payment_method ?? "Bkash";
             $transction->service_category    = "verification payment";
             $transction->save();
-            return redirect()->back()->withMessage('Success! tutor marked as premium tutor successfully');
+            return redirect()->back()->withMessage('Success! tutor marked as verified tutor successfully');
 
 
         }else{
@@ -2340,8 +2341,8 @@ public function updateStatus(Request $request, $id)
             $tutor->is_internal_verify = 1;
             $tutor->verified_by = auth()->user()->id;
             $tutor->verify_date = now();
-            $tutor->save();
-            return redirect()->route('tutor.index')->withMessage('Success! tutor verified successfully');
+            $tutor->update();
+            return redirect()->back()->withMessage('Success! tutor verified successfully');
 
 
         }
@@ -2804,7 +2805,7 @@ public function updateStatus(Request $request, $id)
     public function getAllTutor(Request $request)
     {
         $input = 1000; // pagination limit
-    
+
         // Get tutors (without AVG) with ID between 1 and 100
         $tutors = Tutor::with([
             'tutor_personal_info',
@@ -2822,7 +2823,7 @@ public function updateStatus(Request $request, $id)
         ->inRandomOrder()// IDs from 1 to 100
         ->orderBy('id', 'desc')
         ->paginate($input);
-    
+
         return $tutors;
     }
 

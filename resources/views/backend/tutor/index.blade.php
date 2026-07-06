@@ -596,16 +596,10 @@
 
                                 @endif
 
+                                
 
-                                @if ($tutor->is_internal_verify == 0)
-                                <form style="display:inline" id="verifyTutor{{ $tutor->id }}"
-                                    action="{{ route('admin.tutor.verify', ['tutor' => $tutor->id]) }}" method="POST">
-                                    @csrf
-                                    <button id="{{ $tutor->id }}" type="button" class="btn btn-sm btn-primary"
-                                        onclick="verifyTutor(this, this.id)">Verify</button>
-                                </form>
-
-                                @endif
+                                
+                                
 
                                 <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
                                     data-bs-toggle="modal" data-bs-target="#tutorNoteModal">

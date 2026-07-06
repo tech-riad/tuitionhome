@@ -18,6 +18,7 @@
         padding: 10px;
         border-radius: 10px;
     }
+
 </style>
 <div class="box-title bg-white" style="color: black">
     <div class="row">
@@ -385,6 +386,20 @@
                     Make Verify
                 </button>
             </div>
+
+            <div class="card-body">
+                @if ($tutor->is_internal_verify == 0)
+                <form  id="verifyTutor{{ $tutor->id }}"
+                    action="{{ route('admin.tutor.verify', ['tutor' => $tutor->id]) }}" method="POST">
+                    @csrf
+                    <button id="{{ $tutor->id }}" type="button" class="btn btn-block btn-success"
+                        onclick="verifyTutor(this, this.id)">Internal Verify</button>
+                </form>
+                @elseif($tutor->is_internal_verify == 1)
+                <button type="button" class="btn btn-block btn-danger">Internal Verify complete</button>
+
+                @endif
+            </div>
             <div class="card-body">
                 <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
                     data-bs-target="#boostModal_{{$tutor->id}}">
@@ -428,8 +443,8 @@
                                 <label for="reviewText" class="form-label fs-5 text-dark" style="font-weight: 500;">
                                     Describe Your Review in Detail
                                 </label>
-                                <textarea class="form-control rounded-3 shadow-none" id="reviewText" name="description" rows="4"
-                                    required minlength="20" placeholder="Write your review here..."></textarea>
+                                <textarea class="form-control rounded-3 shadow-none" id="reviewText" name="description"
+                                    rows="4" required minlength="20" placeholder="Write your review here..."></textarea>
                             </div>
                         </div>
 
@@ -763,14 +778,12 @@
                                 <select name="boost_package" class="form-select rounded-3 shadow-none select2"
                                     aria-label="Default select" id="boost_package">
                                     <option value="">Select Package Name</option>
-                                    <option  value="1">1 Month
+                                    <option value="1">1 Month
                                     </option>
                                     <option value="3">3 Months
                                     </option>
-                                    <option
-                                        value="6">6 Months</option>
-                                    <option
-                                        value="12">12 Months</option>
+                                    <option value="6">6 Months</option>
+                                    <option value="12">12 Months</option>
                                 </select>
                             </div>
 
@@ -2160,6 +2173,8 @@ $tutor_note_desc = App\Models\TutorNote::where('tutor_id',$tutor->id)->latest('c
 @endsection
 
 @push('page_scripts')
+@include('backend.tutor.js.swtdeleteMethod_js')
+
 
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
@@ -2214,40 +2229,41 @@ $tutor_note_desc = App\Models\TutorNote::where('tutor_id',$tutor->id)->latest('c
             }
 
             $.ajax({
-            url: "/admin/send-tutor-reviews",
-            type: "POST",
-            data: formData,
-            success: function (response) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Success!",
-                    text: response.message,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
+                url: "/admin/send-tutor-reviews",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
 
-                location.reload();
+                    location.reload();
 
-                $("#reviewModal").modal("hide");
-                $("#reviewForm")[0].reset();
-                highlightStars(0);
-            },
-            error: function (xhr) {
-                let errorMessage = "Something went wrong!";
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
+                    $("#reviewModal").modal("hide");
+                    $("#reviewForm")[0].reset();
+                    highlightStars(0);
+                },
+                error: function (xhr) {
+                    let errorMessage = "Something went wrong!";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: errorMessage
+                    });
                 }
-
-                Swal.fire({
-                    icon: "error",
-                    title: "Error!",
-                    text: errorMessage
-                });
-            }
-        });
+            });
 
         });
     });
+
 </script>
 
 @include('data_tables.data_table_js')
