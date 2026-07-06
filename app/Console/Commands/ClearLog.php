@@ -60,12 +60,12 @@ class ClearLog extends Command
             'boost_expire' => null,
         ]);
 
-        $tutorIds = DB::table('tutor_status_notes')
-        ->where('changed_by', 'By Tutor Own')
-        ->distinct()
-        ->pluck('tutor_id');
+    DB::table('tutor_status_notes')
+    ->where('changed_by', 'By Tutor Own')
+    ->orderBy('tutor_id')
+    ->chunkById(1000, function ($rows) {
 
-        // dd($tutorIds);
+        $tutorIds = $rows->pluck('tutor_id')->unique();
 
         foreach ($tutorIds as $tutorId) {
 
@@ -82,6 +82,7 @@ class ClearLog extends Command
                 ->whereNotIn('id', $latestIds)
                 ->delete();
         }
+    });
 
         return 0;
     }
