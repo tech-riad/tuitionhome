@@ -41,6 +41,7 @@ class CorporatePartnerAuthController extends Controller
 
             $validator = Validator()->make($request->all(),[
                 'otp' => 'required|numeric',
+                'phone' => 'required|numeric',
             ]);
             if ($validator->fails())
             {
@@ -220,8 +221,9 @@ class CorporatePartnerAuthController extends Controller
                 "token" => $token,
             ];
 
+            $unverifiedCorporatePartner->delete();
 
-            return response()->json(['status' => true, 'message' => 'Your profile registration has been verified successfully.', 'data' => $data]);
+            return response()->json(['status' => true, 'message' => 'Your corporate partner profile registration has been verified successfully.', 'data' => $data]);
 
 
         } catch (\Exception $e) {
@@ -271,6 +273,7 @@ class CorporatePartnerAuthController extends Controller
 
                 $resend_otp_information = [
                     'corporate_partner_phone' => $unverifiedCorporatePartner->phone,
+                    'otp' => $unverifiedCorporatePartner->otp,
                 ];
 
                 return $this->resposeSuccess('Otp Resend Successfully', $resend_otp_information);
@@ -282,5 +285,149 @@ class CorporatePartnerAuthController extends Controller
         }
 
     }
+
+
+    public function checkPhone(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required|regex:/(01)[0-9]{9}/',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $phone = $request->phone;
+
+            $corporatePartnerPasswordReset = CorporatePartner::where('phone', $phone)->first();
+
+            if ($corporatePartnerPasswordReset === null) {
+                return response()->json(['status' => false, 'message' => 'User Not Found!']);
+            } elseif ($corporatePartnerPasswordReset->phone !== $phone) {
+                return response()->json(['status' => false, 'message' => 'Invalid phone number for the user!']);
+            } else {
+                $otpRequestLimit = 1;
+                $otpRequestTimeFrame = 120;
+
+                $cacheKey = 'otp_request_count_' . $corporatePartnerPasswordReset->phone;
+                $otpRequestCount = Cache::get($cacheKey, 0);
+
+                if ($otpRequestCount >= $otpRequestLimit) {
+                    return response()->json(['status' => false, 'message' => 'You can only request one OTP every 2 minutes. Please try again later.']);
+                }
+
+                Cache::put($cacheKey, $otpRequestCount + 1, now()->addSeconds($otpRequestTimeFrame));
+
+                $otpResendLimit = 3;
+                $otpResendTimeFrame = 24 * 60;
+
+                if ($corporatePartnerPasswordReset->otp_resend_count >= $otpResendLimit && Carbon::now()->diffInMinutes($corporatePartnerPasswordReset->last_otp_resend) < $otpResendTimeFrame) {
+                    return $this->resposeError('You have reached the maximum OTP resend limit for today. Please try again after 24 hours. Or contact TuitionHome Admin over the phone', '');
+                }
+
+                $phone_otp = rand(1234, 9999);
+                $otpExpiry = now()->addMinutes(10);
+                $corporatePartnerPasswordReset->otp = $phone_otp;
+                $corporatePartnerPasswordReset->otp_expiry = $otpExpiry;
+
+                // $this->sendOtpToUser($request->phone, 'Your password recovery OTP for "TuitionHome" is: ' . $phone_otp, $corporatePartnerPasswordReset->id);
+
+                // Update OTP resend count and timestamp
+                $corporatePartnerPasswordReset->otp_resend_count += 1;
+                $corporatePartnerPasswordReset->last_otp_resend = now();
+                $corporatePartnerPasswordReset->save();
+
+                return response()->json(['status' => true, 'message' => 'OTP sent successfully!', 'phone' => $corporatePartnerPasswordReset->phone,'otp' => $corporatePartnerPasswordReset->otp]);
+            }
+        } catch (ValidationException $e) {
+            return response()->json(['status' => false, 'error' => $e->errors()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+     public function updatePassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'corporate_partner_id' => 'required',
+                'new_password'         => 'required|min:6',
+                'confirm_password'     => 'required|same:new_password',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $current_user = CorporatePartner::find($request->corporate_partner_id);
+
+            if ($current_user) {
+                if ($current_user->otp_expiry > $current_user->phone_varified_at ){
+                    $current_user->password = Hash::make($request->new_password);
+                    $current_user->save();
+
+                    return response()->json(['status' => true, 'message' => 'Password changed successfully!']);
+
+            }
+            else{
+                return response()->json(['status' => false, 'message' => 'verified phone first!']);
+            }
+        }
+
+        } catch (Exception $e) {
+
+        }
+    }
+
+    public function verifyOtpAndSavePassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required|exists:corporate_partners,phone',
+                'phone_otp'   => 'required|numeric',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $corporate_partner = CorporatePartner::where('phone',$request->phone)->first();
+            if ($corporate_partner) {
+                if ($corporate_partner->otp && Carbon::now()->lt($corporate_partner->otp_expiry)) {
+                    if ($corporate_partner->otp == $request->phone_otp) {
+                        $corporate_partner->phone_verified_at = now();
+                        $corporate_partner->save();
+
+                        $data = [
+                            'corporate_partner_id' => $corporate_partner->id,
+                            'corporate_partner_phone' => $corporate_partner->phone,
+                            'otp' => $corporate_partner->otp,
+                        ];
+                        return response()->json(['status' => true, 'message' => 'Phone verified successfully!', 'data' => $data]);
+                    } else {
+                        return $this->resposeError('Your OTP is invalid!', '');
+                    }
+                } else {
+                    return $this->resposeError('Your OTP is expired! Resend OTP and try again.', '');
+                }
+            } else {
+                return $this->resposeError('User not found!', '');
+            }
+            // $corporate_partner_info = [
+            //     'corporate_partner_id' => $corporate_partner->id,
+            //     'corporate_partner_phone' => $corporate_partner->phone,
+            // ];
+            // return $this->resposeSuccess('Update your password now', $corporate_partner_info);
+
+
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json(['status' => false, 'error' => 'Internal Server Error'], 500);
+        }
+
+    }
+
+
 
 }

@@ -9,14 +9,16 @@ Route::post('/corporate-partner/login',[CorporatePartnerAuthController::class,'l
 
 
 Route::post('/corporate-partner/verify-phone',[CorporatePartnerAuthController::class, 'VerifyPhone']);
-Route::post('/corporate-partner/resend/otp',[CorporatePartnerAuthController::class, 'resendRegisterOtp']);
+// Route::post('/corporate-partner/resend/otp',[CorporatePartnerAuthController::class, 'resendRegisterOtp']);
 Route::post('/corporate-partner/change-phone',[CorporatePartnerAuthController::class, 'phoneChange']);
 
 
 Route::post('/corporate-partner/phone-verified',[CorporatePartnerAuthController::class,'verifyOtpAndSave']);
 Route::post('/corporate-partner/register/resend/otp',[CorporatePartnerAuthController::class,'resendRegisterOtp']);
 
-
+Route::post('/corporate-partner/forgot-password',[CorporatePartnerAuthController::class,'checkPhone']);
+Route::post('/corporate-partner/update-password',[CorporatePartnerAuthController::class,'updatePassword']);
+Route::post('/corporate-partner/phone-verify',[CorporatePartnerAuthController::class,'verifyOtpAndSavePassword']);
 
 Route::group( ['middleware' => ['auth:c-api','scopes:corporate_partners'] ],function(){
 
