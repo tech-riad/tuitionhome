@@ -29,5 +29,12 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'r2' => [
+        'key' => env('R2_ACCESS_KEY'),
+        'secret' => env('R2_SECRET_KEY'),
+        'bucket' => env('R2_BUCKET'),
+        'endpoint' => env('R2_ENDPOINT'),
+        'public_url' => env('R2_PUBLIC_URL'),
+    ],
 
 ];

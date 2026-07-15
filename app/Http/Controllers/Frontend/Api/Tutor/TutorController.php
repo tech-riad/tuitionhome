@@ -40,6 +40,7 @@ use App\Models\VideoTutoial;
 use App\Models\JobOffer;
 use App\Models\TutorCertificate;
 use App\Services\AdnSmsService;
+use App\Services\CloudflareR2Service;
 use App\Traits\ApiResponse;
 use App\Transformers\JobOfferResource;
 use App\Transformers\TutorResource;
@@ -96,17 +97,17 @@ class TutorController extends Controller
         }
 
     }
-    
+
     public function latLongSave(Request $request)
     {
         $lat  = $request->lat;
         $long = $request->long;
-    
+
         Tutor::where('id', Auth::id())->update([
             'lat'  => $lat,
             'long' => $long,
         ]);
-    
+
         return response()->json([
             'status' => true,
             'message' => 'Location updated successfully'
@@ -117,7 +118,7 @@ class TutorController extends Controller
         $tutor = Tutor::where('id', Auth::id())
             ->select('lat','long')
             ->first();
-    
+
         return response()->json([
             'status' => true,
             'data' => $tutor
@@ -207,80 +208,80 @@ class TutorController extends Controller
     public function getProfilePicture($id)
     {
         $tutor = Tutor::where('unique_id', $id)->first();
-    
+
         if (!$tutor || !$tutor->image) {
             return response()->json([
                 'error' => 'Tutor or image not found'
             ], 404);
         }
-    
+
         $imagePath = public_path('storage/tutor-images/' . $tutor->image);
-    
+
         if (!file_exists($imagePath)) {
             return response()->json([
                 'error' => 'Image file not found'
             ], 404);
         }
-    
+
         /*
         |--------------------------------------------------------------------------
         | Base64 Image
         |--------------------------------------------------------------------------
         */
-    
+
         $imageContent = file_get_contents($imagePath);
         $base64Image = base64_encode($imageContent);
-    
+
         /*
         |--------------------------------------------------------------------------
         | Detect Background Color
         |--------------------------------------------------------------------------
         */
-    
+
         $imageInfo = getimagesize($imagePath);
-    
+
         switch ($imageInfo['mime']) {
-    
+
             case 'image/jpeg':
                 $image = imagecreatefromjpeg($imagePath);
                 break;
-    
+
             case 'image/png':
                 $image = imagecreatefrompng($imagePath);
                 break;
-    
+
             case 'image/gif':
                 $image = imagecreatefromgif($imagePath);
                 break;
-    
+
             default:
                 return response()->json([
                     'error' => 'Unsupported image type'
                 ], 400);
         }
-    
+
         /*
         |--------------------------------------------------------------------------
         | Get Top Left Pixel Color
         |--------------------------------------------------------------------------
         */
-    
+
         $rgb = imagecolorat($image, 5, 5);
-    
+
         $r = ($rgb >> 16) & 0xFF;
         $g = ($rgb >> 8) & 0xFF;
         $b = $rgb & 0xFF;
-    
+
         $hexColor = sprintf("#%02x%02x%02x", $r, $g, $b);
-    
+
         imagedestroy($image);
-    
+
         /*
         |--------------------------------------------------------------------------
         | Response
         |--------------------------------------------------------------------------
         */
-    
+
         return response()->json([
             'base64Image' => $base64Image,
             'background_color' => $hexColor,
@@ -1138,6 +1139,83 @@ class TutorController extends Controller
 
 
     }
+
+    // public function credentialStore(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'tutor_id' => 'required',
+    //             'ssc_c'              => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'ssc_m'              => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'hsc_c'              => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'hsc_m'              => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'nid'                => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'university_c'       => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'diploma_c'          => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'post_graduation_c'  => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'cv'                 => 'mimes:jpg,jpeg,png,bmp|max:200',
+    //             'others'             => 'mimes:jpg,jpeg,png|max:200',
+    //         ]);
+
+    //         if ($validator->fails()) {
+    //             return response()->json(['status' => false, 'error' => $validator->errors()]);
+    //         }
+
+    //         // dd($request->all());
+    //         $tutor_id = $request->input('tutor_id');
+
+    //         $filePaths = [];
+
+    //         $fields = ['ssc_c', 'ssc_m', 'hsc_c', 'hsc_m', 'nid', 'university_c', 'diploma_c', 'post_graduation_c', 'cv', 'others'];
+    //         foreach ($fields as $field) {
+    //             if ($request->hasFile($field)) {
+    //                 $file = $request->file($field);
+    //                 $fileName = $tutor_id .rand(1234,9999). time() . '.' . $file->getClientOriginalExtension();
+    //                 $file->storeAs('public/tutor-certificate', $fileName);
+    //                 $filePaths[$field] = $fileName;
+
+    //                 $logImage = new TutorLog();
+    //                 $logImage->tutor_id    = $tutor_id;
+    //                 $logImage->{$field}    = $fileName;
+    //                 $logImage->edited_user = $tutor_id;
+    //                 $logImage->save();
+
+    //                 $file->storeAs('public/log-certificate-images', $fileName);
+    //                 }
+    //         }
+
+    //         $data = array_merge(['tutor_id' => $tutor_id], $filePaths);
+
+    //         TutorCertificate::updateOrCreate(['tutor_id' => $tutor_id], $data);
+    //         $tutor_update = TutorPersonalInfo::where('tutor_id',$tutor_id)->first();
+    //         $tutor_update->pic = 1;
+    //         $tutor_update->update();
+
+
+    //         return response()->json(['message' => 'Files uploaded successfully']);
+    //     } catch (ModelNotFoundException $e) {
+    //         return response()->json(['error' => 'Model not found']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()]);
+    //     }
+    // }
+
+    // public function credentialGet()
+    // {
+    //     try {
+    //         $tutor_id = auth()->user()->id;
+    //         $credentials = TutorCertificate::where('tutor_id', $tutor_id)->first();
+
+    //         if ($credentials) {
+    //             return response()->json(['credentials' => $credentials]);
+    //         } else {
+    //             return response()->json(['error' => 'Credentials not found'], 404);
+    //         }
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
+
     public function credentialStore(Request $request)
     {
         try {
@@ -1161,16 +1239,43 @@ class TutorController extends Controller
 
             // dd($request->all());
             $tutor_id = $request->input('tutor_id');
+            // dd($tutor_id);
 
             $filePaths = [];
 
+            $r2 = new \App\Services\CloudflareR2Service();
+
+            $fields = [
+                'ssc_c',
+                'ssc_m',
+                'hsc_c',
+                'hsc_m',
+                'nid',
+                'university_c',
+                'diploma_c',
+                'post_graduation_c',
+                'cv',
+                'others'
+            ];
+
             $fields = ['ssc_c', 'ssc_m', 'hsc_c', 'hsc_m', 'nid', 'university_c', 'diploma_c', 'post_graduation_c', 'cv', 'others'];
+
             foreach ($fields as $field) {
+
                 if ($request->hasFile($field)) {
+                    // dd($fields);
+
                     $file = $request->file($field);
-                    $fileName = $tutor_id .rand(1234,9999). time() . '.' . $file->getClientOriginalExtension();
-                    $file->storeAs('public/tutor-certificate', $fileName);
+
+                    $fileName = $tutor_id . rand(1234,9999) . time() . '.' . $file->getClientOriginalExtension();
+
+                    // Upload to R2
+                    $r2->upload($file, 'tutor-certificate/'.$fileName);
+
+                    // DB তে শুধু filename save হবে
                     $filePaths[$field] = $fileName;
+
+                    // dd($filePaths);
 
                     $logImage = new TutorLog();
                     $logImage->tutor_id    = $tutor_id;
@@ -1178,8 +1283,9 @@ class TutorController extends Controller
                     $logImage->edited_user = $tutor_id;
                     $logImage->save();
 
-                    $file->storeAs('public/log-certificate-images', $fileName);
-                    }
+                    // Log Folder
+                    $r2->upload($file, 'log-certificate-images/'.$fileName);
+                }
             }
 
             $data = array_merge(['tutor_id' => $tutor_id], $filePaths);
@@ -1197,23 +1303,77 @@ class TutorController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-
     public function credentialGet()
     {
         try {
+
             $tutor_id = auth()->user()->id;
+
             $credentials = TutorCertificate::where('tutor_id', $tutor_id)->first();
 
-            if ($credentials) {
-                return response()->json(['credentials' => $credentials]);
-            } else {
-                return response()->json(['error' => 'Credentials not found'], 404);
+            if (!$credentials) {
+                return response()->json([
+                    'error' => 'Credentials not found'
+                ], 404);
             }
+
+            $fields = [
+                'ssc_c',
+                'ssc_m',
+                'hsc_c',
+                'hsc_m',
+                'nid',
+                'university_c',
+                'diploma_c',
+                'post_graduation_c',
+                'cv',
+                'others'
+            ];
+
+            foreach ($fields as $field) {
+
+                if (!empty($credentials->$field)) {
+
+                    $credentials->$field = url('storage/tutor-certificate/' . $credentials->$field);
+
+                }
+
+            }
+
+            return response()->json([
+                'credentials' => $credentials
+            ]);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+
         }
     }
+    public function viewf($file)
+    {
+        try {
 
+            $r2 = new CloudflareR2Service();
+
+            $object = $r2->getObject('tutor-certificate/'.$file);
+
+            return response(
+                $object['Body']->getContents(),
+                200,
+                [
+                    'Content-Type'   => $object['ContentType'],
+                    'Content-Length' => $object['ContentLength'],
+                    'Cache-Control'  => 'public, max-age=31536000',
+                ]
+            );
+
+        } catch (\Exception $e) {
+            abort(404);
+        }
+    }
     public function getTutor($tutorId)
     {
         try {
@@ -1789,11 +1949,44 @@ class TutorController extends Controller
 
     public function getImage($id)
     {
-        $tutor_credentials   = TutorCertificate::where('tutor_id', $id)->get();
+        $tutor_credentials = TutorCertificate::where('tutor_id', $id)->get();
         $tutor_profile_image = Tutor::find($id);
 
+        $fields = [
+            'ssc_c',
+            'ssc_m',
+            'hsc_c',
+            'hsc_m',
+            'nid',
+            'university_c',
+            'diploma_c',
+            'post_graduation_c',
+            'cv',
+            'others'
+        ];
 
-        return response()->json(['credentials_image' => $tutor_credentials->toArray(),'profile_image'=>$tutor_profile_image->image], 200);
+        foreach ($tutor_credentials as $credential) {
+
+            foreach ($fields as $field) {
+
+                if (!empty($credential->$field)) {
+
+                    $credential->$field = url('tutor-certificate/' . $credential->$field);
+
+                }
+
+            }
+
+        }
+
+        if ($tutor_profile_image && !empty($tutor_profile_image->image)) {
+            $tutor_profile_image->image = url('profile-image/' . $tutor_profile_image->image);
+        }
+
+        return response()->json([
+            'credentials_image' => $tutor_credentials,
+            'profile_image' => $tutor_profile_image ? $tutor_profile_image->image : null,
+        ], 200);
     }
 
     public function updateStatus(Request $request)
