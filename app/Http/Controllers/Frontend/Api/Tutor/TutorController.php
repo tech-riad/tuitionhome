@@ -215,57 +215,30 @@ class TutorController extends Controller
             ], 404);
         }
 
-        $imagePath = public_path('storage/tutor-images/' . $tutor->image);
+        $imagePath = 'tutor-images/' . $tutor->image;
 
-        if (!file_exists($imagePath)) {
+        if (!Storage::disk('r2')->exists($imagePath)) {
             return response()->json([
                 'error' => 'Image file not found'
             ], 404);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Base64 Image
-        |--------------------------------------------------------------------------
-        */
+        // Get image from R2
+        $imageContent = Storage::disk('r2')->get($imagePath);
 
-        $imageContent = file_get_contents($imagePath);
+        // Base64
         $base64Image = base64_encode($imageContent);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Detect Background Color
-        |--------------------------------------------------------------------------
-        */
+        // Create GD image from binary string
+        $image = imagecreatefromstring($imageContent);
 
-        $imageInfo = getimagesize($imagePath);
-
-        switch ($imageInfo['mime']) {
-
-            case 'image/jpeg':
-                $image = imagecreatefromjpeg($imagePath);
-                break;
-
-            case 'image/png':
-                $image = imagecreatefrompng($imagePath);
-                break;
-
-            case 'image/gif':
-                $image = imagecreatefromgif($imagePath);
-                break;
-
-            default:
-                return response()->json([
-                    'error' => 'Unsupported image type'
-                ], 400);
+        if (!$image) {
+            return response()->json([
+                'error' => 'Unsupported image type'
+            ], 400);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Get Top Left Pixel Color
-        |--------------------------------------------------------------------------
-        */
-
+        // Get top-left pixel color
         $rgb = imagecolorat($image, 5, 5);
 
         $r = ($rgb >> 16) & 0xFF;
@@ -276,13 +249,8 @@ class TutorController extends Controller
 
         imagedestroy($image);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Response
-        |--------------------------------------------------------------------------
-        */
-
         return response()->json([
+            'image_url' => Storage::disk('r2')->url($imagePath),
             'base64Image' => $base64Image,
             'background_color' => $hexColor,
             'rgb' => [
@@ -290,7 +258,7 @@ class TutorController extends Controller
                 'g' => $g,
                 'b' => $b,
             ]
-        ]);
+        ], 200, [], JSON_UNESCAPED_SLASHES);
     }
 
     public function preferedLocationJob(Request $request)
@@ -1841,7 +1809,7 @@ class TutorController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'tutor_id' => 'required|exists:tutors,id',
-                'image'    => 'required|mimes:jpg,jpeg,png,bmp|max:2000', // Increased max size to 2000 KB
+                'image'    => 'required|mimes:jpg,jpeg,png,bmp|max:2000',
             ]);
 
             if ($validator->fails()) {
@@ -1851,97 +1819,121 @@ class TutorController extends Controller
             $tutor_id = $request->input('tutor_id');
             $tutor = Tutor::findOrFail($tutor_id);
 
+            // Delete old image from R2
             if ($tutor->image) {
-                $oldImagePath = public_path('storage/tutor-images/' . $tutor->image);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+                if (Storage::disk('r2')->exists('tutor-images/' . $tutor->image)) {
+                    Storage::disk('r2')->delete('tutor-images/' . $tutor->image);
                 }
             }
 
             if ($request->hasFile('image')) {
+
                 $image = $request->file('image');
                 $imageName = $tutor_id . '_' . rand(1234, 9999) . time() . '.jpg';
-                $imagePath = public_path('storage/tutor-images');
 
-                // Create directory if it doesn't exist
-                if (!File::exists($imagePath)) {
-                    File::makeDirectory($imagePath, 0755, true);
-                }
-
-                $imageFullPath = $imagePath . '/' . $imageName;
-
-                // Load the image
+                // Load image
                 $imgResource = null;
+
                 switch (strtolower($image->getClientOriginalExtension())) {
+
                     case 'jpg':
                     case 'jpeg':
                         $imgResource = imagecreatefromjpeg($image->getPathname());
                         break;
+
                     case 'bmp':
                         $imgResource = imagecreatefrombmp($image->getPathname());
                         break;
+
                     case 'png':
                         $imgResource = imagecreatefrompng($image->getPathname());
                         break;
+
                     default:
-                        // Handle unsupported image format
                         throw new \Exception('Unsupported image format');
                 }
 
-                // Save the image as JPG
-                if ($imgResource) {
-                    imagejpeg($imgResource, $imageFullPath, 100); // 100 is the quality parameter for maximum quality
-                    imagedestroy($imgResource);
-                    $tutor->image = $imageName;
-                    $tutor->save();
-                }
+                // Convert to JPG in memory
+                ob_start();
+                imagejpeg($imgResource, null, 100);
+                $imageContent = ob_get_clean();
+
+                imagedestroy($imgResource);
+
+                // Upload to R2
+                Storage::disk('r2')->put(
+                    'tutor-images/' . $imageName,
+                    $imageContent
+                );
+
+                $tutor->image = $imageName;
+                $tutor->save();
             }
 
 
             $log_image = new TutorLog();
+
             if ($request->hasFile('image')) {
+
                 $logImage = $request->file('image');
                 $logImageName = $tutor_id . '_' . rand(1234, 9999) . time() . '.png';
-                $logImagePath = public_path('storage/tutor-log-images');
 
-                // Create directory if it doesn't exist
-                if (!File::exists($logImagePath)) {
-                    File::makeDirectory($logImagePath, 0755, true);
-                }
-
-                $logImageFullPath = $logImagePath . '/' . $logImageName;
-
-                // Load the image
+                // Load image
                 $logImgResource = null;
-                switch ($logImage->getClientOriginalExtension()) {
+
+                switch (strtolower($logImage->getClientOriginalExtension())) {
+
                     case 'jpg':
                     case 'jpeg':
                         $logImgResource = imagecreatefromjpeg($logImage->getPathname());
                         break;
+
                     case 'bmp':
                         $logImgResource = imagecreatefrombmp($logImage->getPathname());
                         break;
+
                     case 'png':
                         $logImgResource = imagecreatefrompng($logImage->getPathname());
                         break;
+
+                    default:
+                        throw new \Exception('Unsupported image format');
                 }
 
-                // Save the image as PNG
-                if ($logImgResource) {
-                    imagepng($logImgResource, $logImageFullPath);
-                    imagedestroy($logImgResource);
-                    $log_image->profile_image = $logImageName;
-                    $log_image->tutor_id = $tutor_id;
-                    $log_image->edited_user = $tutor_id;
-                    $log_image->save();
-                }
+                // Convert to PNG in memory
+                ob_start();
+                imagepng($logImgResource);
+                $logImageContent = ob_get_clean();
+
+                imagedestroy($logImgResource);
+
+                // Upload to R2
+                Storage::disk('r2')->put(
+                    'tutor-log-images/' . $logImageName,
+                    $logImageContent
+                );
+
+                $log_image->profile_image = $logImageName;
+                $log_image->tutor_id = $tutor_id;
+                $log_image->edited_user = $tutor_id;
+                $log_image->save();
             }
 
-            return response()->json(['message' => 'Profile picture uploaded successfully']);
+            return response()->json([
+                'message' => 'Profile picture uploaded successfully'
+            ]);
+
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Tutor not found'], 404);
+
+            return response()->json([
+                'error' => 'Tutor not found'
+            ], 404);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -1971,7 +1963,9 @@ class TutorController extends Controller
 
                 if (!empty($credential->$field)) {
 
-                    $credential->$field = url('tutor-certificate/' . $credential->$field);
+                    $credential->$field = Storage::disk('r2')->url(
+                        'tutor-certificate/' . $credential->$field
+                    );
 
                 }
 
@@ -1980,13 +1974,15 @@ class TutorController extends Controller
         }
 
         if ($tutor_profile_image && !empty($tutor_profile_image->image)) {
-            $tutor_profile_image->image = url('profile-image/' . $tutor_profile_image->image);
+            $tutor_profile_image->image = Storage::disk('r2')->url(
+                'tutor-images/' . $tutor_profile_image->image
+            );
         }
 
         return response()->json([
             'credentials_image' => $tutor_credentials,
             'profile_image' => $tutor_profile_image ? $tutor_profile_image->image : null,
-        ], 200);
+        ], 200, [], JSON_UNESCAPED_SLASHES);
     }
 
     public function updateStatus(Request $request)
