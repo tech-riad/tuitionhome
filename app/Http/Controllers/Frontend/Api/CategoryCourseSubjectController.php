@@ -60,9 +60,10 @@ class CategoryCourseSubjectController extends Controller
                     $course_info['category_id'] = $co->category_id;
                     $course_info['category_name'] = $co->category->name;
 
-                    $course_info['course_image'] = $co->course_image
-                        ? Storage::disk('r2')->url($co->course_image)
-                        : null;
+                   $course_info['course_image'] = $co->course_image
+                                                ? rtrim(env('R2_URL'), '/') . '/course-images/' . ltrim($co->course_image, '/')
+                                                : null;
+
 
                     $course_with_cat[] = $course_info;
                 }
