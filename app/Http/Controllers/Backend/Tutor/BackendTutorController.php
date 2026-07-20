@@ -1180,7 +1180,7 @@ public function updateStatus(Request $request, $id)
 
                             $tutor_gra_info->institute_id     =  $request->gra_institute_id;
                             $tutor_gra_info->study_type_id    =  $request->gra_study_id;
-                            $tutor_gra_info->year_or_semester =  $request->gra_passing_year;
+                            $tutor_gra_info->passing_year     =  $request->gra_passing_year;
                             $tutor_gra_info->university_type  =  $request->gra_university_type;
                             $tutor_gra_info->department_id    =  $request->gra_dept_id;
                             $tutor_gra_info->gpa              =  $request->gra_result;
@@ -1198,7 +1198,7 @@ public function updateStatus(Request $request, $id)
                                 $addTutor_gra_info->degree_name = 'honours';
                                 $addTutor_gra_info->institute_id=  $request->gra_institute_id;
                                 $addTutor_gra_info->study_type_id=  $request->gra_study_id;
-                                $addTutor_gra_info->year_or_semester=  $request->gra_passing_year;
+                                $addTutor_gra_info->passing_year=  $request->gra_passing_year;
                                 $addTutor_gra_info->university_type=  $request->gra_university_type;
                                 $addTutor_gra_info->department_id=  $request->gra_dept_id;
                                 $addTutor_gra_info->gpa =  $request->gra_result;
@@ -1746,6 +1746,7 @@ public function updateStatus(Request $request, $id)
                 'smsBalances',
 
             ])->where('id',$id)->first();
+
             // dd($tutor);
             // dd();
             $refferedBy = Reffer::where('reffer_for', $tutor->phone)->latest('created_at')->orderBy('id','desc')->get();
