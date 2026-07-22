@@ -24,7 +24,7 @@ use App\Http\Controllers\Backend\VideoTutorialController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CourseSubjectController;
-use App\Http\Controllers\Frontend\Tutor\TutorController;
+use App\Http\Controllers\Frontend\Api\Tutor\TutorController;
 use App\Http\Controllers\Frontend\Tutor\TutorDashboardController;
 use App\Http\Controllers\Frontend\Tutor\TutorLoginController;
 use App\Http\Controllers\Frontend\Tutor\TutorRegisterController;
@@ -58,7 +58,7 @@ use App\Http\Controllers\WebleadController;
 use App\Models\Backend\Config\TutorRequirementTemplate;
 use App\Models\CourseBlogPost;
 use App\Models\Tutor;
-
+use App\Services\CloudflareR2Service;
 use Illuminate\Http\Request;
 
 /*
@@ -715,6 +715,33 @@ Route::middleware(['auth'])->group(function () {
 });
 });
 
+
+
+
+
+
+Route::post('/r2-test', function (Request $request) {
+
+    $request->validate([
+        'image' => 'required|image'
+    ]);
+
+    $service = new CloudflareR2Service();
+
+    $file = $request->file('image');
+
+    $path = 'test/'.time().'_'.$file->getClientOriginalName();
+
+    $service->upload($file, $path);
+
+    return response()->json([
+        'success' => true,
+        'path' => $path
+    ]);
+});
+
+Route::get('/storage/tutor-certificate/{file}', [TutorController::class, 'viewf'])
+    ->where('file', '.*');
 Route::post('/session/keep-alive', function (Request $request) {
     if (Auth::check()) {
         Session::put('last_activity', now());

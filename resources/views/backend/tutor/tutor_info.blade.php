@@ -211,6 +211,7 @@
                 <h3 class="card-title">About Me here</h3>
             </div>
 
+
             <div class="card-body">
                 <strong> <i class="far fa-file-alt mr-1"></i> Education</strong>
 
@@ -384,6 +385,19 @@
                     data-bs-target="#verifyModal_{{$tutor->id}}">
                     Make Verify
                 </button>
+            </div>
+            <div class="card-body">
+                @if ($tutor->is_internal_verify == 0)
+                <form  id="verifyTutor{{ $tutor->id }}"
+                    action="{{ route('admin.tutor.verify', ['tutor' => $tutor->id]) }}" method="POST">
+                    @csrf
+                    <button id="{{ $tutor->id }}" type="button" class="btn btn-block btn-success"
+                        onclick="verifyTutor(this, this.id)">Internal Verify</button>
+                </form>
+                @elseif($tutor->is_internal_verify == 1)
+                <button type="button" class="btn btn-block btn-danger">Internal Verify complete</button>
+
+                @endif
             </div>
             <div class="card-body">
                 <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
@@ -2160,6 +2174,8 @@ $tutor_note_desc = App\Models\TutorNote::where('tutor_id',$tutor->id)->latest('c
 @endsection
 
 @push('page_scripts')
+@include('backend.tutor.js.swtdeleteMethod_js')
+
 
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 

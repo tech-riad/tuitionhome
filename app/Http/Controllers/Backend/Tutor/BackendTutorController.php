@@ -1180,7 +1180,7 @@ public function updateStatus(Request $request, $id)
 
                             $tutor_gra_info->institute_id     =  $request->gra_institute_id;
                             $tutor_gra_info->study_type_id    =  $request->gra_study_id;
-                            $tutor_gra_info->year_or_semester =  $request->gra_passing_year;
+                            $tutor_gra_info->passing_year     =  $request->gra_passing_year;
                             $tutor_gra_info->university_type  =  $request->gra_university_type;
                             $tutor_gra_info->department_id    =  $request->gra_dept_id;
                             $tutor_gra_info->gpa              =  $request->gra_result;
@@ -1198,7 +1198,7 @@ public function updateStatus(Request $request, $id)
                                 $addTutor_gra_info->degree_name = 'honours';
                                 $addTutor_gra_info->institute_id=  $request->gra_institute_id;
                                 $addTutor_gra_info->study_type_id=  $request->gra_study_id;
-                                $addTutor_gra_info->year_or_semester=  $request->gra_passing_year;
+                                $addTutor_gra_info->passing_year=  $request->gra_passing_year;
                                 $addTutor_gra_info->university_type=  $request->gra_university_type;
                                 $addTutor_gra_info->department_id=  $request->gra_dept_id;
                                 $addTutor_gra_info->gpa =  $request->gra_result;
@@ -1746,6 +1746,7 @@ public function updateStatus(Request $request, $id)
                 'smsBalances',
 
             ])->where('id',$id)->first();
+
             // dd($tutor);
             // dd();
             $refferedBy = Reffer::where('reffer_for', $tutor->phone)->latest('created_at')->orderBy('id','desc')->get();
@@ -2309,6 +2310,7 @@ public function updateStatus(Request $request, $id)
     public function verifyTutor($tutor,Request $request)
     {
         $tutor= Tutor::where('id',$tutor)->firstOrFail();
+
         if($request->transction_id){
 
             $updatedRows = VerificationRequest::where('tutor_id', $tutor->id)->whereNull('payment_status')->update([
@@ -2321,7 +2323,7 @@ public function updateStatus(Request $request, $id)
             $tutor->is_verified = 1;
             $tutor->verified_by = auth()->user()->id;
             $tutor->verify_date = now();
-            $tutor->save();
+            $tutor->update();
 
 
             $transction = new ApplicationPayment();
@@ -2332,7 +2334,7 @@ public function updateStatus(Request $request, $id)
             $transction->payment_method      = $request->payment_method ?? "Bkash";
             $transction->service_category    = "verification payment";
             $transction->save();
-            return redirect()->back()->withMessage('Success! tutor marked as premium tutor successfully');
+            return redirect()->back()->withMessage('Success! tutor marked as verified tutor successfully');
 
 
         }else{
@@ -2340,8 +2342,8 @@ public function updateStatus(Request $request, $id)
             $tutor->is_internal_verify = 1;
             $tutor->verified_by = auth()->user()->id;
             $tutor->verify_date = now();
-            $tutor->save();
-            return redirect()->route('tutor.index')->withMessage('Success! tutor verified successfully');
+            $tutor->update();
+            return redirect()->back()->withMessage('Success! tutor verified successfully');
 
 
         }
@@ -2804,7 +2806,7 @@ public function updateStatus(Request $request, $id)
     public function getAllTutor(Request $request)
     {
         $input = 1000; // pagination limit
-    
+
         // Get tutors (without AVG) with ID between 1 and 100
         $tutors = Tutor::with([
             'tutor_personal_info',
@@ -2822,7 +2824,7 @@ public function updateStatus(Request $request, $id)
         ->inRandomOrder()// IDs from 1 to 100
         ->orderBy('id', 'desc')
         ->paginate($input);
-    
+
         return $tutors;
     }
 

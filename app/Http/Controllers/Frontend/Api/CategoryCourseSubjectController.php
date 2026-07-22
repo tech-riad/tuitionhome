@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Exception;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryCourseSubjectController extends Controller
 {
@@ -52,14 +53,20 @@ class CategoryCourseSubjectController extends Controller
                 $course_with_cat = [];
 
                  foreach ($get_courses as $co) {
-                $course_info = [];
-                $course_info['course_id'] = $co->id;
-                $course_info['course_name'] = $co->name;
-                $course_info['category_id'] = $co->category_id;
-                $course_info['category_name'] = $co->category->name;
-                $course_info['course_image'] = $co->course_image;
-                $course_with_cat[] = $course_info;
-                   }
+
+                    $course_info = [];
+                    $course_info['course_id'] = $co->id;
+                    $course_info['course_name'] = $co->name;
+                    $course_info['category_id'] = $co->category_id;
+                    $course_info['category_name'] = $co->category->name;
+
+                   $course_info['course_image'] = $co->course_image
+                                                ? rtrim(env('R2_URL'), '/') . '/course-images/' . ltrim($co->course_image, '/')
+                                                : null;
+
+
+                    $course_with_cat[] = $course_info;
+                }
 
                    if (count($get_courses) > 0 )
                 {
@@ -81,6 +88,26 @@ class CategoryCourseSubjectController extends Controller
 
     }
 
+    public function getCatCourse()
+    {
+        $categoriesData = [];
+
+        $categories = Category::all();
+
+        foreach ($categories as $category) {
+            $categoryData = [
+                'id' => $category->id,
+                'name' => $category->name,
+                'subjects' => $this->getCourse($category->id)
+            ];
+
+            $categoriesData[] = $categoryData;
+        }
+
+        return response()->json([
+            'categoriesCourseData' => $categoriesData,
+        ]);
+    }
     public function getSubject($id)
     {
         $id = explode(",", $id);
@@ -150,26 +177,7 @@ class CategoryCourseSubjectController extends Controller
     }
 
 
-    public function getCatCourse()
-    {
-        $categoriesData = [];
 
-        $categories = Category::all();
-
-        foreach ($categories as $category) {
-            $categoryData = [
-                'id' => $category->id,
-                'name' => $category->name,
-                'subjects' => $this->getCourse($category->id)
-            ];
-
-            $categoriesData[] = $categoryData;
-        }
-
-        return response()->json([
-            'categoriesCourseData' => $categoriesData,
-        ]);
-    }
 
     public function getCourses()
     {
