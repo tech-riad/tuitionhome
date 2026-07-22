@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TutorHubController extends Controller
 {
@@ -178,7 +179,9 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+                                    ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+                                    : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
@@ -359,7 +362,9 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
@@ -539,7 +544,9 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+                        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+                        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
@@ -719,7 +726,9 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+                        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+                        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
@@ -750,7 +759,7 @@ class TutorHubController extends Controller
     // {
 
     //     // dd($request->all());
-        
+
     //     $search = $request->searchInput;
 
     //     $input         = $request->input('pagination_limit') ?? 30;
@@ -772,10 +781,10 @@ class TutorHubController extends Controller
 
     //     $religion         = $request->religion;
     //     $year             = $request->year;
-        
+
     //     $name = $request->name;
     //     $tutorID = $request->tutor_unique_id;
-        
+
 
 
     //     $tutorsQuery = Tutor::with([
@@ -952,7 +961,7 @@ class TutorHubController extends Controller
     {
 
         $search = $request->searchInput;
-        
+
 
         $input         = $request->input('pagination_limit') ?? 30;
         $countryId     = $request->country_id;
@@ -973,10 +982,10 @@ class TutorHubController extends Controller
 
         $religion         = $request->religion;
         $year             = $request->year;
-        
+
         $name = $request->name;
         $tutorID = $request->tutor_unique_id;
-        
+
 
 
         $tutorsQuery = Tutor::with([
@@ -985,33 +994,33 @@ class TutorHubController extends Controller
             'tutor_prefered_locations',
             'teaching_method',
         ])->where('is_active', 1);
-        
-        
-      
+
+
+
        if ($search !== null && strlen(trim($search)) >= 1) {
 
             $searchTerm = '%' . trim($search) . '%';
             $keywords   = preg_split('/\s+/', trim($search));
-        
+
             $universityIds = Institute::where('title', 'LIKE', $searchTerm)
                 ->pluck('id')
                 ->toArray();
-        
+
             $tutorsQuery->where(function ($query) use ($keywords, $searchTerm, $universityIds) {
-        
+
                 foreach ($keywords as $word) {
-        
+
                     $word = '%' . $word . '%';
-        
+
                     $query->orWhere('unique_id', 'LIKE', $word)
                           ->orWhere('name', 'LIKE', $word);
-        
+
                     // FIXED: group_or_major LIKE (not whereIn)
                     $query->orWhereHas('tutor_education', function ($subQuery) use ($word) {
                         $subQuery->where('group_or_major', 'LIKE', $word);
                     });
                 }
-        
+
                 // University match (OUTSIDE loop)
                 if (!empty($universityIds)) {
                     $query->orWhereHas('tutor_education', function ($subQuery) use ($universityIds) {
@@ -1068,7 +1077,7 @@ class TutorHubController extends Controller
         if ($name !== null) {
             $tutorsQuery->where('name', 'like', '%' . $name . '%');
         }
-        
+
         if ($schoolId !== null) {
             $tutorsQuery->whereHas('tutor_education', function ($subQuery) use ($schoolId) {
                 $subQuery->where('institute_id', $schoolId);
@@ -1094,7 +1103,7 @@ class TutorHubController extends Controller
                 $subQuery->where('education_board', $sscBoard)->where("degree_name","ssc");
             });
         }
-        
+
         if ($sscCurriculam !== null) {
             $tutorsQuery->whereHas('tutor_education', function ($subQuery) use ($sscCurriculam) {
                 $subQuery->where('curriculum_id', $sscCurriculam)->where("degree_name","ssc");
@@ -1155,7 +1164,9 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
@@ -1263,7 +1274,9 @@ class TutorHubController extends Controller
                 return [
                     'id'               => $tutor->id,
                     'unique_id'        => $tutor->unique_id,
-                    'tutor_image'      => $tutor->image,
+                    'tutor_image'        => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                     'tutor_name'       => $tutor->name,
                     'tutor_gender'     => $tutor->gender,
                     'is_premium'       => $tutor->is_premium,
@@ -1345,7 +1358,9 @@ class TutorHubController extends Controller
             return [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
@@ -1423,7 +1438,9 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
@@ -1500,7 +1517,9 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                 'tutor_gender'     => $tutor->gender,
                 'tutor_name'       => $tutor->name,
                 'is_premium'       => $tutor->is_premium,
@@ -1574,7 +1593,9 @@ class TutorHubController extends Controller
             'unique_id' => $tutor->unique_id,
             'tutor_name' => $tutor->name,
             'tutor_gender' => $tutor->gender,
-            'tutor_image' => $tutor->image,
+            'tutor_image' => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
             'is_premium'       => $tutor->is_premium,
             'is_premium_pro'     => $tutor->is_premium_pro,
             'is_premium_advance' => $tutor->is_premium_advance,
@@ -1644,8 +1665,10 @@ class TutorHubController extends Controller
             $tutorData[] = [
                 'id'               => $tutor->id,
                 'profile_views'    => $tutor->profile_views,
-                'unoque_id'        => $tutor->unique_id,
-                'profile_image'    => $tutor->image,
+                'unique_id'        => $tutor->unique_id,
+                'profile_image'    => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_id'         => $tutor->unique_id,
                 'is_premium'       => $tutor->is_premium,
@@ -1694,7 +1717,9 @@ class TutorHubController extends Controller
             ->map(function ($review) {
                 return [
                     'parent_name' => $review->parent->name ?? null,
-                    'parent_image' => 'https://hellott.xyz/storage/parent-images/' . ($review->parent->image ?? null),
+                    'parent_image' => optional($review->parent)->image
+                        ? Storage::disk('r2')->url('parent-images/' . $review->parent->image)
+                        : null,
                     'parent_id' => $review->parent->unique_id ?? null,
                     'emp_id' => $review->emp_id ? 'E2' . $review->emp_id .'2A' : null,
                     'rating' => $review->rating,
@@ -1842,7 +1867,9 @@ class TutorHubController extends Controller
             return [
                 'id'               => $tutor->id,
                 'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
+                'tutor_image'        => $tutor->image
+        ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+        : null,
                 'tutor_name'       => $tutor->name,
                 'tutor_gender'     => $tutor->gender,
                 'is_premium'       => $tutor->is_premium,
