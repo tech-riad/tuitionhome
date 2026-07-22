@@ -127,17 +127,15 @@ class ConfigController extends Controller
         $tutorId = $request->tutor_id;
         $countings = Counting::where('tutor_id',$tutorId)->first();
 
-        return $this->resposeSuccess('data get successfully', [
-            'tutor_id' => $countings->tutor_id,
-            'applied_job' => $countings->applied_job,
-            'shortlisted_job' => $countings->shortlisted_job,
-            'appointed_job' => $countings->appointed_job,
-            'confirmed_job' => $countings->confirmed_job,
-            'cancel_job' => $countings->cancel_job,
-            'payment_job' => $countings->payment_job,
-            'refund_job' => $countings->refund_job,
-
-
+        return $this->resposeSuccess('Data get successfully', [
+            'tutor_id'        => optional($countings)->tutor_id,
+            'applied_job'     => optional($countings)->applied_job ?? 0,
+            'shortlisted_job' => optional($countings)->shortlisted_job ?? 0,
+            'appointed_job'   => optional($countings)->appointed_job ?? 0,
+            'confirmed_job'   => optional($countings)->confirmed_job ?? 0,
+            'cancel_job'      => optional($countings)->cancel_job ?? 0,
+            'payment_job'     => optional($countings)->payment_job ?? 0,
+            'refund_job'      => optional($countings)->refund_job ?? 0,
         ]);
 
     }
