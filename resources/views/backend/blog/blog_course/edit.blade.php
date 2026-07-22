@@ -5,6 +5,10 @@
 
 @section('content')
 
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 
 <div>
     <h3>Create Posts</h3>
@@ -52,8 +56,15 @@
                     @if ($courseBlog->slider_image)
                         <div class="old_images mt-2">
                             <label class="mb-0" for="old_images">Old Profile Images:</label><br>
+
                             @foreach (json_decode($courseBlog->slider_image) as $profileImage)
-                                <img class="mt-2" src="{{ asset('storage/course-blog-images/' .$profileImage) }}" alt="Old Profile Image" width="100" height="100" />
+                                <img
+                                    class="mt-2"
+                                    src="{{ Storage::disk('r2')->url('course-blog-images/' . $profileImage) }}"
+                                    alt="Old Profile Image"
+                                    width="100"
+                                    height="100"
+                                />
                             @endforeach
                         </div>
                     @endif

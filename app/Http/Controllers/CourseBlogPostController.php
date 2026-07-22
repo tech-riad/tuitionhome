@@ -9,6 +9,7 @@ use App\Models\Institute;
 use App\Models\Tutor;
 use App\Transformers\TutorEducationResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CourseBlogPostController extends Controller
 {
@@ -49,9 +50,18 @@ class CourseBlogPostController extends Controller
         $images = [];
 
         if ($request->hasFile('slider_image')) {
+
             foreach ($request->file('slider_image') as $image) {
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->storeAs('public/course-blog-images', $imageName);
+
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+                // Upload to R2
+                Storage::disk('r2')->putFileAs(
+                    'course-blog-images',
+                    $image,
+                    $imageName
+                );
+
                 $images[] = $imageName;
             }
         }
@@ -77,36 +87,60 @@ class CourseBlogPostController extends Controller
     public function updateCourseBlog(Request $request, $id)
     {
         try {
+
             $course = CourseBlogPost::findOrFail($id);
 
             $request->validate([
                 'learn_category' => 'required',
                 'about_category_first' => 'required',
                 'about_category_second' => 'required',
-                'slider_image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'slider_image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
-            $course->update([
-                'learn_category' => $request->learn_category,
-                'about_category_first' => $request->about_category_first,
-                'about_category_second' => $request->about_category_second,
-                'tags' => $request->tags,
-            ]);
+            $course->learn_category = $request->learn_category;
+            $course->about_category_first = $request->about_category_first;
+            $course->about_category_second = $request->about_category_second;
+            $course->tags = $request->tags;
 
             if ($request->hasFile('slider_image')) {
+
+                // Delete old images from R2
+                if (!empty($course->slider_image)) {
+
+                    foreach (json_decode($course->slider_image, true) as $oldImage) {
+                        Storage::disk('r2')->delete('course-blog-images/' . $oldImage);
+                    }
+                }
+
                 $images = [];
+
                 foreach ($request->file('slider_image') as $image) {
-                    $imageName = time() . '_' . $image->getClientOriginalName();
-                    $image->storeAs('public/course-blog-images', $imageName);
+
+                    $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+                    Storage::disk('r2')->putFileAs(
+                        'course-blog-images',
+                        $image,
+                        $imageName
+                    );
+
                     $images[] = $imageName;
                 }
+
                 $course->slider_image = json_encode($images);
-                $course->save();
             }
 
-            return response()->json(['success' => 'Course updated successfully']);
+            $course->save();
+
+            return response()->json([
+                'success' => 'Course updated successfully'
+            ]);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -122,37 +156,48 @@ class CourseBlogPostController extends Controller
             ]);
         }
 
+        // Slider Images
+        $images = [];
+
+        if (!empty($course->slider_image)) {
+            foreach (json_decode($course->slider_image, true) as $image) {
+                $images[] = Storage::disk('r2')->url('course-blog-images/' . $image);
+            }
+        }
+
         $data = [
-            'courseId'        => $course->course_id,
-            'courseName'      => optional($course->courses)->name,
-            'image'           => json_decode($course->slider_image),
-            'learnCategory'   => $course->learn_category,
-            'aboutCategory'   => $course->about_category_first,
-            'shortDesc'       => $course->about_category_second,
-            'tags'       => $course->tags,
+            'courseId'      => $course->course_id,
+            'courseName'    => optional($course->courses)->name,
+            'image'         => $images,
+            'learnCategory' => $course->learn_category,
+            'aboutCategory' => $course->about_category_first,
+            'shortDesc'     => $course->about_category_second,
+            'tags'          => $course->tags,
         ];
 
-        $reviews = CategoryReview::where('category_id', $id)->orderBy('id','desc')->get();
+        $reviews = CategoryReview::where('category_id', $id)
+            ->orderBy('id', 'desc')
+            ->get();
 
         $reviewData = $reviews->map(function ($review) {
-    return [
-        'parent_id' => optional($review->parent)->unique_id,
-        'parent_name' => optional($review->parent)->name,
-        'parent_image' => optional($review->parent)->image
-            ? 'https://hellott.xyz/storage/parent-images/' . $review->parent->image
-            : null,
-        'emp_id' => $review->emp_id,
-        'description' => $review->description,
-        'rating' => $review->rating,
-        'date' => $review->created_at,
-    ];
-});
 
-        // Return the course and review data in the response
+            return [
+                'parent_id' => optional($review->parent)->unique_id,
+                'parent_name' => optional($review->parent)->name,
+                'parent_image' => optional($review->parent)->image
+                    ? Storage::disk('r2')->url('parent-images/' . $review->parent->image)
+                    : null,
+                'emp_id' => $review->emp_id,
+                'description' => $review->description,
+                'rating' => $review->rating,
+                'date' => $review->created_at,
+            ];
+        });
+
         return response()->json([
-            'data'       => $data,
+            'data' => $data,
             'categoryReviews' => $reviewData,
-        ]);
+        ], 200, [], JSON_UNESCAPED_SLASHES);
     }
 
 
@@ -194,22 +239,23 @@ class CourseBlogPostController extends Controller
 
             if ($tutor) {
                 $tutorData[] = [
-                    'id'               => $tutor->id,
-                    'unique_id'        => $tutor->unique_id,
-                    'tutor_name'       => $tutor->name,
-                    'tutor_gender'     => $tutor->gender,
-                    'tutor_image'      => $tutor->image,
-                    'is_premium'       => $tutor->is_premium,
-                    'is_premium_pro'     => $tutor->is_premium_pro,
-                    'is_premium_advance' => $tutor->is_premium_advance,
-                    'is_verified'      => $tutor->is_verified,
-                    'is_featured'      => $tutor->is_featured,
-                    'tutor_location'   => optional($tutor->tutor_personal_info->city)->name,
-                    'tutor_education'  => TutorEducationResource::collection($tutor->tutor_education),
+                    'id'                   => $tutor->id,
+                    'unique_id'            => $tutor->unique_id,
+                    'tutor_name'           => $tutor->name,
+                    'tutor_gender'         => $tutor->gender,
+                    'tutor_image'          => $tutor->image
+                                                ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+                                                : null,
+                    'is_premium'           => $tutor->is_premium,
+                    'is_premium_pro'       => $tutor->is_premium_pro,
+                    'is_premium_advance'   => $tutor->is_premium_advance,
+                    'is_verified'          => $tutor->is_verified,
+                    'is_featured'          => $tutor->is_featured,
+                    'tutor_location'       => optional($tutor->tutor_personal_info->city)->name,
+                    'tutor_education'      => TutorEducationResource::collection($tutor->tutor_education),
                 ];
             }
         }
-
         return response()->json([
             'tutors' => $tutorData,
         ]);
@@ -218,27 +264,31 @@ class CourseBlogPostController extends Controller
     public function relatedCourses()
     {
         $courseIds = Course::inRandomOrder()
-                   ->whereNotNull('course_image')
-                   ->take(10)
-                   ->pluck('id');
+            ->whereNotNull('course_image')
+            ->take(10)
+            ->pluck('id');
 
         $courseData = [];
 
         foreach ($courseIds as $key => $courseId) {
+
             $course = Course::find($courseId);
 
             if ($course) {
+
                 $courseData[] = [
-                    'id' => $course->id,
-                    'name' => $course->name,
-                    'image' => $course->course_image,
+                    'id'    => $course->id,
+                    'name'  => $course->name,
+                    'image' => $course->course_image
+                        ? Storage::disk('r2')->url('course-images/' . $course->course_image)
+                        : null,
                 ];
             }
         }
 
         return response()->json([
             'courseData' => $courseData,
-        ]);
+        ], 200, [], JSON_UNESCAPED_SLASHES);
     }
 
     public function filterCourseTutor( Request $request)
@@ -350,32 +400,33 @@ class CourseBlogPostController extends Controller
             }
 
             $tutorData[] = [
-                'id'               => $tutor->id,
-                'unique_id'        => $tutor->unique_id,
-                'tutor_image'      => $tutor->image,
-                'tutor_name'       => $tutor->name,
-                'tutor_gender'     => $tutor->gender,
-                'is_premium'       => $tutor->is_premium,
+                'id'                 => $tutor->id,
+                'unique_id'          => $tutor->unique_id,
+                'tutor_image'        => $tutor->image
+                    ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+                    : null,
+                'tutor_name'         => $tutor->name,
+                'tutor_gender'       => $tutor->gender,
+                'is_premium'         => $tutor->is_premium,
                 'is_premium_pro'     => $tutor->is_premium_pro,
                 'is_premium_advance' => $tutor->is_premium_advance,
-                'is_verified'      => $tutor->is_verified,
-                'is_featured'      => $tutor->is_featured,
+                'is_verified'        => $tutor->is_verified,
+                'is_featured'        => $tutor->is_featured,
                 'tutor_location'   => $tutor->tutor_personal_info->city->name ?? null,
-                'tutor_university' => $tutorUniversity,
-                'tutor_college'    => $tutorHsc,
-                // 'group_or_major'    => $tutor->tutor_geTcourses,
+                'tutor_university'   => $tutorUniversity,
+                'tutor_college'      => $tutorHsc,
             ];
         }
         return response()->json([
-            'filteredData'       => $tutorData,
+            'filteredData' => $tutorData,
             'meta' => [
                 'current_page' => $tutors->currentPage(),
-                'per_page' => $tutors->perPage(),
-                'total' => $tutors->total(),
-                'courseName'       => $courseName->name,
+                'per_page'     => $tutors->perPage(),
+                'total'        => $tutors->total(),
+                'courseName'   => optional($courseName)->name,
             ],
             'requested_data' => $request->all(),
-        ]);
+        ], 200, [], JSON_UNESCAPED_SLASHES);
 
 
     }
@@ -431,14 +482,16 @@ class CourseBlogPostController extends Controller
                     'unique_id'        => $tutor->unique_id,
                     'tutor_name'       => $tutor->name,
                     'tutor_gender'     => $tutor->gender,
-                    'tutor_image'      => $tutor->image,
+                    'tutor_image'        => $tutor->image
+                    ? Storage::disk('r2')->url('tutor-images/' . $tutor->image)
+                    : null,
                     'is_premium'       => $tutor->is_premium,
                     'is_premium_pro'     => $tutor->is_premium_pro,
                     'is_premium_advance' => $tutor->is_premium_advance,
                     'is_verified'      => $tutor->is_verified,
                     'is_featured'      => $tutor->is_featured,
                     'is_boost'      => $tutor->is_boost,
-                    'tutor_location'   => optional($tutor->tutor_personal_info->city)->name,
+                    'tutor_location'   => $tutor->tutor_personal_info->city->name ?? null,
                     'tutor_education'  => TutorEducationResource::collection($tutor->tutor_education),
                 ];
             }
@@ -465,91 +518,4 @@ class CourseBlogPostController extends Controller
 
 }
 
-// Extra
-    // public function getCourseTutor($courseId)
-    // {
-    //     $tutorsQuery = Tutor::with([
-    //         'tutor_education',
-    //         'tutor_personal_info',
-    //         'tutor_prefered_locations',
-    //     ])
-    //     ->where('is_active', 1)
-    //     ->whereHas('tutor_geTcourses', function ($subQuery) use ($courseId) {
-    //             $subQuery->where('course_id', $courseId);
-    //     });
 
-    //     $tutors = $tutorsQuery
-    //     ->orderByRaw('
-    //         CASE
-    //                     WHEN is_boost = 1 AND boost_package = 1 AND boost_date >= CURDATE() - INTERVAL 15 DAY THEN 1
-    //                     WHEN is_boost = 1 AND boost_package = 3 AND boost_date >= CURDATE() - INTERVAL 30 DAY THEN 1
-    //                     WHEN is_boost = 1 AND boost_package = 6 AND boost_date >= CURDATE() - INTERVAL 60 DAY THEN 1
-    //                     WHEN is_boost = 1 AND boost_package = 12 AND boost_date >= CURDATE() - INTERVAL 90 DAY THEN 1
-    //                     WHEN is_premium_advance = 1 AND premium_date >= CURDATE() - INTERVAL 60 DAY THEN 2
-    //                     WHEN is_premium_pro = 1 AND premium_date >= CURDATE() - INTERVAL 45 DAY THEN 3
-    //                     WHEN is_premium = 1 AND premium_date >= CURDATE() - INTERVAL 30 DAY THEN 4
-    //                     ELSE 5
-    //                 END ASC,
-    //                 premium_date DESC,
-    //                 boost_date DESC,
-    //                 is_boost DESC,
-    //                 is_premium_advance DESC,
-    //                 is_premium_pro DESC,
-    //                 is_premium DESC,
-    //                 id DESC,
-    //                 RAND()
-    //     ')
-    //     ->orderBy('id', 'desc')
-    //     ->paginate(36);
-
-
-
-
-
-    //     $tutorData = [];
-
-    //     foreach ($tutors as $tutor) {
-
-
-    //         $tutorUniversity = $tutor->tutor_education->firstWhere('degree_name', 'honours');
-    //         $tutorHsc = $tutor->tutor_education->firstWhere('degree_name', 'hsc');
-
-
-
-    //         $course = CourseBlogPost::where('course_id', $courseId)->first();
-
-    //         if ($tutor) {
-    //             $tutorData[] = [
-    //                 'id'               => $tutor->id,
-    //                 'unique_id'        => $tutor->unique_id,
-    //                 'tutor_name'       => $tutor->name,
-    //                 'tutor_gender'     => $tutor->gender,
-    //                 'tutor_image'      => $tutor->image,
-    //                 'is_premium'       => $tutor->is_premium,
-    //                 'is_premium_pro'     => $tutor->is_premium_pro,
-    //                 'is_premium_advance' => $tutor->is_premium_advance,
-    //                 'is_verified'      => $tutor->is_verified,
-    //                 'is_featured'      => $tutor->is_featured,
-    //                 'is_boost'      => $tutor->is_boost,
-    //                 'tutor_location'   => optional($tutor->tutor_personal_info->city)->name,
-    //                 'tutor_education'  => TutorEducationResource::collection($tutor->tutor_education),
-    //             ];
-    //         }
-    //     }
-
-    //     $courseName = Course::where('id',$courseId)->first();
-
-
-
-    //     return response()->json([
-    //         'tutors'       => $tutorData,
-    //         'meta'      => [
-    //             'page' => $tutors->currentPage(),
-    //             'per_page'     => 36,
-    //             'total'        => $tutors->total(),
-    //             'courseId'       => $courseId,
-    //             'courseName'       => $courseName->name,
-    //         ],
-    //     ]);
-
-    // }
