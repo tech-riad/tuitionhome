@@ -36,7 +36,7 @@ class CoursesController extends AppBaseController
     {
         $search = $request->input('search');
 
-        $courses = Course::where('courses.name', 'LIKE', '%' . $search . '%') 
+        $courses = Course::where('courses.name', 'LIKE', '%' . $search . '%')
                 ->select('courses.*', 'categories.name as category_name')
                 ->leftJoin('categories', 'courses.category_id', '=', 'categories.id')
                 ->paginate(10);
@@ -119,6 +119,7 @@ class CoursesController extends AppBaseController
 
             return redirect(route('courses.index'));
         }
+        // dd($courses);
 
         return view('backend.config.courses.edit')->with('courses', $courses);
     }
@@ -141,23 +142,30 @@ class CoursesController extends AppBaseController
         }
 
         if ($request->hasFile('course_image')) {
+
+            // Delete old image from R2
             if ($course->course_image) {
-                Storage::delete('public/course-images/' . $course->course_image);
+                Storage::disk('r2')->delete('course-images/' . $course->course_image);
             }
 
             $file = $request->file('course_image');
-            $image_name = $id . '_' . rand(1000, 9999) . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/course-images', $image_name);
 
-            // dd($image_name);
+            $image_name = $id . '_' . rand(1000, 9999) . '_' . time() . '.' . $file->getClientOriginalExtension();
+
+            // Upload image to R2
+            Storage::disk('r2')->putFileAs(
+                'course-images',
+                $file,
+                $image_name
+            );
 
             $course->course_image = $image_name;
         }
 
-        $course->fill($request->all())->save();
-        $course->course_image = $image_name;
+        // Don't overwrite course_image with UploadedFile
+        $course->fill($request->except('course_image'));
 
-        $course->update();
+        $course->save();
 
         Flash::success('Course updated successfully.');
 

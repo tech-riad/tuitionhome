@@ -47,7 +47,12 @@
                             <td>
                                 @if($item->slider_image)
                                     @foreach(json_decode($item->slider_image) as $image)
-                                        <img style="height: 30px; width: 30px;" src="{{ asset('storage/course-blog-images/' . $image) }}" alt="Image" class="img-thumbnail">
+                                        <img
+                                            style="height:30px; width:30px;"
+                                            src="{{ \Illuminate\Support\Facades\Storage::disk('r2')->url('course-blog-images/' . $image) }}"
+                                            alt="Image"
+                                            class="img-thumbnail"
+                                        >
                                     @endforeach
                                 @else
                                     <span>n/a</span>
