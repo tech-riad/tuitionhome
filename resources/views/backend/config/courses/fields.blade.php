@@ -22,6 +22,11 @@
 @if(isset($courses) && $courses->course_image)
     <div class="form-group col-sm-6">
         <label>Current Image:</label>
-        <img style="height: 120px;width:120px;" src="{{ asset('storage/course-images/' . $courses->course_image) }}" alt="Current Image" class="img-thumbnail">
+        <img
+            style="height:120px;width:120px;"
+            src="{{ Storage::disk('r2')->url('course-images/' . $courses->course_image) }}"
+            alt="Current Image"
+            class="img-thumbnail"
+        >
     </div>
 @endif
