@@ -4,7 +4,8 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 class DatabaseBackUp extends Command
 {
     /**
@@ -37,42 +38,127 @@ class DatabaseBackUp extends Command
      * @return int
      */
 
-     public function handle()
-     {
-         $backupDirectory = storage_path('app/backup');
-         $filename = "backup-" . Carbon::now()->format('Y-m-d') . ".sql";
-         $backupFilePath = $backupDirectory . "/" . $filename;
+    public function handle()
+    {
+        $backupDir = storage_path('app/backup');
 
-         // Ensure backup directory exists
-         if (!is_dir($backupDirectory)) {
-             mkdir($backupDirectory, 0755, true);
-         }
+        if (!is_dir($backupDir)) {
+            mkdir($backupDir, 0755, true);
+        }
 
-         // Create the .sql backup file
-         $command = "mysqldump --user=" . escapeshellarg(env('DB_USERNAME')) .
-                    " --password=" . escapeshellarg(env('DB_PASSWORD')) .
-                    " --host=" . escapeshellarg(env('DB_HOST')) .
-                    " " . escapeshellarg(env('DB_DATABASE')) .
-                    " > " . escapeshellarg($backupFilePath);
-         $returnVar = null;
-         $output = null;
-         exec($command, $output, $returnVar);
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
 
-         // Retain only the 3 most recent backups
-         $backupFiles = glob($backupDirectory . '/backup-*.sql');
-         if (count($backupFiles) > 3) {
-             usort($backupFiles, function ($a, $b) {
-                 return filemtime($a) - filemtime($b);
-             });
+        $sqlFile = $backupDir . "/database_{$date}.sql";
+        $zipFile = $backupDir . "/database_{$date}.zip";
 
-             $filesToDelete = array_slice($backupFiles, 0, -3);
-             foreach ($filesToDelete as $file) {
-                 unlink($file);
-             }
-         }
+        /*
+        |--------------------------------------------------------------------------
+        | Mysqldump Path
+        |--------------------------------------------------------------------------
+        */
 
-         return $filename; // Return the filename of the newly created backup
-     }
+        if (PHP_OS_FAMILY === 'Windows') {
+
+            $mysqldump = 'C:\xampp\mysql\bin\mysqldump.exe';
+
+        } else {
+
+            $mysqldump = trim(shell_exec('which mysqldump'));
+
+            if (!$mysqldump) {
+                $this->error("mysqldump not found.");
+                return Command::FAILURE;
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Dump Database
+        |--------------------------------------------------------------------------
+        */
+
+        $command = sprintf(
+            '"%s" --user=%s --password=%s --host=%s %s > "%s"',
+            $mysqldump,
+            escapeshellarg(env('DB_USERNAME')),
+            escapeshellarg(env('DB_PASSWORD')),
+            escapeshellarg(env('DB_HOST')),
+            escapeshellarg(env('DB_DATABASE')),
+            $sqlFile
+        );
+
+        exec($command, $output, $result);
+
+        if ($result !== 0 || !file_exists($sqlFile)) {
+
+            $this->error("Database Backup Failed");
+
+            return Command::FAILURE;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Zip
+        |--------------------------------------------------------------------------
+        */
+
+        $zip = new ZipArchive();
+
+        if ($zip->open($zipFile, ZipArchive::CREATE) === TRUE) {
+
+            $zip->addFile($sqlFile, basename($sqlFile));
+
+            $zip->close();
+
+        } else {
+
+            $this->error("Zip Failed");
+
+            return Command::FAILURE;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Old Backup From R2
+        |--------------------------------------------------------------------------
+        */
+
+        foreach (Storage::disk('r2')->files('database-backup') as $file) {
+
+            Storage::disk('r2')->delete($file);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Upload New Backup
+        |--------------------------------------------------------------------------
+        */
+
+        Storage::disk('r2')->put(
+            "database-backup/" . basename($zipFile),
+            fopen($zipFile, 'r')
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Local Files
+        |--------------------------------------------------------------------------
+        */
+
+        @unlink($sqlFile);
+        @unlink($zipFile);
+
+        $this->info("");
+        $this->info("==============================");
+        $this->info("Database Backup Success");
+        $this->info("Uploaded : " . basename($zipFile));
+        $this->info("R2 Folder : database-backup/");
+        $this->info("==============================");
+
+        return Command::SUCCESS;
+    }
+
 
 
 }
