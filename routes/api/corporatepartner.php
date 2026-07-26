@@ -21,5 +21,6 @@ Route::post('/corporate-partner/update-password',[CorporatePartnerAuthController
 Route::post('/corporate-partner/phone-verify',[CorporatePartnerAuthController::class,'verifyOtpAndSavePassword']);
 
 Route::group( ['middleware' => ['auth:c-api','scopes:corporate_partners'] ],function(){
+    Route::post('/corporate-partner/logout',[CorporatePartnerAuthController::class,'logout']);
 
 });

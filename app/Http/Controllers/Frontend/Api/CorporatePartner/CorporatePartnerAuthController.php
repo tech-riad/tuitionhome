@@ -9,6 +9,7 @@ use App\Services\AdnSmsService;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use DateTime;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -122,6 +123,26 @@ class CorporatePartnerAuthController extends Controller
         } catch (Exception $e) {
             return $this->resposeError('', $e->getMessage());
         }
+
+    }
+
+    public function logout(Request $request)
+    {
+        try{
+
+            $request->user()->token()->revoke();
+            return response()->json([
+                'status' =>true,
+                'message' => 'Successfully logged out.'
+            ]);
+
+
+        }catch(Exception $e)
+        {
+
+        }
+
+
 
     }
 
