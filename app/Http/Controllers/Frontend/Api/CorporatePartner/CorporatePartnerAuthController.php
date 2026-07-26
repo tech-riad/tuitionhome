@@ -152,10 +152,7 @@ class CorporatePartnerAuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'name'             => 'required',
                 'phone'            => 'required|regex:/(01)[0-9]{9}/|unique:unverified_corporate_partners,phone|unique:unverified_corporate_partners,phone',
-                'email'            => 'required|email|unique:unverified_corporate_partners,email|unique:unverified_corporate_partners,email',
-                'gender'           => 'required',
-                'password'         => 'required|min:6',
-                'confirm_password' => 'required|same:password',
+
             ]);
 
             if ($validator->fails()) {
@@ -181,10 +178,7 @@ class CorporatePartnerAuthController extends Controller
             $unverifiedCorporatePartner->otp_expiry   = $expiry;
             $unverifiedCorporatePartner->name         = $request->name;
             $unverifiedCorporatePartner->phone        = $request->phone;
-            $unverifiedCorporatePartner->email        = $request->email;
-            $unverifiedCorporatePartner->gender       = $request->gender;
             $unverifiedCorporatePartner->role_id      = 3;
-            $unverifiedCorporatePartner->password     = Hash::make($request->password);
             $unverifiedCorporatePartner->save();
 
                 $data = [
@@ -222,12 +216,9 @@ class CorporatePartnerAuthController extends Controller
             $corporatePartner = new CorporatePartner();
             $corporatePartner->name               = $unverifiedCorporatePartner->name;
             $corporatePartner->phone              = $unverifiedCorporatePartner->phone;
-            $corporatePartner->email              = $unverifiedCorporatePartner->email;
-            $corporatePartner->gender             = $unverifiedCorporatePartner->gender;
             $corporatePartner->otp                = $unverifiedCorporatePartner->otp;
             $corporatePartner->otp_expiry         = $unverifiedCorporatePartner->otp_expiry;
             $corporatePartner->role_id            = $unverifiedCorporatePartner->role_id;
-            $corporatePartner->password           = $unverifiedCorporatePartner->password;
             $corporatePartner->login_at           = now();
             $corporatePartner->phone_verified_at  = now();
             $corporatePartner->save();
