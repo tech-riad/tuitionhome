@@ -17,7 +17,7 @@ use App\Models\WebsiteReview;
 use Exception;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 
 class ConfigController extends Controller
 {
@@ -105,21 +105,53 @@ class ConfigController extends Controller
     public function webReviewGet()
     {
         $reviews = WebsiteReview::where('status', 1)->get();
+
         if ($reviews->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'No reviews found']);
+            return response()->json([
+                'success' => false,
+                'message' => 'No reviews found'
+            ]);
         }
-        return response()->json(['success' => true, 'reviews' => $reviews]);
 
+        $reviews->transform(function ($review) {
 
+            $review->image = $review->image
+                ? Storage::disk('r2')->url( $review->image)
+                : null;
+
+            return $review;
+        });
+
+        return response()->json([
+            'success' => true,
+            'reviews' => $reviews
+        ]);
     }
 
     public function popupImageGet()
     {
         $popup = PopupImage::where('status', 1)->get();
-        if (!$popup) {
-            return response()->json(['success' => false, 'message' => 'No active popup found']);
+
+        if ($popup->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No active popup found'
+            ]);
         }
-        return response()->json(['success' => true, 'popup' => $popup]);
+
+        $popup->transform(function ($item) {
+
+            $item->image = $item->image
+                ? Storage::disk('r2')->url( $item->image)
+                : null;
+
+            return $item;
+        });
+
+        return response()->json([
+            'success' => true,
+            'popup' => $popup
+        ]);
     }
 
     public function jobCounting(Request $request)
