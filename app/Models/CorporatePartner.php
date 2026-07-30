@@ -28,9 +28,9 @@ class CorporatePartner extends Authenticatable
         $postfix = ''; // Initialize $postfix here
 
         if ($id >= 1 && $id <= 99999) {
-            $prefix = 'F';
+            $prefix = 'CP';
         } elseif ($id >= 100000 && $id <= 1099999) {
-            $prefix = 'F';
+            $prefix = 'CP';
             if ($id <= 199999) {
                 $postfix = 'A';
                 $id -= 100000;
