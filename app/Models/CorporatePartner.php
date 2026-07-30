@@ -14,6 +14,14 @@ class CorporatePartner extends Authenticatable
     use HasApiTokens, Notifiable;
 
 
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+        'unique_id',
+        'status',
+    ];
     public function get_affiliate_unique_id()
     {
         $id = $this->id;

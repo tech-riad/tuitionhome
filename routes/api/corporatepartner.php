@@ -22,5 +22,6 @@ Route::post('/corporate-partner/phone-verify',[CorporatePartnerAuthController::c
 
 Route::group( ['middleware' => ['auth:c-api','scopes:corporate_partners'] ],function(){
     Route::post('/corporate-partner/logout',[CorporatePartnerAuthController::class,'logout']);
+    Route::post('/corporate-partner/basic-info',[CorporatePartnerAuthController::class,'basicInfo']);
 
 });

@@ -44,6 +44,7 @@ class CorporatePartnerAuthController extends Controller
                 'otp' => 'required|numeric',
                 'phone' => 'required|numeric',
             ]);
+            // dd($validator->fails());
             if ($validator->fails())
             {
                 return response()->json(['status'=>false,'error'=>$validator->errors()]);
@@ -88,6 +89,7 @@ class CorporatePartnerAuthController extends Controller
                 'phone'    => 'required',
                 'password' => 'required|min:6',
             ]);
+            // dd($validator->fails());
 
             if ($validator->fails()) {
                 return response()->json(['status' => false, 'message' => $validator->errors()->first()]);
@@ -151,15 +153,18 @@ class CorporatePartnerAuthController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name'             => 'required',
-                'phone'            => 'required|regex:/(01)[0-9]{9}/|unique:unverified_corporate_partners,phone|unique:unverified_corporate_partners,phone',
-
+                'phone'            => 'required|regex:/(01)[0-9]{9}/|unique:corporate_partners,phone|unique:unverified_corporate_partners,phone',
+                'password'         => 'required|min:6',
+                'confirm_password' => 'required|same:password',
             ]);
 
             if ($validator->fails()) {
                 return response()->json(['status' => false, 'error' => $validator->errors()]);
-            }
+                }
+                // dd($validator->fails());
 
             $registeredCorporatePartner = CorporatePartner::where('phone', $request->phone)->first();
+            // dd($registeredCorporatePartner);
 
             if ($registeredCorporatePartner) {
                 return response()->json(['status' => true, 'message' => 'You Are Already Registered Please Login!']);
@@ -173,13 +178,16 @@ class CorporatePartnerAuthController extends Controller
 
             $unverifiedCorporatePartner = new UnverifiedCorporatePartner();
             $expiry = Carbon::now()->addMinutes(10);
+            // dd($expiry);
 
             $unverifiedCorporatePartner->otp          = rand(1234, 9999);
             $unverifiedCorporatePartner->otp_expiry   = $expiry;
             $unverifiedCorporatePartner->name         = $request->name;
             $unverifiedCorporatePartner->phone        = $request->phone;
+            $unverifiedCorporatePartner->password        = Hash::make($request->password);
             $unverifiedCorporatePartner->role_id      = 3;
             $unverifiedCorporatePartner->save();
+            // dd($unverifiedCorporatePartner);
 
                 $data = [
 
@@ -189,6 +197,7 @@ class CorporatePartnerAuthController extends Controller
                     "otp" => $unverifiedCorporatePartner->otp,
 
                 ];
+                dd($data);
 
             return response()->json(['status' => true, 'message' => 'Corporate Partner Registration Successful!', 'data' => $data]);
         } catch (\Exception $e) {
@@ -213,16 +222,19 @@ class CorporatePartnerAuthController extends Controller
                 return response()->json(['status' => false, 'error' => 'Invalid OTP']);
             }
 
+            // dd($corporatePartner);
             $corporatePartner = new CorporatePartner();
             $corporatePartner->name               = $unverifiedCorporatePartner->name;
             $corporatePartner->phone              = $unverifiedCorporatePartner->phone;
             $corporatePartner->otp                = $unverifiedCorporatePartner->otp;
             $corporatePartner->otp_expiry         = $unverifiedCorporatePartner->otp_expiry;
             $corporatePartner->role_id            = $unverifiedCorporatePartner->role_id;
+            $corporatePartner->password           = $unverifiedCorporatePartner->password;
             $corporatePartner->login_at           = now();
             $corporatePartner->phone_verified_at  = now();
             $corporatePartner->save();
             $corporatePartner->get_corporate_partner_unique_id();
+
 
 
 
@@ -440,6 +452,55 @@ class CorporatePartnerAuthController extends Controller
 
     }
 
+    public function basicInfo(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'email'  => 'required|email',
+                'gender' => 'required|in:male,female',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first()
+                ], 422);
+            }
+
+            $corporatePartner = $request->user();
+
+            // অথবা সরাসরি:
+            // $corporatePartner = Auth::guard('c-api')->user();
+
+            if (!$corporatePartner) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 401);
+            }
+
+            $corporatePartner->update([
+                'email'  => $request->email,
+                'gender' => $request->gender,
+            ]);
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Corporate Partner Basic Info Updated Successfully',
+                'data'    => $corporatePartner->fresh(),
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ], 500);
+        }
+    }
 
 
 }
