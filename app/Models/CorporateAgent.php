@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
+
+class CorporateAgent extends Authenticatable
+{
+    use HasFactory, HasApiTokens, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+        'unique_id',
+        'role_id',
+        'phone_verified_at',
+        'otp',
+        'otp_expiry',
+        'otp_resend_count',
+        'last_otp_resend',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'phone_verified_at' => 'datetime',
+        'otp_expiry' => 'datetime',
+        'last_otp_resend' => 'datetime',
+    ];
+
+
+    public function get_corporate_agent_unique_id()
+    {
+        $id = $this->id;
+        $postfix = '';
+        $prefix = 'CA';
+
+        if ($id >= 100000 && $id <= 1099999) {
+            if ($id <= 199999) {
+                $postfix = 'A';
+                $id -= 100000;
+            } elseif ($id <= 299999) {
+                $postfix = 'B';
+                $id -= 200000;
+            } elseif ($id <= 399999) {
+                $postfix = 'C';
+                $id -= 300000;
+            } elseif ($id <= 499999) {
+                $postfix = 'D';
+                $id -= 400000;
+            } elseif ($id <= 599999) {
+                $postfix = 'E';
+                $id -= 500000;
+            } elseif ($id <= 699999) {
+                $postfix = 'F';
+                $id -= 600000;
+            } elseif ($id <= 799999) {
+                $postfix = 'G';
+                $id -= 700000;
+            } elseif ($id <= 899999) {
+                $postfix = 'H';
+                $id -= 800000;
+            } elseif ($id <= 999999) {
+                $postfix = 'I';
+                $id -= 900000;
+            } elseif ($id <= 1099999) {
+                $postfix = 'J';
+                $id -= 1000000;
+            }
+        }
+
+        $num = sprintf("%05d", $id);
+        $this->unique_id = $prefix . $num . $postfix;
+        $this->save();
+
+        return $this->unique_id;
+    }
+
+    public function get_corporate_partner_unique_id()
+    {
+        return $this->get_corporate_agent_unique_id();
+    }
+}

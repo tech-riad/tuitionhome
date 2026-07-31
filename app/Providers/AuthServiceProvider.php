@@ -30,8 +30,9 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensCan([
             'parents' => 'parents user Type',
             'tutors' => 'tutors user Type',
-            'affiliates' => 'tutors user Type',
+            'affiliates' => 'affiliates user Type',
             'corporate_partners' => 'corporate partners user Type',
+            'corporate_agents' => 'corporate agents user Type',
             'inactive_tutors' => 'inactive tutors user Type',
         ]);
 

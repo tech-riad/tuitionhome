@@ -60,6 +60,10 @@ return [
             'driver' => 'session',
             'provider' => 'corporate_partners',
         ],
+        'corporate_agent' => [
+            'driver' => 'session',
+            'provider' => 'corporate_agents',
+        ],
         'a-api' => [
             'driver' => 'passport',
             'provider' => 'affiliates',
@@ -67,6 +71,10 @@ return [
         'c-api' => [
             'driver' => 'passport',
             'provider' => 'corporate_partners',
+        ],
+        'ca-api' => [
+            'driver' => 'passport',
+            'provider' => 'corporate_agents',
         ],
         'p-api' => [
             'driver' => 'passport',
@@ -124,6 +132,10 @@ return [
         'corporate_partners' => [
             'driver' => 'eloquent',
             'model' => App\Models\CorporatePartner::class,
+        ],
+        'corporate_agents' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\CorporateAgent::class,
         ],
 
         // 'users' => [

@@ -1,0 +1,14 @@
+<?php
+
+use App\Http\Controllers\Frontend\Api\CorporateAgent\CorporateAgentAuthController;
+use Illuminate\Support\Facades\Route;
+
+Route::post('/corporate-agent/register', [CorporateAgentAuthController::class, 'register']);
+Route::post('/corporate-agent/login', [CorporateAgentAuthController::class, 'login']);
+Route::post('/corporate-agent/verify-phone', [CorporateAgentAuthController::class, 'verifyPhone']);
+Route::post('/corporate-agent/resend-otp', [CorporateAgentAuthController::class, 'resendOtp']);
+
+Route::group(['middleware' => ['auth:ca-api', 'scopes:corporate_agents']], function () {
+    Route::post('/corporate-agent/logout', [CorporateAgentAuthController::class, 'logout']);
+    Route::post('/corporate-agent/basic-info', [CorporateAgentAuthController::class, 'basicInfo']);
+});
