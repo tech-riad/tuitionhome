@@ -16,10 +16,10 @@ class CreateCorporatePartnersTable extends Migration
         Schema::create('corporate_partners', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('phone')->unique();
             $table->enum('gender', ['male', 'female'])->default('male');
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('unique_id')->nullable();
             $table->string('image')->nullable();
             $table->string('role_id')->default('3');

@@ -9,6 +9,6 @@ Route::post('/corporate-agent/verify-phone', [CorporateAgentAuthController::clas
 Route::post('/corporate-agent/resend-otp', [CorporateAgentAuthController::class, 'resendOtp']);
 
 Route::group(['middleware' => ['auth:ca-api', 'scopes:corporate_agents']], function () {
-    Route::post('/corporate-agent/logout', [CorporateAgentAuthController::class, 'logout']);
     Route::post('/corporate-agent/basic-info', [CorporateAgentAuthController::class, 'basicInfo']);
+    Route::post('/corporate-agent/logout', [CorporateAgentAuthController::class, 'logout']);
 });

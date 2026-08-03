@@ -14,7 +14,7 @@ class CreateCorporateAgentsTable extends Migration
             $table->string('email')->nullable()->unique();
             $table->string('phone')->unique();
             $table->enum('gender', ['male', 'female'])->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('unique_id')->nullable();
             $table->string('image')->nullable();
             $table->string('role_id')->default('4');

@@ -14,7 +14,7 @@ class CreateUnverifiedCorporateAgentsTable extends Migration
             $table->string('email')->nullable()->unique();
             $table->string('phone')->unique();
             $table->enum('gender', ['male', 'female'])->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('role_id')->default('3');
             $table->timestamp('phone_verified_at')->nullable();
             $table->timestamp('otp_expiry')->nullable();

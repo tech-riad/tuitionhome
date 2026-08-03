@@ -16,10 +16,10 @@ class CreateUnverifiedCorporatePartnersTable extends Migration
         Schema::create('unverified_corporate_partners', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('phone')->unique();
             $table->enum('gender', ['male', 'female'])->default('male');
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('role_id')->default('3');
             $table->timestamp('phone_verified_at')->nullable();
             $table->timestamp('otp_expiry')->nullable();
