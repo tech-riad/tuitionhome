@@ -33,6 +33,7 @@ class CreateCorporatePartnersTable extends Migration
             $table->enum('is_sms', ['0', '1'])->default('1');
             $table->string('balances')->nullable();
             $table->string('otp_resend_count')->nullable();
+            $table->timestamp('login_at')->nullable();
             $table->timestamps();
         });
     }

@@ -197,7 +197,7 @@ class CorporatePartnerAuthController extends Controller
                     "otp" => $unverifiedCorporatePartner->otp,
 
                 ];
-                dd($data);
+                // dd($data);
 
             return response()->json(['status' => true, 'message' => 'Corporate Partner Registration Successful!', 'data' => $data]);
         } catch (\Exception $e) {
