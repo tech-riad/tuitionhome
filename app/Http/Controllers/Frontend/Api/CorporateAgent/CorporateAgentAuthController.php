@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Api\CorporateAgent;
 use App\Http\Controllers\Controller;
 use App\Models\CorporateAgent;
 use App\Models\UnverifiedCorporateAgent;
+use App\Transformers\CorporateAgentResource;
 use App\Services\AdnSmsService;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
@@ -123,7 +124,7 @@ class CorporateAgentAuthController extends Controller
 
             $unverified->delete();
 
-            return response()->json(['status' => true, 'message' => 'Corporate agent verified successfully.', 'data' => ['token' => $token, 'user' => $corporateAgent]]);
+            return response()->json(['status' => true, 'message' => 'Corporate agent verified successfully.', 'data' => ['token' => $token, 'user' => new CorporateAgentResource($corporateAgent)]]);
         } catch (Exception $e) {
             return response()->json(['status' => false, 'error' => 'Internal Server Error'], 500);
         }
@@ -198,7 +199,7 @@ class CorporateAgentAuthController extends Controller
             }
 
             $token = $this->createCustomToken($agent, 'corporate_agents');
-            return response()->json(['status' => true, 'message' => 'Login successfully!', 'token' => $token, 'user' => $agent]);
+            return response()->json(['status' => true, 'message' => 'Login successfully!', 'token' => $token, 'user' => new CorporateAgentResource($agent)]);
         } catch (Exception $e) {
             return response()->json(['status' => false, 'error' => 'Internal Server Error'], 500);
         }
@@ -216,6 +217,6 @@ class CorporateAgentAuthController extends Controller
 
     public function basicInfo(Request $request)
     {
-        return $this->resposeSuccess('Corporate agent is authenticated', $request->user());
+        return $this->resposeSuccess('Corporate agent is authenticated', new CorporateAgentResource($request->user()));
     }
 }

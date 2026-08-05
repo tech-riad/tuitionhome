@@ -40,6 +40,8 @@ class ImportTutors extends Command
         $skipped  = 0;
         $errors   = 0;
 
+        $duplicatePhone = 0;
+        $duplicateEmail = 0;
         while (($row = fgetcsv($handle)) !== false) {
 
             try {
@@ -82,7 +84,12 @@ class ImportTutors extends Command
                     $phone = substr($phone, 2);
                 }
 
-                // Invalid phone skip
+                // 1892918694 -> 01892918694
+                if (preg_match('/^1[3-9][0-9]{8}$/', $phone)) {
+                    $phone = '0' . $phone;
+                }
+
+                // Invalid Phone
                 if (!preg_match('/^01[3-9][0-9]{8}$/', $phone)) {
                     $errors++;
                     $this->warn("Invalid Phone: {$phone}");
@@ -91,32 +98,34 @@ class ImportTutors extends Command
 
                 // Duplicate Phone
                 if (Tutor::where('phone', $phone)->exists()) {
+                    $duplicatePhone++;
                     $skipped++;
                     continue;
                 }
 
                 // Duplicate Email
                 if (!empty($email) && Tutor::where('email', $email)->exists()) {
+                    $duplicateEmail++;
                     $skipped++;
                     continue;
                 }
 
                 // Create Tutor
                 $tutor = Tutor::create([
-                    'name'        => $name,
-                    'email'       => $email ?: null,
-                    'phone'       => $phone,
-                    'password'    => Hash::make('12345678'),
-                    'role_id'     => 3,
-                    'gender'      => in_array($gender, ['male', 'female']) ? $gender : 'male',
-                    'status'      => 1,
-                    'is_verified' => 0,
-                    'is_active'   => 1,
-                    'phone_varified_at' => now(),
-                    'otp'         => rand(1000, 9999),
-                    "otp_expiry" => now()->addMinutes(10),
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
+                    'name'               => $name,
+                    'email'              => $email ?: null,
+                    'phone'              => $phone,
+                    'password'           => Hash::make('12345678'),
+                    'role_id'            => 3,
+                    'gender'             => in_array($gender, ['male', 'female']) ? $gender : 'male',
+                    'status'             => 1,
+                    'is_verified'        => 0,
+                    'is_active'          => 1,
+                    'phone_varified_at'  => now(),
+                    'otp'                => rand(1000, 9999),
+                    'otp_expiry'         => now()->addMinutes(10),
+                    'created_at'         => now(),
+                    'updated_at'         => now(),
                 ]);
 
                 // Generate Unique ID
@@ -125,7 +134,7 @@ class ImportTutors extends Command
                 $inserted++;
 
                 if ($inserted % 100 == 0) {
-                    $this->info("Imported : {$inserted}");
+                    $this->info("Imported: {$inserted}");
                 }
 
             } catch (\Throwable $e) {
@@ -137,7 +146,6 @@ class ImportTutors extends Command
                 );
             }
         }
-
         fclose($handle);
 
         $this->newLine();
