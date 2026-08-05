@@ -107,7 +107,7 @@ class ImportTutors extends Command
                     'email'       => $email ?: null,
                     'phone'       => $phone,
                     'password'    => Hash::make('12345678'),
-                    'role_id'     => 2,
+                    'role_id'     => 3,
                     'gender'      => in_array($gender, ['male', 'female']) ? $gender : 'male',
                     'status'      => 1,
                     'is_verified' => 0,
