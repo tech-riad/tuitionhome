@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Api\CorporatePartner;
 use App\Http\Controllers\Controller;
 use App\Models\CorporatePartner;
 use App\Models\UnverifiedCorporatePartner;
+use App\Transformers\CorporatePartnerResource;
 use App\Services\AdnSmsService;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
@@ -113,7 +114,7 @@ class CorporatePartnerAuthController extends Controller
                 if($corporate_partner->phone_verified_at != null)
                 {
                     $token = $this->createCustomToken($corporate_partner, 'corporate_partners');
-                    return response()->json(['status' => true, 'message' => 'Login Successfully!', 'token' => $token, 'user' => $corporate_partner]);
+                    return response()->json(['status' => true, 'message' => 'Login Successfully!', 'token' => $token, 'user' => new CorporatePartnerResource($corporate_partner)]);
                 }else
                 {
                  return response()->json(['status'=>false,'message'=>'Please verified your phone']);
@@ -488,7 +489,7 @@ class CorporatePartnerAuthController extends Controller
             return response()->json([
                 'status'  => true,
                 'message' => 'Corporate Partner Basic Info Updated Successfully',
-                'data'    => $corporatePartner->fresh(),
+                'data'    => new CorporatePartnerResource($corporatePartner->fresh()),
             ]);
 
         } catch (\Exception $e) {

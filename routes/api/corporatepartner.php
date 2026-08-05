@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Frontend\Api\CorporatePartner\CorporatePartnerAuthController;
+use App\Http\Controllers\Frontend\Api\CorporatePartner\CorporatePartnerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,5 +24,7 @@ Route::post('/corporate-partner/phone-verify',[CorporatePartnerAuthController::c
 Route::group( ['middleware' => ['auth:c-api','scopes:corporate_partners'] ],function(){
     Route::post('/corporate-partner/logout',[CorporatePartnerAuthController::class,'logout']);
     Route::post('/corporate-partner/basic-info',[CorporatePartnerAuthController::class,'basicInfo']);
+
+    Route::get('/get-corporate-partner',[CorporatePartnerController::class,'getCorporatePartner']);
 
 });
