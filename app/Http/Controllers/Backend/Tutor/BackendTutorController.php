@@ -1488,6 +1488,7 @@ public function updateStatus(Request $request, $id)
         ->select(
             'tutors.id',
             'tutors.name',
+            'tutors.gender',
             'tutors.unique_id',
             'tutors.phone',
             'tutors.is_active',

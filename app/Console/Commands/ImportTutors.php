@@ -37,11 +37,13 @@ class ImportTutors extends Command
         fgetcsv($handle);
 
         $inserted = 0;
-        $skipped  = 0;
-        $errors   = 0;
+        $skipped = 0;
 
         $duplicatePhone = 0;
         $duplicateEmail = 0;
+        $invalidPhone = 0;
+        $rowErrors = 0;
+
         while (($row = fgetcsv($handle)) !== false) {
 
             try {
@@ -53,6 +55,7 @@ class ImportTutors extends Command
 
                 // Empty phone
                 if (empty($phone)) {
+                    $invalidPhone++;
                     $skipped++;
                     continue;
                 }
@@ -61,19 +64,10 @@ class ImportTutors extends Command
                 // Phone Normalize
                 // --------------------
 
-                // Remove p:
                 $phone = str_replace('p:', '', $phone);
-
-                // Remove +
                 $phone = str_replace('+', '', $phone);
-
-                // Remove spaces
                 $phone = str_replace(' ', '', $phone);
-
-                // Remove dash
                 $phone = str_replace('-', '', $phone);
-
-                // Remove brackets
                 $phone = str_replace(['(', ')'], '', $phone);
 
                 // Keep only digits
@@ -89,10 +83,13 @@ class ImportTutors extends Command
                     $phone = '0' . $phone;
                 }
 
-                // Invalid Phone
+                // Invalid phone
                 if (!preg_match('/^01[3-9][0-9]{8}$/', $phone)) {
-                    $errors++;
+                    $invalidPhone++;
+                    $skipped++;
+
                     $this->warn("Invalid Phone: {$phone}");
+
                     continue;
                 }
 
@@ -112,20 +109,20 @@ class ImportTutors extends Command
 
                 // Create Tutor
                 $tutor = Tutor::create([
-                    'name'               => $name,
-                    'email'              => $email ?: null,
-                    'phone'              => $phone,
-                    'password'           => Hash::make('12345678'),
-                    'role_id'            => 3,
-                    'gender'             => in_array($gender, ['male', 'female']) ? $gender : 'male',
-                    'status'             => 1,
-                    'is_verified'        => 0,
-                    'is_active'          => 1,
-                    'phone_varified_at'  => now(),
-                    'otp'                => rand(1000, 9999),
-                    'otp_expiry'         => now()->addMinutes(10),
-                    'created_at'         => now(),
-                    'updated_at'         => now(),
+                    'name'              => $name,
+                    'email'             => $email ?: null,
+                    'phone'             => $phone,
+                    'password'          => Hash::make('12345678'),
+                    'role_id'           => 3,
+                    'gender'            => in_array($gender, ['male', 'female']) ? $gender : 'male',
+                    'status'            => 1,
+                    'is_verified'       => 0,
+                    'is_active'         => 1,
+                    'phone_varified_at' => now(),
+                    'otp'               => rand(1000, 9999),
+                    'otp_expiry'        => now()->addMinutes(10),
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
                 ]);
 
                 // Generate Unique ID
@@ -134,27 +131,37 @@ class ImportTutors extends Command
                 $inserted++;
 
                 if ($inserted % 100 == 0) {
-                    $this->info("Imported: {$inserted}");
+                    $this->info("Imported : {$inserted}");
                 }
 
             } catch (\Throwable $e) {
 
-                $errors++;
+                $rowErrors++;
+                $skipped++;
 
                 $this->error(
                     "Row Error: " . ($row[0] ?? 'Unknown') . " | " . $e->getMessage()
                 );
             }
         }
+
         fclose($handle);
 
+        $totalProcessed = $inserted + $skipped;
+
         $this->newLine();
-        $this->info("==================================");
-        $this->info("Import Completed");
-        $this->info("Inserted : {$inserted}");
-        $this->warn("Skipped  : {$skipped}");
-        $this->error("Errors   : {$errors}");
-        $this->info("==================================");
+        $this->info("=========================================");
+        $this->info("          IMPORT COMPLETED");
+        $this->info("=========================================");
+        $this->info("Total Processed      : {$totalProcessed}");
+        $this->info("Total Inserted       : {$inserted}");
+        $this->warn("Total Not Inserted   : {$skipped}");
+        $this->line("-----------------------------------------");
+        $this->warn("Duplicate Phone      : {$duplicatePhone}");
+        $this->warn("Duplicate Email      : {$duplicateEmail}");
+        $this->warn("Invalid Phone Format : {$invalidPhone}");
+        $this->error("Row Errors           : {$rowErrors}");
+        $this->info("=========================================");
 
         return Command::SUCCESS;
     }

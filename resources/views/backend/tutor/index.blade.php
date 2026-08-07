@@ -103,7 +103,7 @@
 
                             <th scope="col" class="text-nowrap">University</th>
                             <th scope="col" class="text-nowrap">Department</th>
-                            <th scope="col" class="text-nowrap">gender</th>
+                            <th scope="col" class="text-nowrap">Gender</th>
                             <th scope="col" class="text-nowrap">Address</th>
                             <th scope="col" class="text-nowrap">Verified By</th>
                             <th scope="col" class="text-nowrap">Phone</th>
@@ -238,6 +238,7 @@
                             <td class="text-nowrap">
                                 {{Str::limit($graduation->department ?? $graduation->departments->title ?? 'NA', 10)}}
                             </td>
+
                             <td class="text-nowrap">{{$tutor->gender}}</td>
 
                             <td style="width: 10px" class="text-wrap">
@@ -596,10 +597,10 @@
 
                                 @endif
 
-                                
 
-                                
-                                
+
+
+
 
                                 <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
                                     data-bs-toggle="modal" data-bs-target="#tutorNoteModal">

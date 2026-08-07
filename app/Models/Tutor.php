@@ -348,7 +348,7 @@ class Tutor extends Authenticatable
                 $count+=2;
             }
 
-            
+
 
         }
         if ($education != null) {
@@ -515,45 +515,45 @@ class Tutor extends Authenticatable
     $postfix = ''; // <-- define default
 
     if ($id >= 1 && $id <= 99999) {
-        $prefix = 'A';
+        $prefix = 'T';
     } elseif ($id >= 100000 && $id <= 199999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'A';
         $id -= 100000;
     } elseif ($id >= 200000 && $id <= 299999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'B';
         $id -= 200000;
     } elseif ($id >= 300000 && $id <= 399999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'C';
         $id -= 300000;
     } elseif ($id >= 400000 && $id <= 499999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'D';
         $id -= 400000;
     } elseif ($id >= 500000 && $id <= 599999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'E';
         $id -= 500000;
     } elseif ($id >= 600000 && $id <= 699999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'F';
         $id -= 600000;
     } elseif ($id >= 700000 && $id <= 799999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'G';
         $id -= 700000;
     } elseif ($id >= 800000 && $id <= 899999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'H';
         $id -= 800000;
     } elseif ($id >= 900000 && $id <= 999999) {
-        $prefix = 'A';
+        $prefix = 'TH';
         $postfix = 'I';
         $id -= 900000;
     } elseif ($id >= 1000000 && $id <= 1099999) {
-        $prefix = 'A';
+        $prefix = 'T';
         $postfix = 'J';
         $id -= 1000000;
     }
