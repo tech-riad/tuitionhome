@@ -50,49 +50,49 @@ class Parents extends Authenticatable
         $postfix = '';
 
         if ($id >= 1 && $id <= 99999) {
-            $prefix = 'P';
+            $prefix = 'F';
         } elseif ($id >= 100000 && $id <= 199999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'A';
             $id -= 100000;
         } elseif ($id >= 200000 && $id <= 299999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'B';
             $id -= 200000;
         }
          elseif ($id >= 300000 && $id <= 399999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'C';
             $id -= 300000;
         } elseif ($id >= 400000 && $id <= 499999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'D';
             $id -= 400000;
         } elseif ($id >= 500000 && $id <= 599999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'E';
             $id -= 500000;
         }
          elseif ($id >= 600000 && $id <= 699999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'F';
             $id -= 600000;
         } elseif ($id >= 700000 && $id <= 799999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'G';
             $id -= 700000;
         }
          elseif ($id >= 800000 && $id <= 899999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'H';
             $id -= 800000;
         } elseif ($id >= 900000 && $id <= 999999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'I';
             $id -= 900000;
         }
          elseif ($id >= 1000000 && $id <= 1099999) {
-            $prefix = 'P';
+            $prefix = 'F';
             $postfix = 'J';
             $id -= 1000000;
         }
