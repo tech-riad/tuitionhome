@@ -1,13 +1,13 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="{{ url('/home') }}" class="brand-link" style="background-color: #008749">
-        <img src="https://assets.infyom.com/logo/blue_logo_150x150.png"
+        <img src="{{asset('/main-logo.png')}}"
              alt="{{ config('app.name') }} Logo"
              class="brand-image img-circle elevation-3">
         <span class="brand-text font-weight-light">{{ config('app.name') }}</span>
     </a>
     <div class="user-panel">
 
-            <img src="https://assets.infyom.com/logo/blue_logo_150x150.png" class="img-circle" style="width: 50px; height: 50px"/>
+            <img src="{{asset('/main-logo.png')}}" class="img-circle" style="width: 50px; height: 50px"/>
 
             <span class="text-white ml-2">{{ Auth::user()->name }}</span>
             <!-- Status -->
