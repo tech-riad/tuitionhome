@@ -11,7 +11,7 @@ class CorporateAgentCOntroller extends Controller
     //
     public function getCorporateAgent(Request $request)
     {
-      ;
+      
         $corporateAgent =new CorporateAgentResource(auth()->user());
 
 
