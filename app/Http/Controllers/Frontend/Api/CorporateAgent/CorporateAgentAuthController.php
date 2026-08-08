@@ -52,7 +52,6 @@ class CorporateAgentAuthController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
-                'email' => 'nullable|email|unique:corporate_agents,email|unique:unverified_corporate_agents,email',
                 'phone' => 'required|regex:/(01)[0-9]{9}/|unique:corporate_agents,phone|unique:unverified_corporate_agents,phone',
                 'password' => 'required|min:6',
                 'confirm_password' => 'required|same:password',
@@ -66,7 +65,6 @@ class CorporateAgentAuthController extends Controller
 
             $unverified = UnverifiedCorporateAgent::create([
                 'name' => $request->name,
-                'email' => $request->email,
                 'phone' => $request->phone,
                 'password' => Hash::make($request->password),
                 'role_id' => '3',
@@ -108,7 +106,6 @@ class CorporateAgentAuthController extends Controller
 
             $corporateAgent = CorporateAgent::create([
                 'name' => $unverified->name,
-                'email' => $unverified->email,
                 'phone' => $unverified->phone,
                 'password' => $unverified->password,
                 'role_id' => $unverified->role_id,
