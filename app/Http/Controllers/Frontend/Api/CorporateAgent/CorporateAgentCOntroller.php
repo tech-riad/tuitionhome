@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Api\CorporateAgent;
 
 use App\Http\Controllers\Controller;
+use App\Models\AgentContactInfo;
 use App\Models\AgentPersonalInfo;
 use App\Transformers\CorporateAgentResource;
 use Illuminate\Http\Request;
@@ -44,6 +45,33 @@ class CorporateAgentCOntroller extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Personal information saved successfully.',
+            'data' => new CorporateAgentResource($user->fresh())
+        ]);
+    }
+    public function updateContactInfo(Request $request)
+    {
+        $user = auth()->user();
+
+        AgentContactInfo::updateOrCreate(
+            [
+                'agent_id' => $user->id,
+            ],
+            [
+                'country_id' => $request->country_id,
+                'city_id' => $request->city_id,
+                'location_id' => $request->location_id,
+                'address' => $request->address,
+                'additional_phone' => $request->additional_phone,
+                'whatsapp' => $request->whatsapp,
+                'facebook' => $request->facebook,
+                'personal_opinion' => $request->personal_opinion,
+            ]
+        );
+
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Contact information updated successfully.',
             'data' => new CorporateAgentResource($user->fresh())
         ]);
     }

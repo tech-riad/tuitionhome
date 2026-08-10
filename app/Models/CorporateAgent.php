@@ -93,4 +93,9 @@ class CorporateAgent extends Authenticatable
     {
         return $this->hasOne(AgentPersonalInfo::class, 'agent_id', 'id');
     }
+    public function contactInfo()
+    {
+        return $this->hasOne(AgentContactInfo::class, 'agent_id', 'id');
+    }
+
 }

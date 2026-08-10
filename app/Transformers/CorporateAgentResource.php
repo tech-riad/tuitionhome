@@ -36,6 +36,16 @@ class CorporateAgentResource extends JsonResource
                 'institute_designation' => $this->personalInfo->institute_designation,
                 'work_experience' => $this->personalInfo->work_experience,
             ] : null,
+            'contact_info' => $this->contactInfo ? [
+                'country_id' => $this->contactInfo->country_id,
+                'city_id' => $this->contactInfo->city_id,
+                'location_id' => $this->contactInfo->location_id,
+                'address' => $this->contactInfo->address,
+                'additional_phone' => $this->contactInfo->additional_phone,
+                'whatsapp' => $this->contactInfo->whatsapp,
+                'facebook' => $this->contactInfo->facebook,
+                'personal_opinion' => $this->contactInfo->personal_opinion,
+            ] : null,
         ];
     }
 }
