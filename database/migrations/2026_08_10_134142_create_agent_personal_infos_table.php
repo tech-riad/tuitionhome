@@ -15,7 +15,7 @@ class CreateAgentPersonalInfosTable extends Migration
     {
         Schema::create('agent_personal_infos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('agent_id');
+            $table->unsignedBigInteger('agent_id')->unique();
             $table->timestamp('date_of_birth')->nullable();
             $table->string('profession')->nullable();
             $table->string('known_from')->nullable();

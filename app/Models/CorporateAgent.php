@@ -88,4 +88,9 @@ class CorporateAgent extends Authenticatable
     {
         return $this->get_corporate_agent_unique_id();
     }
+
+    public function personalInfo()
+    {
+        return $this->hasOne(AgentPersonalInfo::class, 'agent_id', 'id');
+    }
 }

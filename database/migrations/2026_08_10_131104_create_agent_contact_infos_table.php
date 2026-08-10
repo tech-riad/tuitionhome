@@ -15,7 +15,7 @@ class CreateAgentContactInfosTable extends Migration
     {
         Schema::create('agent_contact_infos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('agent_id');
+            $table->unsignedBigInteger('agent_id')->unique();
             $table->string('country_id')->nullable();
             $table->string('city_id')->nullable();
             $table->string('location_id')->nullable();
