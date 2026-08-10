@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -214,6 +215,51 @@ class CorporateAgentAuthController extends Controller
 
     public function basicInfo(Request $request)
     {
-        return $this->resposeSuccess('Corporate agent is authenticated', new CorporateAgentResource($request->user()));
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'email'  => 'required|email',
+                'gender' => 'required|in:male,female',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first()
+                ], 422);
+            }
+
+            $corporateAgent = auth()->user(); // Assuming the user is authenticated and you want to get the currently logged-in corporate agent
+
+            // অথবা সরাসরি:
+            // $corporateAgent = Auth::guard('c-api')->user();
+
+            if (!$corporateAgent) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 401);
+            }
+
+            $corporateAgent->update([
+                'email'  => $request->email,
+                'gender' => $request->gender,
+            ]);
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Corporate Agent Basic Info Updated Successfully',
+                'data'    => new CorporateAgentResource($corporateAgent->fresh()),
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ], 500);
+        }
     }
 }

@@ -469,7 +469,7 @@ class CorporatePartnerAuthController extends Controller
                 ], 422);
             }
 
-            $corporatePartner = $request->user();
+            $corporatePartner = auth()->user(); // Assuming the user is authenticated and you want to get the currently logged-in corporate agent
 
             // অথবা সরাসরি:
             // $corporatePartner = Auth::guard('c-api')->user();
