@@ -75,4 +75,13 @@ class CorporatePartner extends Authenticatable
     {
         return $this->get_affiliate_unique_id();
     }
+
+    public function personalInfo()
+    {
+        return $this->hasOne(PartnerPersonalInfo::class, 'partner_id', 'id');
+    }
+    public function contactInfo()
+    {
+        return $this->hasOne(PartnerContactInfo::class, 'partner_id', 'id');
+    }
 }

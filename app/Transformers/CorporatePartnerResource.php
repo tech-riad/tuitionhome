@@ -31,6 +31,25 @@ class CorporatePartnerResource extends JsonResource
             'login_at' => $this->login_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'personal_info' => $this->personalInfo ? [
+                'date_of_birth' => $this->personalInfo->date_of_birth,
+                'profession' => $this->personalInfo->profession,
+                'known_from' => $this->personalInfo->known_from,
+                'institute' => $this->personalInfo->institute,
+                'institute_category' => $this->personalInfo->institute_category,
+                'institute_designation' => $this->personalInfo->institute_designation,
+                'work_experience' => $this->personalInfo->work_experience,
+            ] : null,
+            'contact_info' => $this->contactInfo ? [
+                'country_id' => $this->contactInfo->country_id,
+                'city_id' => $this->contactInfo->city_id,
+                'location_id' => $this->contactInfo->location_id,
+                'address' => $this->contactInfo->address,
+                'additional_phone' => $this->contactInfo->additional_phone,
+                'whatsapp' => $this->contactInfo->whatsapp,
+                'facebook' => $this->contactInfo->facebook,
+                'personal_opinion' => $this->contactInfo->personal_opinion,
+            ] : null,
         ];
     }
 }

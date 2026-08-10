@@ -25,6 +25,10 @@ Route::group( ['middleware' => ['auth:c-api','scopes:corporate_partners'] ],func
     Route::post('/corporate-partner/logout',[CorporatePartnerAuthController::class,'logout']);
     Route::post('/corporate-partner/basic-info',[CorporatePartnerAuthController::class,'basicInfo']);
 
+
     Route::get('/get-corporate-partner',[CorporatePartnerController::class,'getCorporatePartner']);
+
+    Route::post('/corporate-partner/update-personal-info', [CorporatePartnerController::class, 'updatePersonalInfo']);
+    Route::post('/corporate-partner/update-contact-info', [CorporatePartnerController::class, 'updateContactInfo']);
 
 });
