@@ -9,6 +9,11 @@ Route::post('/corporate-agent/login', [CorporateAgentAuthController::class, 'log
 Route::post('/corporate-agent/verify-phone', [CorporateAgentAuthController::class, 'verifyPhone']);
 Route::post('/corporate-agent/resend-otp', [CorporateAgentAuthController::class, 'resendOtp']);
 
+
+Route::post('/corporate-agent/forgot-password',[CorporateAgentAuthController::class,'checkPhone']);
+Route::post('/corporate-agent/update-password',[CorporateAgentAuthController::class,'updatePassword']);
+Route::post('/corporate-agent/phone-verify',[CorporateAgentAuthController::class,'verifyOtpAndSavePassword']);
+
 Route::group(['middleware' => ['auth:ca-api', 'scopes:corporate_agents']], function () {
     Route::post('/corporate-agent/basic-info', [CorporateAgentAuthController::class, 'basicInfo']);
     Route::post('/corporate-agent/logout', [CorporateAgentAuthController::class, 'logout']);

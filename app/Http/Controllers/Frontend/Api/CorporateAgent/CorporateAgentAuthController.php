@@ -262,4 +262,142 @@ class CorporateAgentAuthController extends Controller
             ], 500);
         }
     }
+
+
+    public function checkPhone(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required|regex:/(01)[0-9]{9}/',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $phone = $request->phone;
+
+            $corporateAgentPasswordReset = CorporateAgent::where('phone', $phone)->first();
+
+            if ($corporateAgentPasswordReset === null) {
+                return response()->json(['status' => false, 'message' => 'User Not Found!']);
+            } elseif ($corporateAgentPasswordReset->phone !== $phone) {
+                return response()->json(['status' => false, 'message' => 'Invalid phone number for the user!']);
+            } else {
+                $otpRequestLimit = 1;
+                $otpRequestTimeFrame = 120;
+
+                $cacheKey = 'otp_request_count_' . $corporateAgentPasswordReset->phone;
+                $otpRequestCount = Cache::get($cacheKey, 0);
+
+                if ($otpRequestCount >= $otpRequestLimit) {
+                    return response()->json(['status' => false, 'message' => 'You can only request one OTP every 2 minutes. Please try again later.']);
+                }
+
+                Cache::put($cacheKey, $otpRequestCount + 1, now()->addSeconds($otpRequestTimeFrame));
+
+                $otpResendLimit = 3;
+                $otpResendTimeFrame = 24 * 60;
+
+                if ($corporateAgentPasswordReset->otp_resend_count >= $otpResendLimit && Carbon::now()->diffInMinutes($corporateAgentPasswordReset->last_otp_resend) < $otpResendTimeFrame) {
+                    return $this->resposeError('You have reached the maximum OTP resend limit for today. Please try again after 24 hours. Or contact TuitionHome Admin over the phone', '');
+                }
+
+                $phone_otp = rand(1234, 9999);
+                $otpExpiry = now()->addMinutes(10);
+                $corporateAgentPasswordReset->otp = $phone_otp;
+                $corporateAgentPasswordReset->otp_expiry = $otpExpiry;
+
+                // $this->sendOtpToUser($request->phone, 'Your password recovery OTP for "TuitionHome" is: ' . $phone_otp, $corporateAgentPasswordReset->id);
+
+                // Update OTP resend count and timestamp
+                $corporateAgentPasswordReset->otp_resend_count += 1;
+                $corporateAgentPasswordReset->last_otp_resend = now();
+                $corporateAgentPasswordReset->save();
+
+                return response()->json(['status' => true, 'message' => 'OTP sent successfully!', 'phone' => $corporateAgentPasswordReset->phone,'otp' => $corporateAgentPasswordReset->otp]);
+            }
+        } catch (ValidationException $e) {
+            return response()->json(['status' => false, 'error' => $e->errors()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+     public function updatePassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'corporate_agent_id' => 'required',
+                'new_password'         => 'required|min:6',
+                'confirm_password'     => 'required|same:new_password',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $current_user = CorporateAgent::find($request->corporate_agent_id);
+
+
+            if ($current_user) {
+                if ($current_user->otp_expiry > $current_user->phone_verified_at ){
+                    $current_user->password = Hash::make($request->new_password);
+                    $current_user->save();
+
+                    return response()->json(['status' => true, 'message' => 'Password changed successfully!']);
+
+            }
+            else{
+                return response()->json(['status' => false, 'message' => 'verified phone first!']);
+            }
+        }
+
+        } catch (Exception $e) {
+
+        }
+    }
+
+    public function verifyOtpAndSavePassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required|exists:corporate_agents,phone',
+                'phone_otp'   => 'required|numeric',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'error' => $validator->errors()]);
+            }
+
+            $corporate_agent = CorporateAgent::where('phone',$request->phone)->first();
+            if ($corporate_agent) {
+                if ($corporate_agent->otp && Carbon::now()->lt($corporate_agent->otp_expiry)) {
+                    if ($corporate_agent->otp == $request->phone_otp) {
+                        $corporate_agent->phone_verified_at = now();
+                        $corporate_agent->save();
+
+                        $data = [
+                            'corporate_agent_id' => $corporate_agent->id,
+                            'corporate_agent_phone' => $corporate_agent->phone,
+                            'otp' => $corporate_agent->otp,
+                        ];
+                        return response()->json(['status' => true, 'message' => 'Phone verified successfully!', 'data' => $data]);
+                    } else {
+                        return $this->resposeError('Your OTP is invalid!', '');
+                    }
+                } else {
+                    return $this->resposeError('Your OTP is expired! Resend OTP and try again.', '');
+                }
+            } else {
+                return $this->resposeError('User not found!', '');
+            }
+
+
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json(['status' => false, 'error' => 'Internal Server Error'], 500);
+        }
+
+    }
 }
