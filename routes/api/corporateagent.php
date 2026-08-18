@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/corporate-agent/register', [CorporateAgentAuthController::class, 'register']);
 Route::post('/corporate-agent/login', [CorporateAgentAuthController::class, 'login']);
-Route::post('/corporate-agent/verify-phone', [CorporateAgentAuthController::class, 'verifyPhone']);
+Route::post('/corporate-agent/phone-verified', [CorporateAgentAuthController::class, 'verifyPhone']);
 Route::post('/corporate-agent/resend-otp', [CorporateAgentAuthController::class, 'resendOtp']);
 
 

@@ -5,7 +5,6 @@ use App\Http\Controllers\Frontend\Api\CorporatePartner\CorporatePartnerControlle
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/corporate-partner/register',[CorporatePartnerAuthController::class,'register']);
 Route::post('/corporate-partner/login',[CorporatePartnerAuthController::class,'login']);
 
 
@@ -13,7 +12,7 @@ Route::post('/corporate-partner/verify-phone',[CorporatePartnerAuthController::c
 // Route::post('/corporate-partner/resend/otp',[CorporatePartnerAuthController::class, 'resendRegisterOtp']);
 Route::post('/corporate-partner/change-phone',[CorporatePartnerAuthController::class, 'phoneChange']);
 
-
+Route::post('/corporate-partner/register',[CorporatePartnerAuthController::class,'register']);
 Route::post('/corporate-partner/phone-verified',[CorporatePartnerAuthController::class,'verifyOtpAndSave']);
 Route::post('/corporate-partner/register/resend/otp',[CorporatePartnerAuthController::class,'resendRegisterOtp']);
 
