@@ -21,6 +21,7 @@ class CorporatePartner extends Authenticatable
         'password',
         'unique_id',
         'status',
+        'gender',
     ];
     public function get_affiliate_unique_id()
     {
