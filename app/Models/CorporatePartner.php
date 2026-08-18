@@ -28,38 +28,39 @@ class CorporatePartner extends Authenticatable
         $postfix = ''; // Initialize $postfix here
 
         if ($id >= 1 && $id <= 99999) {
-            $prefix = 'CP';
+            $prefix = 'P';
+            $postfix = 'A';
         } elseif ($id >= 100000 && $id <= 1099999) {
-            $prefix = 'CP';
+            $prefix = 'P';
             if ($id <= 199999) {
-                $postfix = 'A';
+                $postfix = 'B';
                 $id -= 100000;
             } elseif ($id <= 299999) {
-                $postfix = 'B';
+                $postfix = 'C';
                 $id -= 200000;
             } elseif ($id <= 399999) {
-                $postfix = 'C';
+                $postfix = 'D';
                 $id -= 300000;
             } elseif ($id <= 499999) {
-                $postfix = 'D';
+                $postfix = 'E';
                 $id -= 400000;
             } elseif ($id <= 599999) {
-                $postfix = 'E';
+                $postfix = 'F';
                 $id -= 500000;
             } elseif ($id <= 699999) {
-                $postfix = 'F';
+                $postfix = 'G';
                 $id -= 600000;
             } elseif ($id <= 799999) {
-                $postfix = 'G';
+                $postfix = 'H';
                 $id -= 700000;
             } elseif ($id <= 899999) {
-                $postfix = 'H';
+                $postfix = 'I';
                 $id -= 800000;
             } elseif ($id <= 999999) {
-                $postfix = 'I';
+                $postfix = 'J';
                 $id -= 900000;
             } elseif ($id <= 1099999) {
-                $postfix = 'J';
+                $postfix = 'K';
                 $id -= 1000000;
             }
         }
