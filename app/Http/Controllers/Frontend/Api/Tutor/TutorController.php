@@ -91,7 +91,11 @@ class TutorController extends Controller
             $request = new CorporatePartnerRequest();
             $request->tutor_id = Auth::user()->id;
             $request->save();
-            return response()->json(['message' => 'Request sent successfully']);
+            return response()->json([
+                'message' => 'Request sent successfully',
+                
+
+                ]);
 
         }
 
