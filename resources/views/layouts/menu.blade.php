@@ -666,7 +666,7 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
     <a href="#" class="nav-link" style="background-color: #343A40">
         <i class='fas fa-users'></i>
         <p>
-            Affiliate
+            Corporate Partner
             <i class="fas fa-angle-left right"></i>
         </p>
     </a>
@@ -674,7 +674,7 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
         <li class="nav-item">
             <a href="" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Reference Request</p>
+                <p>Partner Request</p>
             </a>
         </li>
         <li class="nav-item">

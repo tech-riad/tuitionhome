@@ -109,6 +109,8 @@ Route::get('/tutor/get-tutoring-platform-status/{unique_id}',[TutorController::c
 
 
         Route::get('/tutor/tutor-popup-images',[TutorController::class,'tutorPopupImages']);
+        Route::post('/tutor/send-CP-request',[TutorController::class,'sendCPRequest']);
+        Route::get('/tutor/get-CP-request-status',[TutorController::class,'getCPRequestStatus']);
 
 
 

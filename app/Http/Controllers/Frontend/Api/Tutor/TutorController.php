@@ -57,6 +57,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use App\Models\CorporatePartnerRequest;
 
 class TutorController extends Controller
 {
@@ -79,23 +80,30 @@ class TutorController extends Controller
 
     }
 
-    public function sendAffRequest(Request $request)
+    public function sendCPRequest(Request $request)
     {
-        $request = AffiliateRequest::where('tutor_id',Auth::user()->id)->first();
+        $request = CorporatePartnerRequest::where('tutor_id',Auth::user()->id)->first();
         if($request)
         {
             return response()->json(['message' => 'Already Sended']);
 
         }else{
-            $request = new AffiliateRequest();
-            $request->request_status = 'pending';
+            $request = new CorporatePartnerRequest();
             $request->tutor_id = Auth::user()->id;
-            $request->name = Auth::user()->name;
             $request->save();
             return response()->json(['message' => 'Request sent successfully']);
 
         }
 
+    }
+    public function getCPRequestStatus()
+    {
+        $request = CorporatePartnerRequest::where('tutor_id', Auth::id())->first();
+
+        return response()->json([
+            'status' => $request ? $request->status : null,
+            'exists' => (bool) $request,
+        ]);
     }
 
     public function latLongSave(Request $request)
