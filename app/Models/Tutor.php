@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Course;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\CorporatePartnerRequest;
 
 
 class Tutor extends Authenticatable
@@ -565,5 +566,11 @@ class Tutor extends Authenticatable
 
     return true;
 }
+
+
+    public function corporatePartnerRequests()
+    {
+        return $this->hasMany(CorporatePartnerRequest::class, 'tutor_id', 'id');
+    }
 
 }

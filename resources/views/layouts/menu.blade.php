@@ -672,7 +672,7 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="{{route('admin.cprequest.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Partner Request</p>
             </a>
