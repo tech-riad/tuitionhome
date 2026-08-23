@@ -516,12 +516,12 @@
                                             <select name="city_id" class="form-select rounded-3 shadow-none"
                                                 aria-label="Default select" id="city_id" style="padding: 14px 18px">
                                                 <option value="">Select City</option>
-                                                @foreach ($cities as $city)
+                                                {{-- @foreach ($cities as $city)
                                                     <option value="{{ $city->id }}"
                                                         @if (@$lead->city_id == $city->id) selected @endif>
                                                         {{ $city->name }}
                                                     </option>
-                                                @endforeach
+                                                @endforeach --}}
                                             </select>
                                             <span class="text-danger error-text city_id_error"></span>
                                         </div>
@@ -531,12 +531,12 @@
                                             <select name="location_id" class="form-select rounded-3 shadow-none"
                                                 aria-label="Default select" id="location_id" style="padding: 14px 18px">
                                                 <option value="">Select Location</option>
-                                                @foreach ($locations as $location)
+                                                {{-- @foreach ($locations as $location)
                                                     <option value="{{ $location->id }}"
                                                         @if (@$lead->location_id == $location->id) selected @endif>
                                                         {{ $location->name }}
                                                     </option>
-                                                @endforeach
+                                                @endforeach --}}
                                             </select>
                                             <span class="text-danger error-text location_id_error"></span>
                                         </div>

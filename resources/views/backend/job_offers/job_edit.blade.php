@@ -293,11 +293,11 @@
                                             aria-label="Default select " id="city_id" style="padding: 14px 18px">
 
                                             <option value="">Select city</option>
-                                            @foreach ($cities as $city)
+                                            {{-- @foreach ($cities as $city)
                                             <option value="{{$city->id}}"
                                                 {{$job->city_id == $city->id ? 'selected' : '' }}>{{$city->name}}
                                             </option>
-                                            @endforeach
+                                            @endforeach --}}
 
                                         </select>
                                         <span class="text-danger error-text city_id_error"></span>
@@ -309,11 +309,11 @@
                                             aria-label="Default select " id="location_id" style="padding: 14px 18px">
 
                                             <option value="">Select location</option>
-                                            @foreach ($locations as $location)
+                                            {{-- @foreach ($locations as $location)
                                             <option value="{{$location->id}}"
                                                 {{$job->location_id == $location->id ? 'selected' : '' }}>
                                                 {{$location->name}}</option>
-                                            @endforeach
+                                            @endforeach --}}
 
 
                                         </select>
@@ -388,6 +388,8 @@
                                 </div>
                             </div>
                         </div>
+
+
                         <div>
                             <div class="bg-white rounded-3 shadow-lg p-4 mb-4" style="height: 776px">
                                 <p class="mb-4 fw-semibold fs-5">Title Note</p>
