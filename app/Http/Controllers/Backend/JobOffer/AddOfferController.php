@@ -608,10 +608,10 @@ class AddOfferController extends Controller
                 $tutoring_duration = $job_offer->tutoring_duration;
                 $salary = $job_offer->salary;
                 $apply_link = "https://tuitionhome.xyz/job-board/job-details/$job_offer->id";
-                $contact_number = "09678444477";
+                $contact_number = "09606331144";
                 $day = $job_offer->days_in_week;
 
-                $sms_body = "JOB ID: $job_id\n$course,$location,$tutoring_time,$tutoring_duration H,$day D,$salary tk\n\nApply: $apply_link\nCall: $contact_number";
+                $sms_body = "JOB CODE: $job_id\n$course,$location,$tutoring_time,$tutoring_duration H,$day D,$salary tk\n\nApply: $apply_link\nCall: $contact_number";
 
                 foreach ($tutors as $tutor) {
                     $sms = new JobSms();
