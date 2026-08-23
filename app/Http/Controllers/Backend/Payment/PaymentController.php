@@ -211,6 +211,7 @@ class PaymentController extends Controller
 
     public function todayPayDue(Request $request)
     {
+        // dd($request->all());
         $currentRoute = \Route::currentRouteName();
         $paginationLimit = $request->get('pagination_limit', 10);
 
@@ -219,12 +220,12 @@ class PaymentController extends Controller
         $smsPayment = SmsBalance::where('available_sms', '>', 0)->sum('available_sms');
         $smsPaymentDue = $smsPayment * 0.25;
 
-       $jobIds = JobApplication::where('refund_date', $date)
-                ->orWhere(function ($query) use ($date) {
-                    $query->where('refund_status', '!=', '1')
-                          ->where('refund_date', '<=', $date);
-                })
-                ->pluck('job_offer_id');
+
+       $jobIds = JobApplication::whereDate('refund_date', '<=', now())
+            ->where('refund_status', '!=', '1')
+            ->pluck('job_offer_id');
+
+
 
 
         // dd($jobIds);
@@ -233,6 +234,7 @@ class PaymentController extends Controller
   $duePayments = DuePayments::whereIn('job_id', $jobIds)
                             ->orderBy('id','asc')
                             ->paginate($paginationLimit);
+
 
         $employees = User::orderBy('id', 'desc')->get();
         $admin = User::whereIn('role_id', [1])->orderBy('id', 'desc')->get();
@@ -391,7 +393,7 @@ class PaymentController extends Controller
         $datefrom = $setpoint->set_point_date;
         $dateto = Carbon::now();
         $currentRoute = \Route::currentRouteName();
-        
+
         $paginationLimit = $request->get('pagination_limit', 10);
 
 

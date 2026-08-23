@@ -181,7 +181,7 @@
                                                     </div>
                                                     <div class="row row-cols-2 border-bottom border-2 mb-4">
                                                         <p class="fw-semibold">Unique ID</p>
-                                                        <p class="text-info">{{$item->tutor->unique_id}}</p>
+                                                        <p class="text-info">{{$item->tutor->unique_id ?? ''}}</p>
                                                     </div>
                                                     <div class="row row-cols-2">
                                                         <p class="fw-semibold">Service ID</p>
