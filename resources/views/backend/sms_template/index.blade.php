@@ -1,5 +1,5 @@
  <!-- main content section starts here -->
- 
+
  @extends('layouts.app')
 
 @push('page_css')
@@ -22,10 +22,10 @@
 
 
 <div>
- 
+
  <div class="ps-3" style="padding-right: 13px">
 
-    
+
     <div>
 
 
@@ -38,9 +38,9 @@
                     <a href="https://tuitionterminal.com.bd/admin/sms_templates/add?ref=P0G0C9n" id="btn_add_new_data" class="btn btn-sm btn-success" title="Add Data">
                     <i class="fa fa-plus-circle"></i> Add Data
                     </a>
-                    
+
                     </h1> --}}
-       
+
                 <a class="btn btn-primary" data-toggle="modal" data-target="#storeModal">
                   <i class="fa fa-plus-circle"></i> Add Data
                 </a>
@@ -49,16 +49,16 @@
                     </a> --}}
                 {{-- <a href="{{ route('admin.sms.log') }}" class="btn btn-outline-ndark">List</a> --}}
 
-       
+
                 <form action="" method="POST">
                     @csrf
         </div>
 
-       
-       
+
+
             <div class="d-flex gap-3">
-       
-       
+
+
                 <div class="d-flex justify-content-center align-items-center px-2 rounded-3"
                 style="border: 1px solid #cfdfdb">
                 {{-- <i class="bi bi-search text-muted ms-1"></i> --}}
@@ -66,13 +66,13 @@
                     placeholder="Search" style="padding: 12px 18px" id="" />
               <button type="submit" class="btn btn-link"><i class="bi bi-search text-muted ms-1"></i></button>
         </form>
-       
+
             </div>
         {{-- </form> --}}
-       
-       
+
+
                 {{-- <input type="text" class="form-control rounded" placeholder="Search" /> --}}
-       
+
                 <select class="form-select rounded" style="width: 100px">
                     <option selected>50</option>
                     <option value="100">100</option>
@@ -83,17 +83,17 @@
             </div>
         </div>
     </div>
-  
 
 
-   
+
+
  <div class="bg-white shadow-lg rounded-3 p-2 my-4">
      <div class="bg-white pb-4 mb-b">
          <div class="table-responsive">
              <table class="table table-hover bg-white shadow-none" style="border-collapse: collapse" id="vsms_data_table">
                  <thead class="text-dark" style="border-bottom: 1px solid #c8ced3">
                      <tr>
-                       
+
                          <th scope="col" class="text-nowrap">SL</th>
                          <th scope="col" class="text-nowrap">Title</th>
                          <th scope="col" class="text-nowrap">Body</th>
@@ -110,14 +110,14 @@
                          <td class="text-nowrap">{{$template->title}}</td>
                          <td class="text-nowrap">{{Str::limit($template->body ?? 'NA',105)}}</td>
 
-            
+
                          <td style=" width: 160px;">
 
 
                             {{-- <a href=""><button class="btn btn-info btn-sm">
                                 <i class="fa fa-eye"></i>
                                 </button></a> --}}
-                          <a href="{{ route('admin.sms_template.show', ['template' => $template->id]) }}">  <button class="btn btn-info btn-sm text-white"> <i class="fa fa-eye"></i></button> </a> 
+                          <a href="{{ route('admin.sms_template.show', ['template' => $template->id]) }}">  <button class="btn btn-info btn-sm text-white"> <i class="fa fa-eye"></i></button> </a>
 
                           <button id="{{ $template->id }}" onclick="btnTamplateEdit(this.id)" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editSmsModal"><i class="fa fa-edit"></i></button>
 
@@ -139,7 +139,7 @@
          </div>
          <div class="d-flex justify-content-center align-items-center gap-2">
             {{$templates->links()}}
-{{--           
+{{--
             <button class="btn btn-outline-primary py-1 px-2 text-gray-500">
                  <i class="bi bi-chevron-left"></i>
              </button>
@@ -184,9 +184,9 @@
 
       <div style="padding: 15px">
 
- 
-     
-          <form action="{{route('admin.sms_template.store')}}" method="post" id="vSmsStoreForm"> 
+
+
+          <form action="{{route('admin.sms_template.store')}}" method="post" id="vSmsStoreForm">
             @csrf
 
 
@@ -194,11 +194,11 @@
                     <label for="crby" class="form-label">Title</label>
                     <input name="title" type="text" value="" class="form-control rounded-3 shadow-none"
                     id="title" placeholder="Title" style="padding: 10px 14px" />
-        
+
                     <span class="text-danger error-text title_error"></span>
-        
-                  </div> 
-                  
+
+                  </div>
+
                   <div class="mb-3">
                     <label for="staff" class="form-label required">Body</label>
                     <textarea  name="body" class="form-control " placeholder="body" id="body"
@@ -208,20 +208,20 @@
                 ">
                 </textarea>
                 <span class="text-danger error-text body_error"></span>
- 
+
                  </div>
-                 <b><p class="help-block">Variables:-job_id- , -class- , -subjects-, -location-, -days-, -duration- , -time- , -salary-</p></b>
-                      
+                 <b><p class="help-block">Variables:-job_id- ,-class- (-location-) , -days-, -duration- , -time- , -salary-</p></b>
+
               <div class="mb-3">
               <button  type="submit" class="btn btn-primary float-right">
                 Add Data
                 </button>
               </div>
-          </form>  
-    
+          </form>
+
 
   </div>
- 
+
        </div>
      </div>
    </div>
@@ -236,7 +236,7 @@
          <div class="modal-header pe-5" style="padding-left: 30px">
            <h5 >
               Sms Tamplate
-         
+
            </h5>
            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
          </div>
@@ -244,7 +244,7 @@
 
       <div style="padding: 15px">
 
-          <form action="{{route('admin.sms_template.update')}}" method="post" id="templateUpdateFrom"> 
+          <form action="{{route('admin.sms_template.update')}}" method="post" id="templateUpdateFrom">
               @csrf
 
               <input type="hidden" name="id" id="edit_id">
@@ -252,11 +252,11 @@
                 <label for="crby" class="form-label">Title</label>
                 <input name="title" type="text" value="" class="form-control rounded-3 shadow-none"
                 id="edit_title" placeholder="Title" style="padding: 10px 14px" />
-    
+
                 <span class="text-danger error-text title_error"></span>
-    
-              </div> 
-              
+
+              </div>
+
               <div class="mb-3">
                 <label for="staff" class="form-label required">Body</label>
                 <textarea  name="body" class="form-control " placeholder="body" id="edit_body"
@@ -268,8 +268,8 @@
             <span class="text-danger error-text body_error"></span>
 
              </div>
-             <b><p class="help-block">Variables:-job_id- , -class- , -subjects-, -location-, -days-, -duration- , -time- , -salary-</p></b>
-                 
+             <b><p class="help-block">Variables:-job_id- , -class- (-location-) , -days-, -duration- , -time- , -salary-</p></b>
+
 
           <div class="mb-3">
               <button  type="submit" class="btn btn-primary float-right" >
@@ -277,11 +277,11 @@
                 </button>
               </div>
 
-          </form>  
-    
+          </form>
+
 
   </div>
- 
+
        </div>
      </div>
    </div>
