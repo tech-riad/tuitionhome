@@ -2277,7 +2277,7 @@
                                                 <label for="refund_date" class="form-label">Refund Date</label>
                                                 <input type="date" class="form-control shadow-none rounded-2" id="refund_date"
                                                 name="refund_date"
-                                                value="{{ \Carbon\Carbon::now()->addDays(45)->format('Y-m-d') }}"
+                                                value="{{ \Carbon\Carbon::now()->addDays(30)->format('Y-m-d') }}"
                                                 readonly
                                                 onkeydown="return false" />
 

@@ -544,52 +544,53 @@ class AddOfferController extends Controller
                     $subQuery->where('location_id', $job_offer->location_id);
                 });
             })
-            ->when(!empty($job_offer->tutor_group), function ($query) use ($job_offer) {
-                $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
-                    $subQuery->where(function ($subSubQuery) use ($job_offer) {
-                        $subSubQuery->where('group_or_major', $job_offer->tutor_group)
-                            ->where('degree_name', 'ssc');
-                    })->orWhere(function ($subSubQuery) use ($job_offer) {
-                        $subSubQuery->where('group_or_major', $job_offer->tutor_group)
-                            ->where('degree_name', 'hsc');
-                    });
-                });
-            })
-            ->when(!empty($tutor_university), function ($query) use ($tutor_university) {
-                $query->whereHas('tutor_education', function ($subQuery) use ($tutor_university) {
-                    $subQuery->whereIn('institute_id', explode(',', $tutor_university))
-                        ->where('degree_name', 'honours');
-                });
-            })
-            ->when(!empty($job_offer->tutor_university_type), function ($query) use ($job_offer) {
-                $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
-                    $subQuery->whereIn('university_type', explode(',', $job_offer->tutor_university_type))
-                        ->where('degree_name', 'honours');
-                });
-            })
-            ->when(!empty($tutor_department), function ($query) use ($tutor_department) {
-                $query->whereHas('tutor_education', function ($subQuery) use ($tutor_department) {
-                    $subQuery->whereIn('department_id', explode(',', $tutor_department))
-                        ->where('degree_name', 'honours');
-                });
-            })
-            ->when(!empty($tutor_study), function ($query) use ($tutor_study) {
-                $query->whereHas('tutor_education', function ($subQuery) use ($tutor_study) {
-                    $subQuery->whereIn('study_type_id', explode(',', $tutor_study))
-                        ->where('degree_name', 'honours');
-                });
-            })
-            ->when(!empty($job_offer->tutor_curriculam_id), function ($query) use ($job_offer) {
-                $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
-                    $subQuery->where('curriculum_id', $job_offer->tutor_curriculam_id);
-                });
-            })
+            // ->when(!empty($job_offer->tutor_group), function ($query) use ($job_offer) {
+            //     $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
+            //         $subQuery->where(function ($subSubQuery) use ($job_offer) {
+            //             $subSubQuery->where('group_or_major', $job_offer->tutor_group)
+            //                 ->where('degree_name', 'ssc');
+            //         })->orWhere(function ($subSubQuery) use ($job_offer) {
+            //             $subSubQuery->where('group_or_major', $job_offer->tutor_group)
+            //                 ->where('degree_name', 'hsc');
+            //         });
+            //     });
+            // })
+            // ->when(!empty($tutor_university), function ($query) use ($tutor_university) {
+            //     $query->whereHas('tutor_education', function ($subQuery) use ($tutor_university) {
+            //         $subQuery->whereIn('institute_id', explode(',', $tutor_university))
+            //             ->where('degree_name', 'honours');
+            //     });
+            // })
+            // ->when(!empty($job_offer->tutor_university_type), function ($query) use ($job_offer) {
+            //     $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
+            //         $subQuery->whereIn('university_type', explode(',', $job_offer->tutor_university_type))
+            //             ->where('degree_name', 'honours');
+            //     });
+            // })
+            // ->when(!empty($tutor_department), function ($query) use ($tutor_department) {
+            //     $query->whereHas('tutor_education', function ($subQuery) use ($tutor_department) {
+            //         $subQuery->whereIn('department_id', explode(',', $tutor_department))
+            //             ->where('degree_name', 'honours');
+            //     });
+            // })
+            // ->when(!empty($tutor_study), function ($query) use ($tutor_study) {
+            //     $query->whereHas('tutor_education', function ($subQuery) use ($tutor_study) {
+            //         $subQuery->whereIn('study_type_id', explode(',', $tutor_study))
+            //             ->where('degree_name', 'honours');
+            //     });
+            // })
+            // ->when(!empty($job_offer->tutor_curriculam_id), function ($query) use ($job_offer) {
+            //     $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
+            //         $subQuery->where('curriculum_id', $job_offer->tutor_curriculam_id);
+            //     });
+            // })
             ->where('is_active',1)
             ->where('is_sms',1)
             ->whereHas('smsBalances', function ($query) {
                 $query->where('available_sms', '>', 0);
             })
-            ->pluck('id');
+            ->pluck('id')
+            ->random(40);
             if($tutors_ids != null)
             {
                 $tutors = Tutor::whereIn('id', $tutors_ids)->get();
