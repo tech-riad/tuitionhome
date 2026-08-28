@@ -18,6 +18,8 @@ class CreateCorporatePartnerRequestsTable extends Migration
             $table->unsignedBigInteger('tutor_id')->nullable();
             $table->enum('status',['pending','approved','rejected'])->default('pending');
             $table->string('action_by')->nullable();
+            $table->string('approved_by')->nullable();
+            $table->string('rejected_by')->nullable();
             $table->timestamps();
         });
     }

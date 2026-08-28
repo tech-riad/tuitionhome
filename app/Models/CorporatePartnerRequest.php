@@ -17,7 +17,8 @@ class CorporatePartnerRequest extends Model
         'action_by',
     ];
 
-    
+    protected $guarded = [];
+
 
     public function tutor()
     {
