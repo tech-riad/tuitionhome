@@ -28,9 +28,40 @@
                     class="fw-semibold text-decoration-none">{{$partner->unique_id ?? 'N/A'}}</a></td>
             <td><a target="_blank" href="{{route('admin.tutor.tutorshow', $partner->tutor->id ?? 'tutor-not-found')}}"
                     class="fw-semibold text-decoration-none">{{$partner->tutor->unique_id ?? 'N/A'}}</a></td>
-            <td>{{$partner->name}}
+            <td>{{$partner->name}}</td>
             <td>{{$partner->phone ?? 'N/A'}}</td>
-            <td>{{$partner->contactInfo->location->name ?? 'N/A'}}</td>
+            @php
+                $contactInfo = $partner->contactInfo;
+
+                $locationName = $contactInfo && $contactInfo->location
+                    ? $contactInfo->location->name
+                    : null;
+
+                $cityName = $contactInfo && $contactInfo->city
+                    ? $contactInfo->city->name
+                    : null;
+
+                $countryName = $contactInfo && $contactInfo->country
+                    ? $contactInfo->country->name
+                    : null;
+
+                $location = collect([
+                    $locationName,
+                    $cityName,
+                    $countryName,
+                ])->filter()->implode(', ');
+            @endphp
+
+            <td>
+                <span
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ $location ?: 'N/A' }}"
+                    style="cursor: pointer;"
+                >
+                    {{ $location ? \Illuminate\Support\Str::limit($location, 12, '...') : 'N/A' }}
+                </span>
+            </td>
             <td>{{$partner->gender ?? 'N/A'}}</td>
             <td>{{$partner->channel_name ?? 'N/A'}}</td>
             
