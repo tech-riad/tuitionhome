@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/color_palets.css" />
+    <link rel="stylesheet" href="../../css/log_file_style.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/af-edit.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+
+    <title>Admin - Affiliate - Log files</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a href="/index.html"><img src="/images/logo.svg" alt="logo" /></a>
+        <button
+          class="navbar-toggler d-lg-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+    </nav>
+    <!-- navbar ends here -->
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-lg-block bg-white sidebar collapse sidebar-width shadow-lg"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-credit-card fs-5 me-4"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Affiliate
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse show" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/index.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Request</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-profile.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Profile</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-transaction.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Transaction</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/setting.html"
+                        class="text-gray-800 text-decoration-none"
+                        >Setting</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div
+            class="col-lg-9 ms-sm-auto col-lg-10 px-3"
+            style="margin-top: 62px"
+          >
+            <!-- tab like button group (it should be tab) -->
+            <div class="pt-4 row row-cols-2">
+              <div>
+                <a
+                  href="/log-files/view/aboutme.html"
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid white;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >View</a
+                >
+              </div>
+              <div>
+                <a
+                  href="/log-files/edit/sign-up-info.html"
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid #669ad1;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >Edit</a
+                >
+              </div>
+            </div>
+            <!-- tab like button group ends -->
+            <!-- contents starts here -->
+            <div class="row gx-1 gx-lg-4 my-lg-4 mt-4 mt-lg-4">
+              <div class="col-12 col-xl-3 col-lg-4">
+                <div
+                  class="bg-white rounded-3 shadow-lg"
+                  style="max-height: 400"
+                >
+                  <ul
+                    class="ps-0 d-flex flex-lg-column justify-content-between px-2"
+                  >
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/sign-up-info.html"
+                      >
+                        <i class="bi bi-person-fill mx-2"></i>Sign-up
+                        Information
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/sign-up-info.html"
+                      >
+                        <i class="bi bi-person-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/others-info.html"
+                      >
+                        <i class="bi bi-person-vcard-fill mx-2"></i>Others
+                        Information
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/others-info.html"
+                      >
+                        <i class="bi bi-bell-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/password.html"
+                      >
+                        <i class="bi bi-shield-lock-fill mx-2"></i>Password &
+                        Security
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/password.html"
+                      >
+                        <i class="bi bi-shield-lock-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link text-primary d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/payment.html"
+                      >
+                        <i class="bi bi-wallet-fill mx-2"></i> Payment Method
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/payment.html"
+                      >
+                        <i class="bi bi-slack mx-2 fs-1"></i>
+                      </a>
+                    </li>
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/account.html"
+                      >
+                        <i class="bi bi-gear-fill mx-2"></i>Accounts Status
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/account.html"
+                      >
+                        <i class="bi bi-gear-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-12 col-xl-9 col-lg-8">
+                <!-- settings content starts here -->
+                <div>
+                  <div class="row row-cols-1  row-cols-xl-2 align-items-start justify-content-center ">
+                    <div class="h-100">
+                      <div
+                        class="bg-white rounded-3 p-4 shadow-lg mb-4 mb-xl-0"
+                      >
+                        <div
+                          class="d-flex justify-content-between align-itesm-center mb-3"
+                        >
+                          <p class="fw-semibold m-0">Bank Account</p>
+                          <div class="d-flex gap-3">
+                            <img src="/images/dbbl.svg" />
+                            <img src="/images/ibbl.svg" />
+                          </div>
+                        </div>
+                        <div class="mb-1">
+                          <p class="text-info mb-1 fs-14">Account Name</p>
+                          <p>Mahmudullah</p>
+                        </div>
+                        <div class="mb-1">
+                          <p class="text-info mb-1 fs-14">Bank Name</p>
+                          <p>Dutch Bangla</p>
+                        </div>
+                        <div class="mb-1">
+                          <p class="text-info mb-1 fs-14">Branch Name</p>
+                          <p>Mirpur Branch</p>
+                        </div>
+                        <div class="mb-1">
+                          <p class="text-info mb-1 fs-14">Account Type</p>
+                          <p>Savings Accounts</p>
+                        </div>
+                        <div class="">
+                          <p class="text-info mb-1 fs-14">Ac/No</p>
+                          <p>7023954110</p>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                          <button
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#baccount"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="h-100 ">
+                      <div class="bg-white rounded-3 px-4 pb-4 shadow-lg h-100">
+                        <img src="/images/bkash.svg" />
+                        <div class="mb-5">
+                          <p class="text-info mb-1 fs-14">Account Name</p>
+                          <p>Mahmudullah</p>
+                        </div>
+
+                        <div class="mb-5">
+                          <p class="text-info mb-1 fs-14">Account Type</p>
+                          <p>Merchant Accounts</p>
+                        </div>
+                        <div class="">
+                          <p class="text-info mb-1 fs-14">Account Number</p>
+                          <p>01945006699</p>
+                        </div>
+                        <div class="d-flex justify-content-end mt-5">
+                          <button
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#maccount"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="modal fade"
+                  id="maccount"
+                  tabindex="-1"
+                  aria-labelledby="maccount"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content p-2">
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label
+                            for="dfgsdfghjuki"
+                            class="form-label dark-semibold-label"
+                          >
+                            Acccount Name
+                          </label>
+                          <input
+                            type="text"
+                            class="form-control rounded shadow-none"
+                            id="dfgsdfghjuki"
+                            placeholder="Enter your account name"
+                          />
+                        </div>
+
+                        <div class="mb-3">
+                          <label
+                            for="stiddfghtle"
+                            class="form-label dark-semibold-label"
+                          >
+                            Account Type
+                          </label>
+
+                          <select
+                            class="form-select rounded shadow-none"
+                            id="stiddfghtle"
+                          >
+                            <option value="">Merchant</option>
+                            <option>Other Account</option>
+                          </select>
+                        </div>
+                        <div class="">
+                          <label
+                            for="bfvfdfgrom"
+                            class="form-label dark-semibold-label"
+                          >
+                            Account Number
+                          </label>
+                          <input
+                            type="text"
+                            class="form-control rounded shadow-none"
+                            id="bfvfdfgrom"
+                            placeholder="Enter your account number"
+                          />
+                        </div>
+                      </div>
+                      <div class="modal-footer pt-0">
+                        <button class="btn btn-primary">Apply</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="modal fade"
+                  id="baccount"
+                  tabindex="-1"
+                  aria-labelledby="baccount"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content p-2">
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label
+                            for="dfghjuki"
+                            class="form-label dark-semibold-label"
+                          >
+                            Acccount Name
+                          </label>
+                          <input
+                            type="text"
+                            class="form-control rounded shadow-none"
+                            id="dfghjuki"
+                            placeholder="Enter your account name"
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label
+                            for="dfrom"
+                            class="form-label dark-semibold-label"
+                          >
+                            Bank Name
+                          </label>
+                          <input
+                            type="text"
+                            class="form-control rounded shadow-none"
+                            id="dfrom"
+                            placeholder="Enter your bank name"
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label
+                            for="bfrom"
+                            class="form-label dark-semibold-label"
+                          >
+                            Branch Name
+                          </label>
+                          <input
+                            type="text"
+                            class="form-control rounded shadow-none"
+                            id="bfrom"
+                            placeholder="Enter your branch name"
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label
+                            for="stidfghtle"
+                            class="form-label dark-semibold-label"
+                          >
+                            Account Type
+                          </label>
+
+                          <select
+                            class="form-select rounded shadow-none"
+                            id="stidfghtle"
+                          >
+                            <option value="">Savings Account</option>
+                            <option>Other Account</option>
+                          </select>
+                        </div>
+                        <div class="">
+                          <label
+                            for="bfdfgrom"
+                            class="form-label dark-semibold-label"
+                          >
+                            Ac/No
+                          </label>
+                          <input
+                            type="text"
+                            class="form-control rounded shadow-none"
+                            id="bfdfgrom"
+                            placeholder="Enter your ac/no"
+                          />
+                        </div>
+                      </div>
+                      <div class="modal-footer pt-0">
+                        <button class="btn btn-primary">Apply</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- settings content ends here -->
+              </div>
+            </div>
+            <!-- contents ends here -->
+          </div>
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

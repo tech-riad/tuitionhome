@@ -1,0 +1,15 @@
+.profile-img-two {
+    height: 273px !important;
+    width: 261px !important;
+    object-fit: cover
+}
+
+/* media foe small size display */
+@media screen and (max-width: 600px) {
+    .profile-img-two {
+        height: 273px !important;
+        width: 100% !important;
+        object-fit: cover
+    }
+
+}

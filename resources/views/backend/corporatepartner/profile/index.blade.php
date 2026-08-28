@@ -1,609 +1,725 @@
-@extends('layouts.app')
-
-@push('page_css')
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
-
-    .table-card {
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .badge-pending {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-
-    .badge-approved {
-        background-color: #d1e7dd;
-        color: #0f5132;
-    }
-
-    .badge-cancel {
-        background-color: #f8d7da;
-        color: #842029;
-    }
-
-</style>
-@endpush
+@extends('backend.corporatepartner.layouts.app')
 
 
 @section('content')
-<main class="container-custom">
-    @include('backend.corporatepartner.menu')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body text-center">
-                    
-                    <h3 class="fw-bold mb-0 ">
-                        {{ $totalProfile }}
-                    </h3>
-                    <h6 class="text-muted">Total Profiles</h6>
-                </div>
+<div class="col-md-9 ms-sm-auto col-lg-10" style="margin-top: 62px">
+    <!-- mini nav starts here -->
+    @include('backend.corporatepartner.layouts.menu')
+
+    <!-- mini nav ends here -->
+    <!-- main content section starts here -->
+    <!-- header cards starts here -->
+    <div class="row gap-4 gap-md-0 ms-1 me-1 mb-4">
+        <div class="col-12">
+            <div class="bg-white shadow-lg rounded-3 p-4">
+                <p class="text-center fw-bold fs-5 mb-1">{{ $activeProfile }}</p>
+                <p class="text-center mb-0">Active Profile</p>
             </div>
         </div>
     </div>
-    <div class="row">
-        {{-- Total Approved --}}
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="fw-bold text-success mb-0">
-                        {{ $activeProfile }}
-                    </h3>
-                    <h6 class="text-muted">Active Profiles</h6>
-                </div>
+    <div class="row row-cols-1 gap-4 row-cols-md-2 row-cols-lg-4 gap-md-0 ms-1 me-1">
+        <div class="mb-md-4 mb-lg-0">
+            <div class="bg-white shadow-lg rounded-3 p-4">
+                <p class="text-center fw-bold fs-5 mb-1">{{ $inactiveProfile }}</p>
+                <p class="text-center mb-0">Inactive Profile</p>
             </div>
         </div>
-
-        {{-- Total Cancel --}}
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="fw-bold text-danger mb-0">
-                        {{ $inactiveProfile }}
-                    </h3>
-                    <h6 class="text-muted">Inactive Profiles</h6>
-                </div>
+        <div class="mb-md-4 mb-lg-0">
+            <div class="bg-white shadow-lg rounded-3 p-4">
+                <p class="text-center fw-bold fs-5 mb-1">{{ $tutorProfile }}</p>
+                <p class="text-center mb-0 text-nowrap">Tutor Profile</p>
             </div>
         </div>
-
-        {{-- Total Pending --}}
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="fw-bold text-warning mb-0">
-                        {{ $maleProfile }}
-                    </h3>
-                    <h6 class="text-muted">Male Profiles</h6>
-                </div>
+        <div class="">
+            <div class="bg-white shadow-lg rounded-3 p-4">
+                <p class="text-center fw-bold fs-5 mb-1">{{ $maleProfile }}</p>
+                <p class="text-center mb-0">Male Profile</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="fw-bold text-info mb-0">
-                        {{ $femaleProfile }}
-                    </h3>
-                    <h6 class="text-muted">Female Profiles</h6>
-                </div>
+        <div class="">
+            <div class="bg-white shadow-lg rounded-3 p-4">
+                <p class="text-center fw-bold fs-5 mb-1">{{ $femaleProfile }}</p>
+                <p class="text-center mb-0">Female Profile</p>
             </div>
         </div>
-
     </div>
-    <div class="ps-3" style="padding-right: 13px">
-
-        <div class="d-flex justify-content-between flex-column flex-lg-row gap-2 gap-lg-0">
-            <div class="d-flex justify-content-between gap-3">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    <!-- header cards ends here -->
+    <!-- table starts here -->
+    <div class="ps-3 mt-4" style="padding-right: 13px">
+        <div class="d-flex flex-wrap flex-xl-nowrap justify-content-between flex-column flex-lg-row gap-2 gap-lg-0">
+            <div class="d-flex justify-content-between gap-3 mb-3 mb-xl-0">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
                     <i class="bi bi-sliders2 me-1"></i>Filter
                 </button>
-                <button class="btn btn-outline-ndark" id="sendSms">Send Bulk SMS</button>
+                <button class="btn btn-outline-ndark">Send Bulk SMS</button>
+                <a href="/affiliate-profile-inactive.html" class="btn btn-warning grayed">Inactive Profile</a>
+            </div>
+            <div class="d-flex flex-wrap flex-md-nowrap gap-3">
+                <input type="text" class="form-control rounded" placeholder="Search" />
+                <select id="all_offer_paginationLimit"
+                    name="pagination_limit"
+                    class="form-select rounded"
+                    style="width: 100px">
 
-                <!-- Filter model starts here -->
-                <div class="modal fade font-pop" id="exampleModal" tabindex="" aria-labelledby="">
-                    <div class="modal-dialog modal-dialog-centered px-3" style="max-width: 1100px">
-                        <div class="modal-content pt-4 pb-4 ps-2">
-                            <div class="modal-header pe-5" style="padding-left: 40px">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                    Filter
-                                    <span class="text-muted fw-light" style="font-size: 12">
-                                    </span>
-                                </h1>
+                <option value="30" {{ $paginationLimit == 30 ? 'selected' : '' }}>30</option>
+                <option value="50" {{ $paginationLimit == 50 ? 'selected' : '' }}>50</option>
+                <option value="100" {{ $paginationLimit == 100 ? 'selected' : '' }}>100</option>
+                <option value="200" {{ $paginationLimit == 200 ? 'selected' : '' }}>200</option>
+                <option value="400" {{ $paginationLimit == 400 ? 'selected' : '' }}>400</option>
+                <option value="500" {{ $paginationLimit == 500 ? 'selected' : '' }}>500</option>
 
-                                <button type="button" class="btn-close" data-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body py-0">
-                                <div class="row row-cols-2 row-cols-lg-4 pb-2 ps-4">
-                                    <div class="d-flex">
-                                        <div>
-                                            <div class="pb-3">
-                                                <label for="datef" class="form-label">Date from</label>
-                                                <div>
-                                                    <input type="date" class="form-control shadow rounded-2" id="datef"
-                                                        onchange="inputChange('created_at >=', this.id)" />
-                                                </div>
-                                            </div>
-                                            <div class="pb-3">
-                                                <label for="datet" class="form-label">Date To</label>
-                                                <input type="date" class="form-control shadow rounded-2" id="datet"
-                                                    onchange="inputChange('created_at <=', this.id)" />
-                                            </div>
-                                            <div class="pb-3">
-                                                <label for="crby" class="form-label">Created By</label>
+            </select>
+            <script>
+                $(document).on('change', '#all_offer_paginationLimit', function() {
 
-                                                <select name="user_id" class="form-select rounded-3 shadow-none select2"
-                                                    aria-label="Default select"
-                                                    onchange="inputChange('created_by',this.id)" id="user_id">
-                                                    <option value="">Select Employee</option>
+                    let limit = $(this).val();
 
+                    let url = new URL(window.location.href);
 
-                                                </select>
+                    url.searchParams.set('pagination_limit', limit);
+                    url.searchParams.set('page', 1);
 
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 ms-4" style="
-                                            margin-top: 34px;
-                                            width: 1px;
-                                            background-color: #f0f1f2;
-                                        ">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="flex-grow-1">
-                                            <div class="pb-3">
-                                                <label for="cun" class="form-label ">Country</label>
-                                                <select name="country_id" class="form-select rounded-3 shadow-none "
-                                                    aria-label="Default select " id="country_id"
-                                                    onchange="inputChange('country_id',this.id)">
-                                                    <option value="">Select Country</option>
-                                                    @foreach (App\Models\Country::OrderBy('name','asc')->get() as
-                                                    $country)
-                                                    <option value="{{$country->id}}">{{$country->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="text-danger error-text country_id_error"></span>
+                    $.ajax({
 
-                                            </div>
+                        url: url.toString(),
+                        type: 'GET',
 
-                                            <div class="pb-3">
-                                                <label for="cty" class="form-label">City</label>
-                                                <br>
-                                                <select name="city_id" id="city_id" style="width: 215px"
-                                                    class="shadow rounded-2 form-select"
-                                                    onchange="inputChange('city_id',this.id)"
-                                                    aria-label="Default select example">
-                                                    <option selected>Select city</option>
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
 
+                        beforeSend: function() {
 
-                                                </select>
+                            $('#partnerTable').css({
+                                'opacity': '0.5',
+                                'pointer-events': 'none'
+                            });
 
-                                            </div>
-                                            <div class="pb-3">
-                                                <label for="loc" class="form-label">Location</label>
-                                                <br>
-                                                <select id="location_id" name="location_id" style="width: 215px"
-                                                    class="form-select rounded-3 shadow-none"
-                                                    onchange="inputChange('location_id',this.id)"
-                                                    aria-label="Default select example">
-                                                    <option selected>Select Location</option>
+                        },
 
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 ms-4" style="
-                                                margin-top: 34px;
-                                                width: 1px;
-                                                background-color: #f0f1f2;
-                                            ">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
-                                            <div class="pb-3">
-                                                <label for="category_id" class="form-label ">Category</label>
-                                                <select name="category_id" id="category_id"
-                                                    class="form-select rounded-3 shadow-none" style="width: 215px"
-                                                    onchange="inputChange('category_id',this.id)">
-                                                    <option value="">Select Category</option>
-                                                    @foreach(App\Models\Category::OrderBy('created_at','desc')->get() as
-                                                    $category)
-                                                    <option value="{{$category->id}}">{{$category->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="text-danger error-text category_id_error"></span>
-                                            </div>
+                        success: function(response) {
 
+                            $('#partnerTable').html(response.html);
 
+                            $('#partnerPagination').html(response.pagination);
 
-                                            <div class="pb-3">
-                                                <label for="course_id" class="form-label ">Course</label>
-                                                <select name="course_id" class="form-select rounded-3 shadow-none"
-                                                    onchange="inputChange('course_id',this.id)" id="course_id"
-                                                    style="width: 215px">
+                            window.history.pushState(
+                                {},
+                                '',
+                                url.toString()
+                            );
 
-                                                </select>
-                                                <span class="text-danger error-text course_id_error"></span>
+                        },
 
-                                            </div>
-                                            <div class="pb-3">
-                                                <label for="subject_id" class="form-label ">Subjects</label>
-                                                <select name="subject_id" class="form-select rounded-3 shadow-none"
-                                                    id="subject_id" style="width: 215px">
+                        error: function(xhr) {
 
-                                                </select>
-                                                <span class="text-danger error-text subject_id_error"></span>
+                            console.log(xhr.responseText);
 
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 ms-4" style="
-                                                        margin-top: 34px;
-                                                        width: 1px;
-                                                        background-color: #f0f1f2;
-                                                    ">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-start">
-                                        <div>
-                                            <div class="pb-3">
-                                                <label for="am" class="form-label">Source</label>
+                        },
 
-                                                <select id="am" class="shadow rounded-2 form-select"
-                                                    aria-label="Default select example">
-                                                    <option selected>Affiliate Marcketing</option>
-                                                    <option value="1">One</option>
-                                                    <option value="2">Two</option>
-                                                    <option value="3">Three</option>
-                                                </select>
-                                            </div>
-                                            <div class="pb-3">
-                                                <label for="srcid" class="form-label">Source ID</label>
+                        complete: function() {
 
-                                                <select id="srcid" class="shadow rounded-2 form-select"
-                                                    aria-label="Default select example">
-                                                    <option selected>23456</option>
-                                                    <option value="1">One</option>
-                                                    <option value="2">Two</option>
-                                                    <option value="3">Three</option>
-                                                </select>
-                                            </div>
-                                            <div class="pb-3">
-                                                <label for="tm" class="form-label">Tutoring Method</label>
+                            $('#partnerTable').css({
+                                'opacity': '1',
+                                'pointer-events': 'auto'
+                            });
 
-                                                <select id="tm" class="shadow rounded-2 form-select"
-                                                    aria-label="Default select example"
-                                                    onchange="inputChange('teaching_method_id',this.id)">
-                                                    @foreach (App\Models\TeachingMethod::OrderBy('name','asc')->get() as
-                                                    $teachingM)
+                        }
 
-                                                    <option value="{{$teachingM->id}}">{{$teachingM->name}}</option>
+                    });
 
-                                                    @endforeach
-                                                </select>
+                });
+                </script>
+            </div>
+        </div>
+        <div class="bg-white shadow-lg rounded-3 p-2 my-4">
+            <div class="bg-white pb-4 mb-b">
+                
+                    <div id="partnerTable">
+                        @include('backend.corporatepartner.partials.partner_table')
+                    </div>
 
+                    <div id="partnerPagination">
+                        @include('backend.corporatepartner.partials.pagination')
+                    </div>
+                
+                <!-- pagination starts here -->
+                
+                <!-- pagination ends here -->
+            </div>
+        </div>
+    </div>
+    <!-- table ends here -->
+    <!-- Show Date time model starts here-->
+    <div class="modal fade" id="showDateTimeModal" tabindex="-1" aria-labelledby="showDateTimeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog model-sm modal-dialog-slide-top" style="max-width: 400px">
+            <div class="modal-content">
+                <div class="modal-body pt-5 pb-4">
+                    <p class="text-center text-info fs-3">7 June 2023</p>
+                    <p class="text-center text-gray-700 border-top fs-1 pt-1">
+                        03:30 PM
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Show Date time model ends here-->
 
-                                            </div>
-                                        </div>
-                                        <!-- Dont remove this unnessary wrapper flex div -->
-                                    </div>
-                                </div>
+    <!-- view model starts here-->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="idInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog model-sm modal-dialog-slide-left" style="max-width: 400px">
+            <div class="modal-content">
+                <div class="modal-body pt-2 pb-4 px-5">
+                    <div class="row row-cols-2 mt-3 border-bottom border-2 pb-3 align-items-center">
+                        <p class="fw-semibold mb-0">SLH</p>
+                        <div>
+                            <p class="mb-0">Sajid HDY</p>
+                            <small>04-04-23</small>
+                        </div>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-2 py-3 align-items-center">
+                        <p class="fw-semibold mb-0">ALH</p>
+                        <div>
+                            <p class="mb-0">Saikat Ullah</p>
+                            <small>09-04-23</small>
+                        </div>
+                    </div>
+                    <div class="row row-cols-2 border-bottom border-2 py-3 align-items-center">
+                        <p class="fw-semibold mb-0">Verifyed By</p>
+                        <div>
+                            <p class="mb-0">Afnun Polash</p>
+                            <small>08-04-23</small>
+                        </div>
+                    </div>
+                    <div class="row row-cols-2 pt-3 align-items-center">
+                        <p class="fw-semibold mb-0">Deactived By</p>
+                        <div>
+                            <p class="mb-0">Robel Hossen</p>
+                            <small>07-04-23</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                <div class="collapse" id="collapseExample">
-                                    <div class="border-top border-2 pt-1 mx-4"></div>
-                                    <div class="row row-cols-2 row-cols-lg-4 pb-2 ps-4 pt-2">
-                                        <div class="d-flex">
-                                            <div>
-                                                <div class="pb-3">
-                                                    <label for="salary" class="form-label">Salary</label>
-
-                                                    <input type="text" class="form-control shadow rounded-2" id="salary"
-                                                        onchange="inputChange('salary',this.id)" placeholder="5000" />
-                                                </div>
-                                                <div class="pb-3">
-                                                    <label for="channel" class="form-label">Channel</label>
-
-                                                    <select id="channel" class="shadow rounded-2 form-select"
-                                                        aria-label="Default select example">
-                                                        <option selected>Website</option>
-                                                        <option value="1">Facebook</option>
-                                                        <option value="2">Twitter</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 ms-4" style="
-                                                margin-top: 34px;
-                                                width: 1px;
-                                                background-color: #f0f1f2;
-                                                ">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="flex-grow-1">
-                                                <div class="pb-3">
-                                                    <label for="genderr" class="form-label">
-                                                        Gender Requirement
-                                                    </label>
-
-                                                    <select id="genderr" class="shadow rounded-2 form-select"
-                                                        onchange="inputChange('tutor_gender',this.id)"
-                                                        aria-label="Default select example">
-                                                        <option value="">Select gender</option>
-                                                        <option value="male">Male</option>
-                                                        <option value="female">Female</option>
-                                                        <option value="others">others</option>
-
-                                                    </select>
-                                                </div>
-                                                <div class="pb-3">
-                                                    <label for="daw" class="form-label">Days and Week</label>
-
-                                                    <select id="days_in_week" class="shadow rounded-2 form-select"
-                                                        onchange="inputChange('days_in_week',this.id)"
-                                                        aria-label="Default select example">
-
-                                                        <option value="">Select Days</option>
-                                                        <option value="2">2 days</option>
-                                                        <option value="3">3 days</option>
-                                                        <option value="4">4 days</option>
-                                                        <option value="5">5 days</option>
-                                                        <option value="6">6 days</option>
-                                                        <option value="7">7 days</option>
-
-
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 ms-4" style="
-                                                margin-top: 34px;
-                                                width: 1px;
-                                                background-color: #f0f1f2;
-                                                ">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="flex-grow-1">
-                                                <div class="pb-3">
-                                                    <label for="sgender" class="form-label">Student Gender</label>
-
-                                                    <select id="sgender" class="shadow rounded-2 form-select"
-                                                        onchange="inputChange('student_gender',this.id)"
-                                                        aria-label="Default select example">
-                                                        <option value="">Select Gender</option>
-                                                        <option selected>Male</option>
-                                                        <option value="1">Female</option>
-                                                    </select>
-                                                </div>
-                                                <div class="pb-3">
-                                                    <label for="rel" class="form-label">Religion</label>
-
-                                                    <select id="rel" class="shadow rounded-2 form-select"
-                                                        onchange="inputChange('tutor_religion',this.id)"
-                                                        aria-label="Default select example">
-                                                        <option value="">Select Religion</option>
-                                                        <option value="islam">Islam</option>
-                                                        <option value="hindu">Hindu</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 ms-4" style="
-                                                margin-top: 34px;
-                                                width: 1px;
-                                                background-color: #f0f1f2;
-                                                ">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div>
-                                                <div class="pb-3">
-                                                    <label for="in" class="form-label">
-                                                        Institute Name
-                                                    </label>
-                                                    <select class="shadow rounded-2 form-select" style="width: 215px"
-                                                        id="institute_id"
-                                                        onchange="inputChange('institute_name',this.id)"
-                                                        aria-label="Default select example">
-                                                        <option value="">Select Institute</option>
-
-                                                        @foreach (App\Models\Institute::where('type',
-                                                        'school')->orWhere('type', 'school and
-                                                        college')->OrderBy('title','asc')->get() as $institute)
-
-                                                        <option value="{{$institute->title}}">{{$institute->title}}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="pb-3">
-                                                    <label for="hoffer" class="form-label">Hide Offer</label>
-
-                                                    <select id="hoffer" class="shadow rounded-2 form-select"
-                                                        aria-label="Default select example">
-                                                        <option selected>Hide</option>
-                                                        <option value="1">Nothing</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <!-- Dont remove this unnessary wrapper flex div -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer d-flex justify-content-between align-items-center pe-5"
-                                style="padding-left: 35px">
+    <!-- Note model starts here-->
+    <div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel5">
+                        Note Details
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a data-toggle="collapse" href="#collapseExample" role="button"
-                                        aria-expanded="false" aria-controls="collapseExample" class="mb-0">
-                                        <i class="bi bi-caret-down-fill"></i>
-                                    </a>
+                                    <p class="mb-0 text-dark fs-5">Fahmida Tayba</p>
+                                    <p class="text-info" style="font-size: 12px">
+                                        ID-34582
+                                    </p>
                                 </div>
-                                <form action="{{route('admin.job.search')}}" method="post">
-                                    @csrf
-                                    <div>
-                                        <button type="button" class="btn btn-danger py-1 me-2">
-                                            Clear
-                                        </button>
-
-
-
-                                        <input type="hidden" id="job_search" name="job_search" value="">
-
-                                        <button type="submit" class="btn btn-primary py-1">
-                                            Apply
-                                        </button>
-
-                                </form>
+                                <div>
+                                    <p>Nov 14, 2023</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="" style="font-size: 16px; color: #3b3c3d">
+                                    Note Title
+                                </p>
+                                <p>
+                                    doloremque dolorem dolor, delectus repellendus
+                                    expedita modi distinctio voluptate voluptas impedit.
+                                    Corrupti est expedita non qui accusamus illum quam,
+                                    cum cumque saepe excepturi rem.
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p style="font-size: 16px; color: #3b3c3d">
+                                        Read More
+                                    </p>
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary py-1">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-0 fs-5">Sajid HDY</p>
+                                    <p class="text-info" style="font-size: 12px">
+                                        ID-31934
+                                    </p>
+                                </div>
+                                <div>
+                                    <p>Nov 29, 2023</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-gay-900" style="font-size: 16px">
+                                    Note Title
+                                </p>
+                                <p>
+                                    doloremque dolorem dolor, delectus repellendus
+                                    expedita modi distinctio voluptate voluptas impedit.
+                                    Corrupti est expedita non qui accusamus illum quam,
+                                    cum cumque saepe excepturi rem.
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p>Read More</p>
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary py-1">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-0 text-dark fs-5">Fahmida Tayba</p>
+                                    <p class="text-info" style="font-size: 12px">
+                                        ID-34582
+                                    </p>
+                                </div>
+                                <div>
+                                    <p>Nov 30, 2023</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="" style="font-size: 16px; color: #3b3c3d">
+                                    Note Title
+                                </p>
+                                <p>
+                                    doloremque dolorem dolor, delectus repellendus
+                                    expedita modi distinctio voluptate voluptas impedit.
+                                    Corrupti est expedita non qui accusamus illum quam,
+                                    cum cumque saepe excepturi rem.
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p>Read More</p>
+                                </div>
+                                <div>
+                                    <button class="btn btn-warning py-1">Edited</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Filter Model ends here -->
-
-            </div>
-
-        </div>
-
-
-
-
-
-        <div class="d-flex gap-3">
-
-            <form action="{{route('admin.job.search-single-all')}}" method="post">
-                @csrf
-                <div class="d-flex justify-content-center align-items-center px-2 rounded-3"
-                    style="border: 1px solid #cfdfdb">
-
-                    <input name="search" type="text" class="form-control shadow-none rounded-3 border-0"
-                        placeholder="Search" style="padding: 12px 18px" id="">
-                    <button type="submit" class="btn btn-link"><i class="bi bi-search text-muted ms-1"></i></button>
-                </div>
-
-
-            </form>
-
-
-
-
-
-
-            <form id="paginationLimitForm">
-                <select id="cpprofile" name="pagination_limit" class="form-select rounded"
-                    style="width: 100px">
-
-                    <option value="1" {{ $paginationLimit == 30 ? 'selected' : '' }}>
-                        30
-                    </option>
-
-                    <option value="50" {{ $paginationLimit == 50 ? 'selected' : '' }}>
-                        50
-                    </option>
-
-                    <option value="100" {{ $paginationLimit == 100 ? 'selected' : '' }}>
-                        100
-                    </option>
-
-                    <option value="200" {{ $paginationLimit == 200 ? 'selected' : '' }}>
-                        200
-                    </option>
-
-                    <option value="400" {{ $paginationLimit == 400 ? 'selected' : '' }}>
-                        400
-                    </option>
-
-                    <option value="500" {{ $paginationLimit == 500 ? 'selected' : '' }}>
-                        500
-                    </option>
-
-                </select>
-            </form>
-
-
-
-
-
-        </div>
-    </div>
-
-
-    <div class=" my-5">
-        <div class="card table-card p-3">
-            <div class="table-responsive">
-                <div id="requestsTable">
-                    @include('backend.corporatepartner.partials.partner_table')
+                <div class="modal-footer">
+                    <div class="py-2"></div>
                 </div>
             </div>
         </div>
     </div>
-    {{-- <div class="d-flex justify-content-end mt-3">
-        {{ $requests->links() }}
-    </div> --}}
+    <!-- Note model ends here-->
 
-</main>
+    <!-- Create Note model starts here-->
+    <div class="modal fade" id="createNoteModal" tabindex="-1" aria-labelledby="createNoteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel6">
+                        Make A Note
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label text-dark">Note Title</label>
+                            <input type="text" class="form-control shadow-none rounded-3" id="exampleFormControlInput1"
+                                placeholder="Maximum 8 words can be given " />
+                        </div>
+                        <div>
+                            <label for="exampleFormControlTextarea1" class="form-label text-dark">Note Details</label>
+                            <textarea class="form-control shadow-none rounded-3" id="exampleFormControlTextarea1"
+                                rows="3" placeholder="Maximum 30 words can be given"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gdark shadow-lg" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Create Note model ends here-->
+    <!-- Log model starts here -->
+    <div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="logModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 900px">
+            <div class="modal-content mx-4">
+                <div class="modal-body p-0">
+                    <table class="table shadow-none">
+                        <thead class="text-white" style="background-color: #3378c2">
+                            <tr class="">
+                                <th scope="col" class="border-end border-1" style="border-top-left-radius: 8px">
+                                    Name
+                                </th>
+                                <th scope="col" class="text-nowrap border-end border-1">
+                                    Em ID
+                                </th>
+                                <th scope="col" class="border-end border-1">Date</th>
+                                <th scope="col" class="text-nowrap" style="border-top-right-radius: 8px">
+                                    Note Before Edit
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="" style="vertical-align: middle">
+                                <th scope="row" class="text-nowrap border-end border-1">
+                                    Fahmida Tayba
+                                </th>
+                                <td class="text-info border-end border-1">56123</td>
+                                <td class="text-nowrap border-end border-1">
+                                    <p class="mb-0">14-07-2023</p>
+                                    <p class="mb-0 text-muted">47: 15: 12 PM</p>
+                                </td>
+                                <td>
+                                    <p class="border border-info p-2 rounded-3">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing
+                                        elit. Reprehenderit molestias magnam doloribus
+                                        impedit sunt ducimus inventore voluptas numquam
+                                        eum ad corporis aperiam harum quo, explicabo
+                                        officiis suscipit, reiciendis architecto veniam
+                                        amet sequi, facere placeat illo veritatis.
+                                        Dignissimos eius quibusdam tempora!
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Log model ends here -->
+    <!-- Filter model starts here -->
+    <div class="modal fade font-pop" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-slide-right" style="max-width: 900px">
+            <div class="modal-content pb-4 pt-3">
+                <div class="modal-header" style="padding-left: 40px; padding-right: 40px">
+                    <h4 class="modal-title" id="exampleModalLabel">Filter</h4>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-0" style="padding-left: 40px">
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 pe-4">
+                                <div class="pb-3">
+                                    <label for="datef" class="form-label text-dark text-sm">Date from</label>
+                                    <div class="">
+                                        <input type="date" class="form-control shadow rounded-3" id="datef" />
+                                    </div>
+                                </div>
+                                <div class="pb-3">
+                                    <label for="datet" class="form-label text-dark text-sm">Date To</label>
+                                    <input type="date" class="form-control shadow rounded-3" id="datet" />
+                                </div>
+                                <div class="pb-3">
+                                    <label for="Status" class="form-label text-dark text-sm">Verify Status</label>
+
+                                    <select id="Status" class="shadow rounded-3 form-select"
+                                        aria-label="Default select example">
+                                        <option selected value="Verified">
+                                            Verified
+                                        </option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="border-end mt-3" style="height: 210px"></div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 pe-4">
+                                <div class="pb-3">
+                                    <label for="cntry" class="form-label text-dark text-sm">Country</label>
+
+                                    <select id="cntry" class="shadow rounded-3 form-select"
+                                        aria-label="Default select example">
+                                        <option selected value="bangladesh">
+                                            Bangladesh
+                                        </option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
+                                    </select>
+                                </div>
+                                <div class="pb-3">
+                                    <label for="cty" class="form-label text-dark text-sm">City</label>
+
+                                    <select id="cty" class="shadow rounded-3 form-select"
+                                        aria-label="Default select example">
+                                        <option selected value="dhaka">Dhaka</option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
+                                    </select>
+                                </div>
+                                <div class="pb-3">
+                                    <label for="loc" class="form-label text-dark text-sm">Location</label>
+
+                                    <select id="loc" class="shadow rounded-3 form-select"
+                                        aria-label="Default select example">
+                                        <option selected value="mirpur 1">
+                                            Mirpur 1
+                                        </option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="border-end mt-3" style="height: 210px"></div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 pe-4">
+                                <div class="pb-3">
+                                    <label for="Featured" class="form-label text-dark text-sm">Featured</label>
+
+                                    <select id="Featured" class="shadow rounded-3 form-select"
+                                        aria-label="Default select example">
+                                        <option selected value="SLH">SLH</option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
+                                    </select>
+                                </div>
+                                <div class="pb-3">
+                                    <label for="Other" class="form-label text-dark text-sm">Channel</label>
+
+                                    <select id="Tutor Request" class="shadow rounded-3 form-select"
+                                        aria-label="Default select example">
+                                        <option selected value="Tutor Request">
+                                            Tutor Request
+                                        </option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
+                                    </select>
+                                </div>
+                                <div class="pb-3">
+                                    <label for="am" class="form-label text-dark text-sm">Action By</label>
+
+                                    <select id="am" class="shadow rounded-3 form-select"
+                                        aria-label="Default select example">
+                                        <option selected value="Robel Hosssen">
+                                            Robel Hosssen
+                                        </option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=""></div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-end align-items-center" style="padding-right: 27px">
+                    <div class="pe-2">
+                        <button type="button" class="btn btn-danger grayed py-1 me-2">
+                            Clear
+                        </button>
+                        <a href="employee-filter-apply.html" type="button" class="btn btn-primary py-1">
+                            Apply
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Filter Model ends here -->
+    <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="payLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-slide-top" style="max-width: 600px">
+            <div class="modal-content p-3">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        Create Affiliate Profile
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <form action="">
+                        <div class="row row-cols-md-2">
+                            <div class="mb-3">
+                                <label for="name" class="form-label text-dark text-sm required">
+                                    Name</label>
+                                <input id="name" class="shadow-none rounded-3 form-control"
+                                    placeholder="Enter your name" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label text-dark text-sm required">
+                                    Phone</label>
+                                <input id="phone" class="shadow-none rounded-3 form-control"
+                                    placeholder="Enter your phone" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label text-dark text-sm">
+                                    Email</label>
+                                <input id="email" class="shadow-none rounded-3 form-control"
+                                    placeholder="Enter your phone" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="gndr" class="form-label text-dark text-sm required">Gender</label>
+                                <select id="gndr" class="shadow-none rounded-3 form-select">
+                                    <option selected value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cntry" class="form-label text-dark text-sm required">Country</label>
+                                <select id="cntry" class="shadow-none rounded-3 form-select">
+                                    <option selected value="Bangladesh">
+                                        Bangladesh
+                                    </option>
+                                    <option value="Option 1">Option 1</option>
+                                    <option value="Option 2">Option 2</option>
+                                    <option value="Option 3">Option 3</option>
+                                    <option value="Option 4">Option 4</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cty" class="form-label text-dark text-sm required">City</label>
+                                <select id="cty" class="shadow-none rounded-3 form-select">
+                                    <option selected value="dhaka">Dhaka</option>
+                                    <option value="Option 1">Option 1</option>
+                                    <option value="Option 2">Option 2</option>
+                                    <option value="Option 3">Option 3</option>
+                                    <option value="Option 4">Option 4</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cntry" class="form-label text-dark text-sm required">Location</label>
+                                <select id="lction" class="shadow-none rounded-3 form-select">
+                                    <option selected value="Mirpur 1">Location</option>
+                                    <option value="Option 1">Option 1</option>
+                                    <option value="Option 2">Option 2</option>
+                                    <option value="Option 3">Option 3</option>
+                                    <option value="Option 4">Option 4</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 mb-md-0">
+                                <label for="acom" class="form-label text-dark text-sm required">
+                                    Affiliate Commission</label>
+                                <input id="acom" class="shadow-none rounded-3 form-control bg-light"
+                                    placeholder="12% / By Defult" disabled />
+                            </div>
+
+                            <div class="mb-3 mb-md-0">
+                                <label for="pass" class="form-label text-dark text-sm required">
+                                    Password</label>
+                                <input id="Password" class="shadow-none rounded-3 form-control bg-light"
+                                    placeholder="12345678 / By Defult" disabled />
+                            </div>
+                            <div class="mb-3 mb-md-0">
+                                <label for="pass" class="form-label text-dark text-sm required">
+                                    Re-Password</label>
+                                <input id="Password" class="shadow-none rounded-3 form-control bg-light"
+                                    placeholder="12345678 / By Defult" disabled />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- main content section ends here -->
+</div>
 
 @endsection
 @push('page_scripts')
+
 <script>
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-});
-</script>
+$(document).on('click', '.pagination-link', function(e) {
 
-{{-- Pagination --}}
-<script>
-    $(document).on('change', '#cpprofile', function () {
+    e.preventDefault();
 
-        let limit = $(this).val();
+    let url = $(this).attr('href');
 
-        $.ajax({
-            url: "{{ route('admin.cpprofile.index') }}",
-            type: "GET",
-            data: {
-                pagination_limit: limit
-            },
+    $.ajax({
 
-            beforeSend: function () {
+        url: url,
+        type: 'GET',
 
-                $('#requestsTable').css({
-                    'opacity': '0.5',
-                    'pointer-events': 'none'
-                });
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
 
-            },
+        beforeSend: function() {
 
-            success: function (response) {
+            $('#partnerTable').css({
+                'opacity': '0.5',
+                'pointer-events': 'none'
+            });
 
-                $('#requestsTable').html(response.html);
+        },
 
-            },
+        success: function(response) {
 
-            error: function () {
+            $('#partnerTable').html(response.html);
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Something went wrong. Please try again.'
-                });
+            $('#partnerPagination').html(response.pagination);
 
-            },
+            window.history.pushState({}, '', url);
 
-            complete: function () {
+        },
 
-                $('#requestsTable').css({
-                    'opacity': '1',
-                    'pointer-events': 'auto'
-                });
+        error: function(xhr) {
 
-            }
-        });
+            console.log(xhr.responseText);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Unable to load data.'
+            });
+
+        },
+
+        complete: function() {
+
+            $('#partnerTable').css({
+                'opacity': '1',
+                'pointer-events': 'auto'
+            });
+
+        }
 
     });
 
+});
 </script>
 
 @endpush

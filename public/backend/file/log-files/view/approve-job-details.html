@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/color_palets.css" />
+    <link rel="stylesheet" href="../../css/log_file_style.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+
+    <title>Admin - Affiliate - Log files</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a href="/index.html"><img src="/images/logo.svg" alt="logo" /></a>
+        <button
+          class="navbar-toggler d-md-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+    </nav>
+    <!-- navbar ends here -->
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse sidebar-width shadow-lg"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-credit-card fs-5 me-4"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Affiliate
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse show" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/index.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Request</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-profile.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Profile</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-transaction.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Transaction</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/setting.html"
+                        class="text-gray-800 text-decoration-none"
+                        >Setting</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div
+            class="col-md-9 ms-sm-auto col-lg-10 px-3"
+            style="margin-top: 62px"
+          >
+            <!-- tab like button group (it should be tab) -->
+            <div class="pt-4 row row-cols-2">
+              <div>
+                <a
+                  href="#"
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid #669ad1;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >View</a
+                >
+              </div>
+              <div>
+                <a
+                href="/log-files/edit/sign-up-info.html"
+
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid white;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >Edit</a
+                >
+              </div>
+            </div>
+            <!-- tab like button group ends -->
+            <!-- mini nav starts here -->
+            <div
+              class="d-flex gap-4 flex-wrap flex-column flex-md-row py-4 align-items-center"
+            >
+              <a
+                class="text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/aboutme.html"
+                >About Me</a
+              >
+              <a
+                class="text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/dashboard.html"
+                >Dashboard Details</a
+              >
+              <a
+                class="text-decoration-none text-gray-800 text-nowrap active-border"
+                href="/log-files/view/add-lead.html"
+                >Add Leads</a
+              >
+              <a
+                class="text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/approved-lead.html"
+                >Approved Leads</a
+              >
+              <a
+                class="btn btn-outline-gdark text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/basic-log.html"
+                >Basic Log</a
+              >
+              <a
+                class="btn btn-outline-gdark text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/advance-log.html"
+                >Advance Log</a
+              >
+            </div>
+            <!-- mini nav ends here -->
+            <!-- contents starts here -->
+
+            <div class="row font-pop">
+              <div class="col-12 col-md-8">
+                <div>
+                  <div class="">
+                    <div class="mb-4">
+                      <div class="bg-white p-3 p-md-5 shadow-lg rounded">
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-3 mb-md-5"
+                        >
+                          <h4 class="text-primary">Student Informations</h4>
+                        </div>
+                        <div class="row row-cols-md-2 row-cols-lg-3">
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M6.5 11L12 2L17.5 11H6.5ZM17.5 22C16.25 22 15.1873 21.5623 14.312 20.687C13.4367 19.8117 12.9993 18.7493 13 17.5C13 16.25 13.4377 15.1873 14.313 14.312C15.1883 13.4367 16.2507 12.9993 17.5 13C18.75 13 19.8127 13.4377 20.688 14.313C21.5633 15.1883 22.0007 16.2507 22 17.5C22 18.75 21.5623 19.8127 20.687 20.688C19.8117 21.5633 18.7493 22.0007 17.5 22ZM3 21.5V13.5H11V21.5H3Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Category
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                Bangla Medium
+                              </span>
+                            </div>
+                          </div>
+
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M12.0891 1.5C6.34219 1.5 1.5 6.11719 1.5 11.8172C1.5 12 1.50469 22.5 1.50469 22.5L12.0891 22.4906C17.8406 22.4906 22.5 17.6953 22.5 11.9953C22.5 6.29531 17.8406 1.5 12.0891 1.5ZM12 18C11.0906 18 10.2234 17.7984 9.45 17.4328L5.64844 18.375L6.72188 14.8594C6.2625 14.0109 6 13.0359 6 12C6 8.68594 8.68594 6 12 6C15.3141 6 18 8.68594 18 12C18 15.3141 15.3141 18 12 18Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Course
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                HSC First Year
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M3.59961 5.9998C3.59961 5.33706 4.13687 4.7998 4.79961 4.7998H19.1996C19.8624 4.7998 20.3996 5.33706 20.3996 5.9998C20.3996 6.66255 19.8624 7.1998 19.1996 7.1998H4.79961C4.13687 7.1998 3.59961 6.66255 3.59961 5.9998Z"
+                                  fill="#86C240"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M3.59961 11.9998C3.59961 11.3371 4.13687 10.7998 4.79961 10.7998H19.1996C19.8624 10.7998 20.3996 11.3371 20.3996 11.9998C20.3996 12.6625 19.8624 13.1998 19.1996 13.1998H4.79961C4.13687 13.1998 3.59961 12.6625 3.59961 11.9998Z"
+                                  fill="#86C240"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M3.59961 17.9998C3.59961 17.3371 4.13687 16.7998 4.79961 16.7998H11.9996C12.6624 16.7998 13.1996 17.3371 13.1996 17.9998C13.1996 18.6625 12.6624 19.1998 11.9996 19.1998H4.79961C4.13687 19.1998 3.59961 18.6625 3.59961 17.9998Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Subject
+                              </div>
+                              <div class="ms-2">
+                                <span
+                                  class="text-left text-gray-0 text-wrap text-capitalize text-gray-600"
+                                >
+                                  All
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <i
+                                class="bi bi-calendar-week-fill fs-5 text-primary"
+                              ></i>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Days and Week
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                4 Days
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="22"
+                                height="22"
+                                viewBox="0 0 22 22"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M9.75394 17.1616C9.75394 17.4038 9.82575 17.6405 9.96028 17.8418C10.0948 18.0432 10.286 18.2001 10.5097 18.2928C10.7335 18.3854 10.9796 18.4097 11.2171 18.3624C11.4546 18.3152 11.6728 18.1986 11.844 18.0274C12.0153 17.8561 12.1319 17.638 12.1791 17.4005C12.2263 17.163 12.2021 16.9168 12.1094 16.6931C12.0168 16.4694 11.8598 16.2781 11.6585 16.1436C11.4572 16.0091 11.2204 15.9373 10.9783 15.9373C10.654 15.9385 10.3433 16.0679 10.1139 16.2973C9.8846 16.5266 9.7552 16.8373 9.75394 17.1616ZM9.75394 2.14466e-05V4.9006H12.2042V2.55075C13.831 2.78666 15.3556 3.48515 16.5966 4.56303C17.8376 5.6409 18.7427 7.05276 19.204 8.63044C19.6654 10.2081 19.6635 11.8852 19.1988 13.4618C18.734 15.0385 17.8259 16.4484 16.5825 17.5236C15.3392 18.5987 13.813 19.2939 12.1857 19.5263C10.5585 19.7587 8.89876 19.5184 7.40417 18.8342C5.90958 18.1501 4.64312 17.0507 3.75563 15.6671C2.86813 14.2836 2.39698 12.6741 2.3983 11.0303C2.39258 9.05331 3.07706 7.1363 4.33366 5.61002L10.9783 12.2547L12.708 10.5249L4.37033 2.19524V2.22234C2.2866 3.79616 0.830717 6.05994 0.263067 8.60878C-0.304583 11.1576 0.0530278 13.8253 1.27194 16.1346C2.49085 18.444 4.49155 20.2444 6.91621 21.2138C9.34087 22.1833 12.0313 22.2586 14.5064 21.4262C16.9815 20.5938 19.0797 18.908 20.4258 16.6704C21.7719 14.4328 22.2781 11.7894 21.8538 9.21276C21.4295 6.63617 20.1025 4.29454 18.11 2.60669C16.1175 0.918843 13.5896 -0.00513264 10.9783 2.14466e-05H9.75394ZM18.3355 11.0319C18.3355 10.7898 18.2637 10.553 18.1292 10.3517C17.9946 10.1504 17.8034 9.99342 17.5797 9.90075C17.356 9.80809 17.1098 9.78384 16.8723 9.83108C16.6348 9.87832 16.4167 9.99493 16.2454 10.1662C16.0742 10.3374 15.9576 10.5555 15.9104 10.793C15.8631 11.0305 15.8874 11.2767 15.98 11.5004C16.0727 11.7242 16.2296 11.9154 16.431 12.0499C16.6323 12.1844 16.869 12.2563 17.1112 12.2563C17.4355 12.255 17.7462 12.1256 17.9755 11.8963C18.2049 11.6669 18.3343 11.3562 18.3355 11.0319ZM3.62424 11.0319C3.62424 11.2741 3.69605 11.5108 3.83058 11.7121C3.96511 11.9135 4.15633 12.0704 4.38005 12.1631C4.60377 12.2557 4.84994 12.28 5.08744 12.2327C5.32494 12.1855 5.5431 12.0689 5.71433 11.8976C5.88556 11.7264 6.00217 11.5083 6.04941 11.2708C6.09665 11.0333 6.0724 10.7871 5.97973 10.5634C5.88707 10.3396 5.73014 10.1484 5.5288 10.0139C5.32745 9.87936 5.09074 9.80756 4.84859 9.80756C4.52398 9.8084 4.21289 9.93761 3.98321 10.167C3.75353 10.3964 3.62391 10.7073 3.62265 11.0319H3.62424Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Tutoring Time
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                5.30 PM
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <i
+                                class="bi bi-hourglass-top fs-4 text-primary"
+                              ></i>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Tutoring Duration
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                2.5 Hour
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <i class="bi bi-box fs-5 text-primary"></i>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Tutoring Method
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                Students Home
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <i
+                                class="bi bi-wallet-fill fs-5 text-primary"
+                              ></i>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Maximum Salary
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                BDT 5000 TK
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M16 8C16 10.21 14.21 12 12 12C9.79 12 8 10.21 8 8L8.11 7.06L5 5.5L12 2L19 5.5V10.5H18V6L15.89 7.06L16 8ZM12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Number of Students
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                1
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 26 26"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M21.1254 2.03125H17.0629C16.7397 2.03125 16.4297 2.15965 16.2011 2.38821C15.9726 2.61677 15.8442 2.92677 15.8442 3.25C15.8442 3.57323 15.9726 3.88323 16.2011 4.11179C16.4297 4.34035 16.7397 4.46875 17.0629 4.46875H18.1801L16.5917 6.06023C15.7783 5.38434 14.8206 4.90427 13.7923 4.65702C12.7641 4.40978 11.6928 4.40198 10.6611 4.63422C9.62937 4.86646 8.66476 5.33254 7.84164 5.99651C7.01853 6.66049 6.35888 7.50463 5.91358 8.46385C5.46828 9.42306 5.24921 10.4717 5.27327 11.529C5.29733 12.5863 5.56387 13.6239 6.05235 14.5619C6.54082 15.4998 7.23818 16.3131 8.09065 16.9389C8.94312 17.5648 9.92793 17.9865 10.9692 18.1716V19.0938H8.9379C8.61467 19.0938 8.30467 19.2222 8.07611 19.4507C7.84755 19.6793 7.71915 19.9893 7.71915 20.3125C7.71915 20.6357 7.84755 20.9457 8.07611 21.1743C8.30467 21.4028 8.61467 21.5312 8.9379 21.5312H10.9692V23.5625C10.9692 23.8857 11.0976 24.1957 11.3261 24.4243C11.5547 24.6528 11.8647 24.7812 12.1879 24.7812C12.5111 24.7812 12.8211 24.6528 13.0497 24.4243C13.2782 24.1957 13.4067 23.8857 13.4067 23.5625V21.5312H15.4379C15.7611 21.5312 16.0711 21.4028 16.2997 21.1743C16.5282 20.9457 16.6567 20.6357 16.6567 20.3125C16.6567 19.9893 16.5282 19.6793 16.2997 19.4507C16.0711 19.2222 15.7611 19.0938 15.4379 19.0938H13.4067V18.1716C14.4974 17.977 15.5252 17.5226 16.4032 16.8468C17.2812 16.171 17.9835 15.2937 18.4508 14.2891C18.918 13.2845 19.1364 12.1821 19.0876 11.0752C19.0387 9.96834 18.7239 8.88951 18.1699 7.93L19.9067 6.19531V7.3125C19.9067 7.63573 20.0351 7.94573 20.2636 8.17429C20.4922 8.40285 20.8022 8.53125 21.1254 8.53125C21.4486 8.53125 21.7586 8.40285 21.9872 8.17429C22.2157 7.94573 22.3442 7.63573 22.3442 7.3125V3.25C22.3442 2.92677 22.2157 2.61677 21.9872 2.38821C21.7586 2.15965 21.4486 2.03125 21.1254 2.03125ZM12.1879 15.8438C11.3041 15.8438 10.4401 15.5817 9.7052 15.0906C8.97031 14.5996 8.39754 13.9017 8.05931 13.0851C7.72109 12.2686 7.63259 11.37 7.80502 10.5032C7.97744 9.63634 8.40305 8.84008 9.02802 8.21512C9.65298 7.59015 10.4492 7.16454 11.3161 6.99212C12.1829 6.81969 13.0815 6.90818 13.898 7.24641C14.7146 7.58464 15.4125 8.15741 15.9035 8.8923C16.3946 9.62718 16.6567 10.4912 16.6567 11.375C16.6553 12.5598 16.1841 13.6956 15.3463 14.5334C14.5085 15.3712 13.3727 15.8424 12.1879 15.8438Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Student Gender
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-capitalize text-gray-600"
+                              >
+                                Male
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mb-4">
+                      <div class="bg-white p-3 p-md-5 shadow-lg rounded">
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-3 mb-md-5"
+                        >
+                          <h4 class="text-primary">Tutor Requirements</h4>
+                        </div>
+                        <div class="row row-cols-md-2 row-cols-lg-3">
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g clipPath="url(#clip0_3907_68360)">
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M6.67058 8.23542C7.07529 8.23542 7.25058 8.39777 7.54118 8.66601C7.88353 8.98012 8.35176 9.41189 9.22353 9.41189C9.85176 9.41189 10.2659 9.18248 10.5765 8.93659C10.5153 10.5048 9.23058 11.7648 7.64706 11.7648C6.19411 11.7648 4.99058 10.7025 4.75529 9.31542C5.22824 9.17306 5.54352 8.89424 5.78589 8.66954C6.08 8.39895 6.25766 8.23542 6.67058 8.23542ZM20 0V11.7647H16.4706V10.5883H18.8235V1.17648H1.17646V10.5883H2.35293V11.7647H0V2.08333e-05H20V0ZM7.64706 4.70602C9.19294 4.70602 10.4506 5.90955 10.5659 7.4272C10.3847 7.54838 10.2247 7.67897 10.0871 7.80602C9.79765 8.07425 9.62471 8.23543 9.22352 8.23543C8.81058 8.23543 8.63294 8.0719 8.33883 7.80131C8 7.48837 7.53411 7.05896 6.67058 7.05896C5.79882 7.05896 5.33058 7.49073 4.98824 7.80484C4.8847 7.90014 4.79529 7.97661 4.70589 8.04249V7.6472C4.70589 6.02602 6.02471 4.70602 7.64706 4.70602ZM15.3318 7.44014L12.1012 16.0542C9.83647 16.2896 7.07411 16.3107 5.44941 15.7178L5.04471 16.8237C7.46824 17.7084 11.4494 17.3272 12.8294 17.2378L12.9035 17.266L12.9165 17.2319C12.9235 17.2319 12.9365 17.2307 12.9447 17.2307L12.6129 18.1378C12.5671 18.266 12.4612 18.3578 12.3247 18.3884C11.1012 18.6695 9.43882 18.8237 7.64706 18.8237C5.85765 18.8237 4.03647 18.4837 2.35294 17.8378V15.2001C2.35294 14.4119 2.88 13.7131 3.63648 13.4978C4.92706 13.1295 6.25529 12.9378 7.61765 12.9389C7.62706 12.9389 7.63647 12.9413 7.64706 12.9413C7.65294 12.9413 7.65765 12.9401 7.66352 12.9401C8.97883 12.9448 10.3247 13.1272 11.7 13.5095L12.0859 12.3989L11.9329 12.3507C11.3753 12.1966 10.8106 12.0837 10.2471 11.9895C11.1647 11.2342 11.7647 10.1037 11.7647 8.82366V7.64719C11.7647 5.37659 9.91765 3.52954 7.64706 3.52954C5.37647 3.52954 3.52942 5.37659 3.52942 7.64719V8.82365C3.52942 10.1013 4.12706 11.2307 5.04353 11.9872C4.46 12.0836 3.88118 12.2048 3.31411 12.366C2.05529 12.7237 1.17647 13.8895 1.17647 15.2001V18.6272L1.54 18.779C3.46235 19.5778 5.57529 20.0001 7.64706 20.0001C9.52589 20.0001 11.28 19.8354 12.5871 19.5354C13.1118 19.4142 13.5341 19.0448 13.7176 18.5425L14.0494 17.6354C14.1988 17.226 14.1282 16.779 13.8576 16.4401C13.7224 16.2695 13.5494 16.1413 13.3553 16.0625L16.4329 7.85425L15.3318 7.44012V7.44014Z"
+                                    fill="#86C240"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_3907_68360">
+                                    <rect width="20" height="20" fill="white" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Curriculum
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                English Medium
+                              </span>
+                            </div>
+                          </div>
+
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 26 26"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M21.1254 2.03125H17.0629C16.7397 2.03125 16.4297 2.15965 16.2011 2.38821C15.9726 2.61677 15.8442 2.92677 15.8442 3.25C15.8442 3.57323 15.9726 3.88323 16.2011 4.11179C16.4297 4.34035 16.7397 4.46875 17.0629 4.46875H18.1801L16.5917 6.06023C15.7783 5.38434 14.8206 4.90427 13.7923 4.65702C12.7641 4.40978 11.6928 4.40198 10.6611 4.63422C9.62937 4.86646 8.66476 5.33254 7.84164 5.99651C7.01853 6.66049 6.35888 7.50463 5.91358 8.46385C5.46828 9.42306 5.24921 10.4717 5.27327 11.529C5.29733 12.5863 5.56387 13.6239 6.05235 14.5619C6.54082 15.4998 7.23818 16.3131 8.09065 16.9389C8.94312 17.5648 9.92793 17.9865 10.9692 18.1716V19.0938H8.9379C8.61467 19.0938 8.30467 19.2222 8.07611 19.4507C7.84755 19.6793 7.71915 19.9893 7.71915 20.3125C7.71915 20.6357 7.84755 20.9457 8.07611 21.1743C8.30467 21.4028 8.61467 21.5312 8.9379 21.5312H10.9692V23.5625C10.9692 23.8857 11.0976 24.1957 11.3261 24.4243C11.5547 24.6528 11.8647 24.7812 12.1879 24.7812C12.5111 24.7812 12.8211 24.6528 13.0497 24.4243C13.2782 24.1957 13.4067 23.8857 13.4067 23.5625V21.5312H15.4379C15.7611 21.5312 16.0711 21.4028 16.2997 21.1743C16.5282 20.9457 16.6567 20.6357 16.6567 20.3125C16.6567 19.9893 16.5282 19.6793 16.2997 19.4507C16.0711 19.2222 15.7611 19.0938 15.4379 19.0938H13.4067V18.1716C14.4974 17.977 15.5252 17.5226 16.4032 16.8468C17.2812 16.171 17.9835 15.2937 18.4508 14.2891C18.918 13.2845 19.1364 12.1821 19.0876 11.0752C19.0387 9.96834 18.7239 8.88951 18.1699 7.93L19.9067 6.19531V7.3125C19.9067 7.63573 20.0351 7.94573 20.2636 8.17429C20.4922 8.40285 20.8022 8.53125 21.1254 8.53125C21.4486 8.53125 21.7586 8.40285 21.9872 8.17429C22.2157 7.94573 22.3442 7.63573 22.3442 7.3125V3.25C22.3442 2.92677 22.2157 2.61677 21.9872 2.38821C21.7586 2.15965 21.4486 2.03125 21.1254 2.03125ZM12.1879 15.8438C11.3041 15.8438 10.4401 15.5817 9.7052 15.0906C8.97031 14.5996 8.39754 13.9017 8.05931 13.0851C7.72109 12.2686 7.63259 11.37 7.80502 10.5032C7.97744 9.63634 8.40305 8.84008 9.02802 8.21512C9.65298 7.59015 10.4492 7.16454 11.3161 6.99212C12.1829 6.81969 13.0815 6.90818 13.898 7.24641C14.7146 7.58464 15.4125 8.15741 15.9035 8.8923C16.3946 9.62718 16.6567 10.4912 16.6567 11.375C16.6553 12.5598 16.1841 13.6956 15.3463 14.5334C14.5085 15.3712 13.3727 15.8424 12.1879 15.8438Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Tutor Gender
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-capitalize text-gray-600"
+                              >
+                                Male
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M5.99961 2.3999C5.36309 2.3999 4.75264 2.65276 4.30255 3.10285C3.85247 3.55293 3.59961 4.16338 3.59961 4.7999V21.5999L7.79961 19.1999L11.9996 21.5999L16.1996 19.1999L20.3996 21.5999V4.7999C20.3996 4.16338 20.1468 3.55293 19.6967 3.10285C19.2466 2.65276 18.6361 2.3999 17.9996 2.3999H5.99961ZM11.648 6.8483C11.8666 6.62198 11.9876 6.31886 11.9848 6.00422C11.9821 5.68958 11.8559 5.38861 11.6334 5.16612C11.4109 4.94363 11.1099 4.81743 10.7953 4.81469C10.4807 4.81196 10.1775 4.93291 9.95121 5.1515L6.35121 8.7515C6.12624 8.97654 5.99987 9.28171 5.99987 9.5999C5.99987 9.9181 6.12624 10.2233 6.35121 10.4483L9.95121 14.0483C10.1775 14.2669 10.4807 14.3878 10.7953 14.3851C11.1099 14.3824 11.4109 14.2562 11.6334 14.0337C11.8559 13.8112 11.9821 13.5102 11.9848 13.1956C11.9876 12.8809 11.8666 12.5778 11.648 12.3515L10.0964 10.7999H11.9996C12.9544 10.7999 13.8701 11.1792 14.5452 11.8543C15.2203 12.5294 15.5996 13.4451 15.5996 14.3999V15.5999C15.5996 15.9182 15.726 16.2234 15.9511 16.4484C16.1761 16.6735 16.4813 16.7999 16.7996 16.7999C17.1179 16.7999 17.4231 16.6735 17.6481 16.4484C17.8732 16.2234 17.9996 15.9182 17.9996 15.5999V14.3999C17.9996 12.8086 17.3675 11.2825 16.2423 10.1573C15.117 9.03204 13.5909 8.3999 11.9996 8.3999H10.0964L11.648 6.8483Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Hiring From
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                23 Nov 2024
+                              </span>
+                            </div>
+                          </div>
+
+                          <div
+                            class="col-12 col-md-12 col-lg-12 mb-3 mb-md-5 d-flex"
+                          >
+                            <div class=" ">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M15.25 18.75C15.45 18.75 15.625 18.675 15.775 18.525C15.925 18.375 16 18.2 16 18C16 17.8 15.925 17.625 15.775 17.475C15.625 17.325 15.45 17.25 15.25 17.25C15.05 17.25 14.875 17.325 14.725 17.475C14.575 17.625 14.5 17.8 14.5 18C14.5 18.2 14.575 18.375 14.725 18.525C14.875 18.675 15.05 18.75 15.25 18.75ZM18 18.75C18.2 18.75 18.375 18.675 18.525 18.525C18.675 18.375 18.75 18.2 18.75 18C18.75 17.8 18.675 17.625 18.525 17.475C18.375 17.325 18.2 17.25 18 17.25C17.8 17.25 17.625 17.325 17.475 17.475C17.325 17.625 17.25 17.8 17.25 18C17.25 18.2 17.325 18.375 17.475 18.525C17.625 18.675 17.8 18.75 18 18.75ZM20.75 18.75C20.95 18.75 21.125 18.675 21.275 18.525C21.425 18.375 21.5 18.2 21.5 18C21.5 17.8 21.425 17.625 21.275 17.475C21.125 17.325 20.95 17.25 20.75 17.25C20.55 17.25 20.375 17.325 20.225 17.475C20.075 17.625 20 17.8 20 18C20 18.2 20.075 18.375 20.225 18.525C20.375 18.675 20.55 18.75 20.75 18.75ZM18 23C16.6167 23 15.4373 22.5123 14.462 21.537C13.4867 20.5617 12.9993 19.3827 13 18C13 16.6167 13.4877 15.4373 14.463 14.462C15.4383 13.4867 16.6173 12.9993 18 13C19.3833 13 20.5627 13.4877 21.538 14.463C22.5133 15.4383 23.0007 16.6173 23 18C23 19.3833 22.5123 20.5627 21.537 21.538C20.5617 22.5133 19.3827 23.0007 18 23ZM7 9H17V7H7V9ZM11.675 21H5C4.45 21 3.979 20.804 3.587 20.412C3.195 20.02 2.99934 19.5493 3 19V5C3 4.45 3.196 3.979 3.588 3.587C3.98 3.195 4.45067 2.99934 5 3H19C19.55 3 20.021 3.196 20.413 3.588C20.805 3.98 21.0007 4.45067 21 5V11.7C20.5167 11.4667 20.029 11.2917 19.537 11.175C19.045 11.0583 18.5327 11 18 11C17.8167 11 17.6457 11.004 17.487 11.012C17.3283 11.02 17.166 11.041 17 11.075V11H7V13H13.125C12.825 13.2833 12.554 13.5917 12.312 13.925C12.07 14.2583 11.8577 14.6167 11.675 15H7V17H11.075C11.0417 17.1667 11.0207 17.3293 11.012 17.488C11.0033 17.6467 10.9993 17.8173 11 18C11 18.55 11.05 19.0627 11.15 19.538C11.25 20.0133 11.425 20.5007 11.675 21Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div class="d-flex flex-column">
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Other Requirement
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-gray-600"
+                              >
+                                Lorem ipsum dolor sit amet.
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="bg-white p-3 p-md-5 shadow-lg rounded mt-4">
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-3 mb-md-5"
+                        >
+                          <h4 class="text-primary">Contact Informations</h4>
+                        </div>
+                        <div class="row row-cols-md-2 row-cols-lg-3">
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <i class="bi bi-globe fs-5 text-primary"></i>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Country
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                Bangladesh
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <i
+                                class="bi bi-buildings-fill fs-5 text-primary"
+                              ></i>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                City
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                Dhaka
+                              </span>
+                            </div>
+                          </div>
+                          <div class="mb-3 mb-md-5 d-flex">
+                            <div class=" ">
+                              <i
+                                class="bi bi-geo-alt-fill fs-5 text-primary"
+                              ></i>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Location
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-nowrap text-gray-600"
+                              >
+                                Mirpur 1
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="col-12 col-md-12 col-lg-12 mb-3 mb-md-5 d-flex"
+                          >
+                            <div class=" ">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M3 4C3 3.44772 3.44772 3 4 3H8C8.55228 3 9 3.44772 9 4C9 4.55228 8.55228 5 8 5H6.41421L9.70711 8.29289C10.0976 8.68342 10.0976 9.31658 9.70711 9.70711C9.31658 10.0976 8.68342 10.0976 8.29289 9.70711L5 6.41421V8C5 8.55228 4.55228 9 4 9C3.44772 9 3 8.55228 3 8V4ZM16 3H20C20.5523 3 21 3.44772 21 4V8C21 8.55228 20.5523 9 20 9C19.4477 9 19 8.55228 19 8V6.41421L15.7071 9.70711C15.3166 10.0976 14.6834 10.0976 14.2929 9.70711C13.9024 9.31658 13.9024 8.68342 14.2929 8.29289L17.5858 5H16C15.4477 5 15 4.55228 15 4C15 3.44772 15.4477 3 16 3ZM9.70711 14.2929C10.0976 14.6834 10.0976 15.3166 9.70711 15.7071L6.41421 19H8C8.55228 19 9 19.4477 9 20C9 20.5523 8.55228 21 8 21H4C3.44772 21 3 20.5523 3 20V16C3 15.4477 3.44772 15 4 15C4.55228 15 5 15.4477 5 16V17.5858L8.29289 14.2929C8.68342 13.9024 9.31658 13.9024 9.70711 14.2929ZM14.2929 14.2929C14.6834 13.9024 15.3166 13.9024 15.7071 14.2929L19 17.5858V16C19 15.4477 19.4477 15 20 15C20.5523 15 21 15.4477 21 16V20C21 20.5523 20.5523 21 20 21H16C15.4477 21 15 20.5523 15 20C15 19.4477 15.4477 19 16 19H17.5858L14.2929 15.7071C13.9024 15.3166 13.9024 14.6834 14.2929 14.2929Z"
+                                  fill="#86C240"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <div
+                                class="mx-2 fw-600 text-nowrap mb-0 text-gray"
+                              >
+                                Full Address
+                              </div>
+                              <span
+                                class="text-left ms-2 text-gray-0 text-capitalize text-wrap text-md-nowrap text-gray-600"
+                              >
+                                23, Mirpur 1, Dhaka, Bangladesh
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="mt-4 d-flex flex-column flex-lg-row justify-content-between px-5 pt-3 bg-white rounded shadow-lg align-items-center"
+                      >
+                        <p class="text-muted text-uppercase">Job Id-26356</p>
+                        <p class="text-muted text-uppercase">Total Views-34</p>
+                        <p class="text-muted text-uppercase">
+                          Total Applications-45
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-4 h-15">
+                <div
+                  class="py-5 px-5 px-md-0 px-xl-5 bg-white shadow-lg rounded d-flex justify-content-center align-items-center flex-column"
+                >
+                  <div class="w-100 px-lg-4">
+                    <div class="d-flex flex-column gap-2 px-md-4 px-lg-5 py-5">
+                      <a
+                        href="/log-files/view/approved-lead.html"
+                        class="btn btn-primary shadow-lg text-nowrap d-flex align-items-center justify-content-center gap-2"
+                      >
+                        <i class="bi bi-arrow-left fs-5"></i>
+                        <span> Back</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- contents ends here -->
+          </div>
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

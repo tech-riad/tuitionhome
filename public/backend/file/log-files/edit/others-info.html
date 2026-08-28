@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/color_palets.css" />
+    <link rel="stylesheet" href="../../css/log_file_style.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/af-edit.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+
+    <title>Admin - Affiliate - Log files</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a href="/index.html"><img src="/images/logo.svg" alt="logo" /></a>
+        <button
+          class="navbar-toggler d-lg-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+    </nav>
+    <!-- navbar ends here -->
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-lg-block bg-white sidebar collapse sidebar-width shadow-lg"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-credit-card fs-5 me-4"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Affiliate
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse show" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/index.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Request</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-profile.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Profile</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-transaction.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Transaction</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/setting.html"
+                        class="text-gray-800 text-decoration-none"
+                        >Setting</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div
+            class="col-lg-9 ms-sm-auto col-lg-10 px-3"
+            style="margin-top: 62px"
+          >
+            <!-- tab like button group (it should be tab) -->
+            <div class="pt-4 row row-cols-2">
+              <div>
+                <a
+                  href="/log-files/view/aboutme.html"
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid white;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >View</a
+                >
+              </div>
+              <div>
+                <a
+                  href="/log-files/edit/sign-up-info.html"
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid #669ad1;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >Edit</a
+                >
+              </div>
+            </div>
+            <!-- tab like button group ends -->
+            <!-- contents starts here -->
+            <div class="row gx-1 gx-lg-4 my-lg-4 mt-4 mt-lg-4">
+              <div class="col-12 col-xl-3 col-lg-4">
+                <div
+                  class="bg-white rounded-3 shadow-lg"
+                  style="max-height: 400"
+                >
+                  <ul
+                    class="ps-0 d-flex flex-lg-column justify-content-between px-2"
+                  >
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/sign-up-info.html"
+                      >
+                        <i class="bi bi-person-fill mx-2"></i>Sign-up
+                        Information
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/sign-up-info.html"
+                      >
+                        <i class="bi bi-person-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link text-primary d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/others-info.html"
+                      >
+                        <i class="bi bi-person-vcard-fill mx-2"></i>Others
+                        Information
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/others-info.html"
+                      >
+                        <i class="bi bi-bell-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/password.html"
+                      >
+                        <i class="bi bi-shield-lock-fill mx-2"></i>Password &
+                        Security
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/password.html"
+                      >
+                        <i class="bi bi-shield-lock-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/payment.html"
+                      >
+                        <i class="bi bi-wallet-fill mx-2"></i> Payment Method
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/payment.html"
+                      >
+                        <i class="bi bi-slack mx-2 fs-1"></i>
+                      </a>
+                    </li>
+                    <li
+                      class="setting-nav-item px-xl-4 px-lg-2 d-flex justify-content-center justify-content-lg-start align-items-center"
+                    >
+                      <a
+                        class="t-link d-none d-lg-block text-nowrap text-decoration-none"
+                        href="/log-files/edit/account.html"
+                      >
+                        <i class="bi bi-gear-fill mx-2"></i>Accounts Status
+                      </a>
+                      <a
+                        class="t-link d-lg-none d-block"
+                        href="/log-files/edit/account.html"
+                      >
+                        <i class="bi bi-gear-fill mx-2 fs-1"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-12 col-xl-9 col-lg-8">
+                <!-- settings content starts here -->
+                <div class="bg-white shadow-lg rounded-3 p-4 mb-4">
+                  <div class="m-2">
+                    <h4 class="m-0 text-center mb-5">Contact Information</h4>
+                    <div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0 mb-4">
+                        <div class="border-end pe-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Country</label
+                          >
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                          </select>
+                        </div>
+                        <div class="ps-lg-5">
+                          <label class="mb-2 form-label dark-semibold-label">
+                            Additional Number
+                          </label>
+                          <div class="input-group">
+                            <span
+                              class="input-group-text bg-white rounded-start"
+                              id="adp-addon"
+                            >
+                              <i
+                                class="bi bi-telephone-plus-fill text-primary"
+                              ></i>
+                            </span>
+                            <input
+                              type="text"
+                              id="adp-addon"
+                              class="form-control rounded-end shadow-none input-lg"
+                              placeholder="Enter your number"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0 mb-4">
+                        <div class="border-end pe-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >City</label
+                          >
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                          </select>
+                        </div>
+                        <div class="ps-lg-5">
+                          <label class="mb-2 form-label dark-semibold-label">
+                            Whatsapp Number
+                          </label>
+                          <div class="input-group">
+                            <span
+                              class="input-group-text bg-white rounded-start"
+                              id="adp-addon"
+                              style="color: #25d366"
+                            >
+                              <i class="bi bi-whatsapp"></i>
+                            </span>
+                            <input
+                              type="text"
+                              id="adp-addon"
+                              class="form-control rounded-end shadow-none input-lg"
+                              placeholder="Enter your number"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0 mb-4">
+                        <div class="border-end pe-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Location</label
+                          >
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                          </select>
+                        </div>
+                        <div class="ps-lg-5">
+                          <label class="mb-2 form-label dark-semibold-label">
+                            Facebook Profile Link
+                          </label>
+                          <div class="input-group">
+                            <span
+                              class="input-group-text bg-white rounded-start"
+                              id="adp-addon"
+                              style="color: #1877f2"
+                            >
+                              <i class="bi bi-facebook"></i>
+                            </span>
+                            <input
+                              type="text"
+                              id="adp-addon"
+                              class="form-control rounded-end shadow-none input-lg"
+                              placeholder="Enter your number"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0">
+                        <div class="border-end pe-lg-5">
+                          <label
+                            for="address_details"
+                            class="form-label dark-semibold-label"
+                          >
+                            Address Details
+                          </label>
+                          <textarea
+                            class="form-control shadow-none rounded-2"
+                            id="address_details"
+                            rows="3"
+                            placeholder="Maximun 200 characters"
+                          ></textarea>
+                        </div>
+                        <div class="ps-lg-5">
+                          <label
+                            for="personal_opinion"
+                            class="form-label dark-semibold-label"
+                          >
+                            Your Personal Opinion
+                          </label>
+                          <textarea
+                            class="form-control shadow-none rounded-2"
+                            id="address_details"
+                            rows="3"
+                            placeholder="Maximun 300 characters"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end pt-4 mt-2">
+                      <button class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white shadow-lg rounded-3 p-4 mb-4">
+                  <div class="m-2">
+                    <h4 class="m-0 text-center mb-5">Personal Information</h4>
+                    <div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0 mb-4">
+                        <div class="border-end pe-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Gender</label
+                          >
+                          <div
+                            class="d-flex justify-content-between align-items-center mt-3"
+                          >
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="gender"
+                                id="male"
+                              />
+                              <label class="form-check-label" for="male">
+                                Male
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="gender"
+                                id="female"
+                                checked
+                              />
+                              <label class="form-check-label" for="female">
+                                Female
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ps-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Date Of Birth</label
+                          >
+                          <input
+                            type="date"
+                            class="form-control shadow-none rounded-2 input-lg"
+                            placeholder="Enter date of birth"
+                          />
+                        </div>
+                      </div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0">
+                        <div class="border-end pe-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Profession</label
+                          >
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Select your profession</option>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="doctor">Doctor</option>
+                            <option value="engineer">Engineer</option>
+                            <option value="housewife">Housewife</option>
+                            <option value="job holder">Job Holder</option>
+                            <option value="businessman">Businessman</option>
+                            <option value="freelancer">Freelancer</option>
+                            <option value="lawyer">Lawyer</option>
+                            <option value="others">Others</option>
+                          </select>
+                        </div>
+                        <div class="ps-lg-5">
+                          <label class="form-label dark-semibold-label">
+                            How did You know about us ?
+                          </label>
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Select your about us ?</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="google">Google</option>
+                            <option value="newspaper">Newspaper</option>
+                            <option value="friends">Friends</option>
+                            <option value="relatives">Relatives</option>
+                            <option value="word of mouth">Word of Mouth</option>
+                            <option value="television">Television</option>
+                            <option value="radio">Radio</option>
+                            <option value="billboard">Billboard</option>
+                            <option value="others social media">
+                              Others Social Media
+                            </option>
+                            <option value="others">Others</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end pt-4 mt-2">
+                      <button class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white shadow-lg rounded-3 p-4 mb-4">
+                  <div class="m-2">
+                    <h4 class="m-0 text-center mb-5">
+                      Professional Information
+                    </h4>
+                    <div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0 mb-4">
+                        <div class="border-end pe-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Your Institute Name</label
+                          >
+                          <input
+                            type="email"
+                            class="form-control shadow-none rounded-2 input-lg"
+                            id="ins_name"
+                            placeholder="Enter your institute name"
+                          />
+                        </div>
+                        <div class="ps-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Institute Category</label
+                          >
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Select institute category</option>
+                            <option value="information technology">
+                              Information Technology
+                            </option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="construction">Construction</option>
+                            <option value="legal">Legal</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="education">Education</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="business and commerce">
+                              Business and Commerce
+                            </option>
+                            <option value="fitness">Fitness</option>
+                            <option value="others">Others</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row row-cols-lg-2 gap-4 gap-lg-0">
+                        <div class="border-end pe-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Role</label
+                          >
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Select your role</option>
+                            <option value="ceo">CEO</option>
+                            <option value="lg">lg</option>
+                            <option value="gm">GM</option>
+                            <option value="agm">AGM</option>
+                            <option value="director">Director</option>
+                            <option value="manager">Manager</option>
+                            <option value="leader">Leader</option>
+                            <option value="commander">Commander</option>
+                            <option value="mentor">Mentor</option>
+                            <option value="representative">
+                              Representative
+                            </option>
+                            <option value="others">Others</option>
+                          </select>
+                        </div>
+                        <div class="ps-lg-5">
+                          <label class="form-label dark-semibold-label"
+                            >Work Exprience</label
+                          >
+                          <select
+                            class="form-select shadow-none rounded-2 input-lg"
+                          >
+                            <option>Select your exprience year</option>
+                            <option value="0">0 Year(s)</option>
+                            <option value="1">1 Year(s)</option>
+                            <option value="2">2 Year(s)</option>
+                            <option value="3">3 Year(s)</option>
+                            <option value="4">4 Year(s)</option>
+                            <option value="5">5 Year(s)</option>
+                            <option value="6">6 Year(s)</option>
+                            <option value="7">7 Year(s)</option>
+                            <option value="8">8 Year(s)</option>
+                            <option value="9">9 Year(s)</option>
+                            <option value="10">10+ Year(s)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end pt-4 mt-2">
+                      <button class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </div>
+                <!-- settings content ends here -->
+              </div>
+            </div>
+            <!-- contents ends here -->
+          </div>
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

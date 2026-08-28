@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/fav.png" />
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/color_palets.css" />
+    <link rel="stylesheet" href="../../css/log_file_style.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+      integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e"
+      crossorigin="anonymous"
+    />
+
+    <title>Admin - Affiliate - Log files</title>
+  </head>
+  <body>
+    <!-- navbar starts here -->
+    <nav
+      class="navbar navbar-expand-lg bg-white shadow-lg fixed-top"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a href="/index.html"><img src="/images/logo.svg" alt="logo" /></a>
+        <button
+          class="navbar-toggler d-md-none collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu"
+          aria-controls="navbarColor02"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+      </div>
+    </nav>
+    <!-- navbar ends here -->
+    <div class="container-fluid">
+      <div class="row">
+        <!-- sidebar starts here -->
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse sidebar-width shadow-lg"
+          style="height: 100vh; margin-top: 60px; position: fixed"
+        >
+          <div
+            class="d-flex justify-content-center align-items-center flex-column border-bottom mt-2 pb-3"
+          >
+            <div class="mb-2">
+              <img
+                src="/images/boy.jpg"
+                alt="image"
+                class="profile-img"
+                style="
+                  width: 80px;
+                  height: 90px;
+                  object-fit: cover;
+                  margin-top: 16px;
+                "
+              />
+            </div>
+            <h5 class="text-gray-800 mt-3">Super Admin</h5>
+          </div>
+          <div style="overflow-y: auto; height: 65vh" class="scrollbar-none">
+            <ul class="list-unstyled px-3 mt-2">
+              <li class="mb-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-credit-card fs-5 me-4"></i>
+                  <div class="d-flex w-100 justify-content-between">
+                    <a
+                      class="text-decoration-none text-gray-800 align-items-center collapsed"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#offer-collapse"
+                      aria-expanded="false"
+                      style="cursor: pointer"
+                    >
+                      Affiliate
+                    </a>
+                    <i class="bi bi-chevron-left arrow-icon"></i>
+                  </div>
+                </div>
+
+                <div class="collapse show" id="offer-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/index.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Request</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-profile.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Profile</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/affiliate-transaction.html"
+                        class="text-gray-800 text-decoration-none text-nowrap"
+                        >Affiliate Transaction</a
+                      >
+                    </li>
+                    <li
+                      class="ms-4 px-3 py-1 my-3"
+                      style="border-left: 3px solid #898e99"
+                    >
+                      <a
+                        href="/setting.html"
+                        class="text-gray-800 text-decoration-none"
+                        >Setting</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- sidebar ends here -->
+        <main class="container-custom">
+          <div
+            class="col-md-9 ms-sm-auto col-lg-10 px-3"
+            style="margin-top: 62px"
+          >
+            <!-- tab like button group (it should be tab) -->
+            <div class="pt-4 row row-cols-2">
+              <div>
+                <a
+                  href="#"
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid #669ad1;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >View</a
+                >
+              </div>
+              <div>
+                <a
+                  href="/log-files/edit/sign-up-info.html"
+                  class="btn bg-white shadow-lg w-100"
+                  style="
+                    border: 2px solid white;
+                    color: #6c6d6d;
+                    font-size: 16px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                  "
+                  >Edit</a
+                >
+              </div>
+            </div>
+            <!-- tab like button group ends -->
+            <!-- mini nav starts here -->
+            <div
+              class="d-flex gap-4 flex-wrap flex-column flex-md-row py-4 align-items-center"
+            >
+              <a
+                class="text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/aboutme.html"
+                >About Me</a
+              >
+              <a
+                class="text-decoration-none text-gray-800 active-border text-nowrap"
+                href="/log-files/view/dashboard.html"
+                >Dashboard Details</a
+              >
+              <a
+                class="text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/add-lead.html"
+                >Add Leads</a
+              >
+              <a
+                class="text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/approved-lead.html"
+                >Approved Leads</a
+              >
+              <a
+                class="btn btn-outline-gdark text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/basic-log.html"
+                >Basic Log</a
+              >
+              <a
+                class="btn btn-outline-gdark text-decoration-none text-gray-800 text-nowrap"
+                href="/log-files/view/advance-log.html"
+                >Advance Log</a
+              >
+            </div>
+            <!-- mini nav ends here -->
+            <!-- contents starts here -->
+            <div>
+              <div class="row mb-4 gap-4 gap-xl-0">
+                <div class="col-xl-8">
+                  <div
+                    class="rounded-3 shadow-lg bg-white h-100 d-flex flex-column flex-md-row align-items-center"
+                  >
+                    <div class="p-4">
+                      <p class="fs-5">Hi, Mehedi Hasan</p>
+                      <h3>Welcome to Tuition Terminal</h3>
+                      <p>
+                        Tuition Terminal is an outstanding platform. It's
+                        incredible how smoothly and neatly the entire
+                        communication process has been.
+                      </p>
+                    </div>
+
+                    <img
+                      src="/images/welcome-image.svg"
+                      class="me-3"
+                      alt="welcome"
+                    />
+                  </div>
+                </div>
+                <div class="col-xl-4">
+                  <div
+                    class="rounded-3 shadow-lg p-4 bg-white h-100 d-flex justify-content-center align-items-center"
+                  >
+                    <div class="w-100">
+                      <h5>Member since</h5>
+                      <div
+                        class="d-flex mt-5 p-2 justify-content-start align-items-center w-100 rounded gap-2"
+                        style="border: 0.5px solid #0a89ff"
+                      >
+                        <div
+                          class="bg-info shadow rounded-3 p-2 d-flex justify-content-center align-items-center"
+                        >
+                          <img
+                            src="/images/profile-icon-white.svg"
+                            alt="home-icon"
+                          />
+                        </div>
+                        <p class="m-0 fs-17">20 Jan, 2023</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-4 gap-4 gap-xl-0">
+                <div class="col-xl-4">
+                  <div
+                    class="rounded-3 shadow-lg px-4 pt-4 pb-3 bg-white h-100"
+                  >
+                    <h5>Share Link</h5>
+                    <p class="fs-14 w-75">
+                      will uncover many web sites still in their infancy.
+                      Various versions.
+                    </p>
+                    <div>
+                      <div
+                        class="d-flex justify-content-between gap-2 mt-3 rounded-1 bg-white"
+                        style="border: 1px solid #0a89ff"
+                      >
+                        <div
+                          class="px-2 d-flex flex-column justify-content-center align-items-center"
+                          style="border-right: 1px solid #9d9d9e"
+                        >
+                          <i
+                            class="bi bi-link-45deg fs-4 text-gray-600"
+                            style="margin-top: 3px"
+                          ></i>
+                        </div>
+                        <div
+                          class="py-2"
+                          style="max-width: 400px; overflow: hidden"
+                        >
+                          <p class="mb-0 text-gray-500">
+                            https://tuitionterminal.
+                          </p>
+                        </div>
+                        <button
+                          class="px-3 m-1 rounded-1"
+                          style="
+                            background: #0a89ff;
+                            color: white;
+                            border: none;
+                            font-size: 12px;
+                            font-weight: 500;
+                          "
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <div class="d-flex gap-2 mt-3 justify-content-center">
+                        <img src="/images/fb-outline-icon.svg" alt="fb" />
+                        <img src="/images/insta-outline-icon.svg" alt="insta" />
+                        <img src="/images/x-outline-icon.svg" alt="x" />
+                        <img src="/images/link-outline-icon.svg" alt="link" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-8">
+                  <div
+                    class="rounded-3 shadow-lg p-4 bg-white h-100 d-flex flex-column justify-content-between"
+                  >
+                    <h5>Notice Board</h5>
+                    <p>
+                      During the briefing, several cabinet members will be
+                      present. The Ministry of Foreign Affairs sent out
+                      invitation letters to foreign diplomats and delegates from
+                      the United Nations and international organisations on
+                      Sunday night.
+                    </p>
+                    <p class="fw-light fs-14 m-0">5 Feb, 2023</p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row row-cols-md-3 row-cols-xl-4 row-cols-xxl-5 justify-content-center gap-4 gap-md-0 mb-4"
+              >
+                <div>
+                  <div
+                    class="bg-white shadow-lg p-4 p-xl-3 rounded-2 mb-md-4 mb-xxl-0 d-flex align-items-center gap-3"
+                    style="border-left: 3px solid #86c240"
+                  >
+                    <div
+                      class="shadow-lg text-white d-flex justify-content-center align-items-center rounded-2"
+                      style="
+                        min-height: 50px;
+                        min-width: 50px;
+                        background: #86c240;
+                      "
+                    >
+                      <i class="bi bi-bank fs-5"></i>
+                    </div>
+                    <div>
+                      <h5 class="text-ndark" style="color: #3b3c3d">2500</h5>
+                      <p class="mt-1 text-nowrap mb-0" style="font-size: 13px">
+                        Total Earnings
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div
+                    class="bg-white shadow-lg p-4 p-xl-3 rounded-2 mb-md-4 mb-xxl-0 d-flex align-items-center gap-3"
+                    style="border-left: 3px solid #86c240"
+                  >
+                    <div
+                      class="shadow-lg text-white d-flex justify-content-center align-items-center rounded-2"
+                      style="
+                        min-height: 50px;
+                        min-width: 50px;
+                        background: #86c240;
+                      "
+                    >
+                      <i class="bi bi-cash fs-3"></i>
+                    </div>
+                    <div>
+                      <h5 class="text-ndark" style="color: #3b3c3d">1200</h5>
+                      <p class="mt-1 text-nowrap mb-0" style="font-size: 13px">
+                        Available Balance
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div
+                    class="bg-white shadow-lg p-4 p-xl-3 rounded-2 mb-md-4 mb-xxl-0 d-flex align-items-center gap-3"
+                    style="border-left: 3px solid #86c240"
+                  >
+                    <div
+                      class="shadow-lg text-white d-flex justify-content-center align-items-center rounded-2"
+                      style="
+                        min-height: 50px;
+                        min-width: 50px;
+                        background: #86c240;
+                      "
+                    >
+                      <i class="bi bi-cash-stack fs-3"></i>
+                    </div>
+                    <div>
+                      <h5 class="text-ndark" style="color: #3b3c3d">1000</h5>
+                      <p class="mt-1 text-nowrap mb-0" style="font-size: 13px">
+                        Total Withdrawal
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div
+                    class="bg-white shadow-lg p-4 p-xl-3 rounded-2 mb-md-4 mb-xxl-0 d-flex align-items-center gap-3"
+                    style="border-left: 3px solid #86c240"
+                  >
+                    <div
+                      class="shadow-lg text-white d-flex justify-content-center align-items-center rounded-2"
+                      style="
+                        min-height: 50px;
+                        min-width: 50px;
+                        background: #86c240;
+                      "
+                    >
+                      <i class="bi bi-check-all fs-3"></i>
+                    </div>
+                    <div>
+                      <h5 class="text-ndark" style="color: #3b3c3d">120</h5>
+                      <p class="mt-1 text-nowrap mb-0" style="font-size: 13px">
+                        Total leads
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div
+                    class="bg-white shadow-lg p-4 p-xl-3 rounded-2 mb-md-4 mb-xxl-0 d-flex align-items-center gap-3"
+                    style="border-left: 3px solid #86c240"
+                  >
+                    <div
+                      class="shadow-lg text-white d-flex justify-content-center align-items-center rounded-2"
+                      style="
+                        min-height: 50px;
+                        min-width: 50px;
+                        background: #86c240;
+                      "
+                    >
+                      <i class="bi bi-bar-chart-fill fs-3"></i>
+                    </div>
+                    <div>
+                      <h5 class="text-ndark" style="color: #3b3c3d">50</h5>
+                      <p class="mt-1 text-nowrap mb-0" style="font-size: 13px">
+                        Confirmed leads
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- contents ends here -->
+          </div>
+        </main>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

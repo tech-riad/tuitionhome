@@ -1,0 +1,22 @@
+.text-indigo {
+  color: #a259ff;
+}
+.btn-indigo {
+  background-color: #a259ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 9px 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-indigo:hover {
+  background-color: #a259ff;
+  color: white;
+}
+
+.btn-indigo:active:hover {
+  background-color: #a259ff;
+  color: white;
+}
