@@ -28,6 +28,380 @@
 
 @section('content')
 <main class="container-custom">
+    @include('backend.corporatepartner.menu')
+    <div class="d-flex justify-content-between flex-column flex-lg-row gap-2 gap-lg-0">
+            <div class="d-flex justify-content-between gap-3">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    <i class="bi bi-sliders2 me-1"></i>Filter
+                </button>
+                <button class="btn btn-outline-ndark" id="sendSms">Send Bulk SMS</button>
+
+                <!-- Filter model starts here -->
+                <div class="modal fade font-pop" id="exampleModal" tabindex="" aria-labelledby="">
+                    <div class="modal-dialog modal-dialog-centered px-3" style="max-width: 1100px">
+                        <div class="modal-content pt-4 pb-4 ps-2">
+                            <div class="modal-header pe-5" style="padding-left: 40px">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                    Filter
+                                    <span class="text-muted fw-light" style="font-size: 12">
+                                    </span>
+                                </h1>
+
+                                <button type="button" class="btn-close" data-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body py-0">
+                                <div class="row row-cols-2 row-cols-lg-4 pb-2 ps-4">
+                                    <div class="d-flex">
+                                        <div>
+                                            <div class="pb-3">
+                                                <label for="datef" class="form-label">Date from</label>
+                                                <div>
+                                                    <input type="date" class="form-control shadow rounded-2" id="datef" onchange="inputChange('created_at >=', this.id)" />
+                                                </div>
+                                            </div>
+                                            <div class="pb-3">
+                                                <label for="datet" class="form-label">Date To</label>
+                                                <input type="date" class="form-control shadow rounded-2" id="datet" onchange="inputChange('created_at <=', this.id)" />
+                                            </div>
+                                            <div class="pb-3">
+                                                <label for="crby" class="form-label">Created By</label>
+
+                                                <select name="user_id" class="form-select rounded-3 shadow-none select2"
+                                                    aria-label="Default select"
+                                                    onchange="inputChange('created_by',this.id)" id="user_id">
+                                                    <option value="">Select Employee</option>
+                                                    @foreach($employees as $employee)
+
+                                                    <option value="{{$employee->id}}">{{$employee->name}}</option>
+
+                                                    @endforeach
+
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 ms-4" style="
+                                            margin-top: 34px;
+                                            width: 1px;
+                                            background-color: #f0f1f2;
+                                        ">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="flex-grow-1">
+                                            <div class="pb-3">
+                                                <label for="cun" class="form-label ">Country</label>
+                                                <select name="country_id" class="form-select rounded-3 shadow-none "
+                                                    aria-label="Default select " id="country_id"
+                                                    onchange="inputChange('country_id',this.id)">
+                                                    <option value="">Select Country</option>
+                                                    @foreach (App\Models\Country::OrderBy('name','asc')->get() as
+                                                    $country)
+                                                    <option value="{{$country->id}}">{{$country->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger error-text country_id_error"></span>
+
+                                            </div>
+
+                                            <div class="pb-3">
+                                                <label for="cty" class="form-label">City</label>
+                                                <br>
+                                                <select name="city_id" id="city_id" style="width: 215px"
+                                                    class="shadow rounded-2 form-select"
+                                                    onchange="inputChange('city_id',this.id)"
+                                                    aria-label="Default select example">
+                                                    <option selected>Select city</option>
+
+
+                                                </select>
+
+                                            </div>
+                                            <div class="pb-3">
+                                                <label for="loc" class="form-label">Location</label>
+                                                <br>
+                                                <select id="location_id" name="location_id" style="width: 215px"
+                                                    class="form-select rounded-3 shadow-none"
+                                                    onchange="inputChange('location_id',this.id)"
+                                                    aria-label="Default select example">
+                                                    <option selected>Select Location</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 ms-4" style="
+                                                margin-top: 34px;
+                                                width: 1px;
+                                                background-color: #f0f1f2;
+                                            ">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <div class="pb-3">
+                                                <label for="category_id" class="form-label ">Category</label>
+                                                <select name="category_id" id="category_id"
+                                                    class="form-select rounded-3 shadow-none" style="width: 215px"
+                                                    onchange="inputChange('category_id',this.id)">
+                                                    <option value="">Select Category</option>
+                                                    @foreach(App\Models\Category::OrderBy('created_at','desc')->get() as
+                                                    $category)
+                                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger error-text category_id_error"></span>
+                                            </div>
+
+
+
+                                            <div class="pb-3">
+                                                <label for="course_id" class="form-label ">Course</label>
+                                                <select name="course_id" class="form-select rounded-3 shadow-none"
+                                                    onchange="inputChange('course_id',this.id)" id="course_id"
+                                                    style="width: 215px">
+
+                                                </select>
+                                                <span class="text-danger error-text course_id_error"></span>
+
+                                            </div>
+                                            <div class="pb-3">
+                                                <label for="subject_id" class="form-label ">Subjects</label>
+                                                <select name="subject_id" class="form-select rounded-3 shadow-none"
+                                                    id="subject_id" style="width: 215px">
+
+                                                </select>
+                                                <span class="text-danger error-text subject_id_error"></span>
+
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 ms-4" style="
+                                                        margin-top: 34px;
+                                                        width: 1px;
+                                                        background-color: #f0f1f2;
+                                                    ">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start">
+                                        <div>
+                                            <div class="pb-3">
+                                                <label for="am" class="form-label">Source</label>
+
+                                                <select id="am" class="shadow rounded-2 form-select"
+                                                    aria-label="Default select example">
+                                                    <option selected>Affiliate Marcketing</option>
+                                                    <option value="1">One</option>
+                                                    <option value="2">Two</option>
+                                                    <option value="3">Three</option>
+                                                </select>
+                                            </div>
+                                            <div class="pb-3">
+                                                <label for="srcid" class="form-label">Source ID</label>
+
+                                                <select id="srcid" class="shadow rounded-2 form-select"
+                                                    aria-label="Default select example">
+                                                    <option selected>23456</option>
+                                                    <option value="1">One</option>
+                                                    <option value="2">Two</option>
+                                                    <option value="3">Three</option>
+                                                </select>
+                                            </div>
+                                            <div class="pb-3">
+                                                <label for="tm" class="form-label">Tutoring Method</label>
+
+                                                <select id="tm" class="shadow rounded-2 form-select"
+                                                    aria-label="Default select example"
+                                                    onchange="inputChange('teaching_method_id',this.id)">
+                                                    @foreach (App\Models\TeachingMethod::OrderBy('name','asc')->get() as
+                                                    $teachingM)
+
+                                                    <option value="{{$teachingM->id}}">{{$teachingM->name}}</option>
+
+                                                    @endforeach
+                                                </select>
+
+
+                                            </div>
+                                        </div>
+                                        <!-- Dont remove this unnessary wrapper flex div -->
+                                    </div>
+                                </div>
+
+                                <div class="collapse" id="collapseExample">
+                                    <div class="border-top border-2 pt-1 mx-4"></div>
+                                    <div class="row row-cols-2 row-cols-lg-4 pb-2 ps-4 pt-2">
+                                        <div class="d-flex">
+                                            <div>
+                                                <div class="pb-3">
+                                                    <label for="salary" class="form-label">Salary</label>
+
+                                                    <input type="text" class="form-control shadow rounded-2" id="salary"
+                                                        onchange="inputChange('salary',this.id)" placeholder="5000" />
+                                                </div>
+                                                <div class="pb-3">
+                                                    <label for="channel" class="form-label">Channel</label>
+
+                                                    <select id="channel" class="shadow rounded-2 form-select"
+                                                        aria-label="Default select example">
+                                                        <option selected>Website</option>
+                                                        <option value="1">Facebook</option>
+                                                        <option value="2">Twitter</option>
+                                                        <option value="3">Three</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 ms-4" style="
+                                                margin-top: 34px;
+                                                width: 1px;
+                                                background-color: #f0f1f2;
+                                                ">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="flex-grow-1">
+                                                <div class="pb-3">
+                                                    <label for="genderr" class="form-label">
+                                                        Gender Requirement
+                                                    </label>
+
+                                                    <select id="genderr" class="shadow rounded-2 form-select"
+                                                        onchange="inputChange('tutor_gender',this.id)"
+                                                        aria-label="Default select example">
+                                                        <option value="">Select gender</option>
+                                                        <option value="male">Male</option>
+                                                        <option value="female">Female</option>
+                                                        <option value="others">others</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="pb-3">
+                                                    <label for="daw" class="form-label">Days and Week</label>
+
+                                                    <select id="days_in_week" class="shadow rounded-2 form-select"
+                                                        onchange="inputChange('days_in_week',this.id)"
+                                                        aria-label="Default select example">
+
+                                                        <option value="">Select Days</option>
+                                                        <option value="2">2 days</option>
+                                                        <option value="3">3 days</option>
+                                                        <option value="4">4 days</option>
+                                                        <option value="5">5 days</option>
+                                                        <option value="6">6 days</option>
+                                                        <option value="7">7 days</option>
+
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                                <div class="mb-3 ms-4" style="
+                                                margin-top: 34px;
+                                                width: 1px;
+                                                background-color: #f0f1f2;
+                                                ">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="flex-grow-1">
+                                                <div class="pb-3">
+                                                    <label for="sgender" class="form-label">Student Gender</label>
+
+                                                    <select id="sgender" class="shadow rounded-2 form-select"
+                                                        onchange="inputChange('student_gender',this.id)"
+                                                        aria-label="Default select example">
+                                                        <option value="">Select Gender</option>
+                                                        <option selected>Male</option>
+                                                        <option value="1">Female</option>
+                                                    </select>
+                                                </div>
+                                                <div class="pb-3">
+                                                    <label for="rel" class="form-label">Religion</label>
+
+                                                    <select id="rel" class="shadow rounded-2 form-select"
+                                                        onchange="inputChange('tutor_religion',this.id)"
+                                                        aria-label="Default select example">
+                                                        <option value="">Select Religion</option>
+                                                        <option value="islam">Islam</option>
+                                                        <option value="hindu">Hindu</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 ms-4" style="
+                                                margin-top: 34px;
+                                                width: 1px;
+                                                background-color: #f0f1f2;
+                                                ">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div>
+                                                <div class="pb-3">
+                                                    <label for="in" class="form-label">
+                                                        Institute Name
+                                                    </label>
+                                                    <select class="shadow rounded-2 form-select" style="width: 215px"
+                                                        id="institute_id"
+                                                        onchange="inputChange('institute_name',this.id)"
+                                                        aria-label="Default select example">
+                                                        <option value="">Select Institute</option>
+
+                                                        @foreach (App\Models\Institute::where('type',
+                                                        'school')->orWhere('type', 'school and
+                                                        college')->OrderBy('title','asc')->get() as $institute)
+
+                                                        <option value="{{$institute->title}}">{{$institute->title}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="pb-3">
+                                                    <label for="hoffer" class="form-label">Hide Offer</label>
+
+                                                    <select id="hoffer" class="shadow rounded-2 form-select"
+                                                        aria-label="Default select example">
+                                                        <option selected>Hide</option>
+                                                        <option value="1">Nothing</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- Dont remove this unnessary wrapper flex div -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-between align-items-center pe-5"
+                                style="padding-left: 35px">
+                                <div>
+                                    <a data-toggle="collapse" href="#collapseExample" role="button"
+                                        aria-expanded="false" aria-controls="collapseExample" class="mb-0">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </a>
+                                </div>
+                                <form action="{{route('admin.job.search')}}" method="post">
+                                    @csrf
+                                    <div>
+                                        <button type="button" class="btn btn-danger py-1 me-2">
+                                            Clear
+                                        </button>
+
+
+
+                                        <input type="hidden" id="job_search" name="job_search" value="">
+
+                                        <button type="submit" class="btn btn-primary py-1">
+                                            Apply
+                                        </button>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Filter Model ends here -->
+
+            </div>
+
+    </div>
 
     <div class=" my-5">
         <div class="card table-card p-3">
