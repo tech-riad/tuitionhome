@@ -86,4 +86,12 @@ class CorporatePartner extends Authenticatable
     {
         return $this->hasOne(PartnerContactInfo::class, 'partner_id', 'id');
     }
+    public function tutor()
+    {
+        return $this->hasOne(Tutor::class, 'phone', 'phone');
+    }
+    public function partner()
+    {
+        return $this->hasOne(Tutor::class, 'phone', 'phone');
+    }
 }

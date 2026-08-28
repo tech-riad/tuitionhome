@@ -25,4 +25,16 @@ class PartnerContactInfo extends Model
     {
         return $this->belongsTo(CorporatePartner::class, 'partner_id', 'id');
     }
+    public function country()
+    {
+        return $this->belongsTo(Country::class,'country_id','id');
+    }
+    public function city()
+    {
+        return $this->belongsTo(City::class,'city_id');
+    }
+    public function location()
+    {
+        return $this->belongsTo(Location::class,'location_id');
+    }
 }

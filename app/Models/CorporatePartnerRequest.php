@@ -18,7 +18,7 @@ class CorporatePartnerRequest extends Model
     ];
 
     protected $guarded = [];
-
+    
 
     public function tutor()
     {
