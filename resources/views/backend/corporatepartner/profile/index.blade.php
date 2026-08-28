@@ -56,95 +56,93 @@
             </div>
             <div class="d-flex flex-wrap flex-md-nowrap gap-3">
                 <input type="text" class="form-control rounded" placeholder="Search" />
-                <select id="all_offer_paginationLimit"
-                    name="pagination_limit"
-                    class="form-select rounded"
+                <select id="all_offer_paginationLimit" name="pagination_limit" class="form-select rounded"
                     style="width: 100px">
 
-                <option value="30" {{ $paginationLimit == 30 ? 'selected' : '' }}>30</option>
-                <option value="50" {{ $paginationLimit == 50 ? 'selected' : '' }}>50</option>
-                <option value="100" {{ $paginationLimit == 100 ? 'selected' : '' }}>100</option>
-                <option value="200" {{ $paginationLimit == 200 ? 'selected' : '' }}>200</option>
-                <option value="400" {{ $paginationLimit == 400 ? 'selected' : '' }}>400</option>
-                <option value="500" {{ $paginationLimit == 500 ? 'selected' : '' }}>500</option>
+                    <option value="30" {{ $paginationLimit == 30 ? 'selected' : '' }}>30</option>
+                    <option value="50" {{ $paginationLimit == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ $paginationLimit == 100 ? 'selected' : '' }}>100</option>
+                    <option value="200" {{ $paginationLimit == 200 ? 'selected' : '' }}>200</option>
+                    <option value="400" {{ $paginationLimit == 400 ? 'selected' : '' }}>400</option>
+                    <option value="500" {{ $paginationLimit == 500 ? 'selected' : '' }}>500</option>
 
-            </select>
-            <script>
-                $(document).on('change', '#all_offer_paginationLimit', function() {
+                </select>
+                <script>
+                    $(document).on('change', '#all_offer_paginationLimit', function () {
 
-                    let limit = $(this).val();
+                        let limit = $(this).val();
 
-                    let url = new URL(window.location.href);
+                        let url = new URL(window.location.href);
 
-                    url.searchParams.set('pagination_limit', limit);
-                    url.searchParams.set('page', 1);
+                        url.searchParams.set('pagination_limit', limit);
+                        url.searchParams.set('page', 1);
 
-                    $.ajax({
+                        $.ajax({
 
-                        url: url.toString(),
-                        type: 'GET',
+                            url: url.toString(),
+                            type: 'GET',
 
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
 
-                        beforeSend: function() {
+                            beforeSend: function () {
 
-                            $('#partnerTable').css({
-                                'opacity': '0.5',
-                                'pointer-events': 'none'
-                            });
+                                $('#partnerTable').css({
+                                    'opacity': '0.5',
+                                    'pointer-events': 'none'
+                                });
 
-                        },
+                            },
 
-                        success: function(response) {
+                            success: function (response) {
 
-                            $('#partnerTable').html(response.html);
+                                $('#partnerTable').html(response.html);
 
-                            $('#partnerPagination').html(response.pagination);
+                                $('#partnerPagination').html(response.pagination);
 
-                            window.history.pushState(
-                                {},
-                                '',
-                                url.toString()
-                            );
+                                window.history.pushState({},
+                                    '',
+                                    url.toString()
+                                );
 
-                        },
+                            },
 
-                        error: function(xhr) {
+                            error: function (xhr) {
 
-                            console.log(xhr.responseText);
+                                console.log(xhr.responseText);
 
-                        },
+                            },
 
-                        complete: function() {
+                            complete: function () {
 
-                            $('#partnerTable').css({
-                                'opacity': '1',
-                                'pointer-events': 'auto'
-                            });
+                                $('#partnerTable').css({
+                                    'opacity': '1',
+                                    'pointer-events': 'auto'
+                                });
 
-                        }
+                            }
+
+                        });
 
                     });
 
-                });
                 </script>
             </div>
         </div>
         <div class="bg-white shadow-lg rounded-3 p-2 my-4">
             <div class="bg-white pb-4 mb-b">
-                
-                    <div id="partnerTable">
-                        @include('backend.corporatepartner.partials.partner_table')
-                    </div>
 
-                    <div id="partnerPagination">
-                        @include('backend.corporatepartner.partials.pagination')
-                    </div>
-                
+                <div id="partnerTable">
+                    @include('backend.corporatepartner.partials.partner_table')
+                </div>
+
+                <div id="partnerPagination">
+                    @include('backend.corporatepartner.partials.pagination')
+                </div>
+
                 <!-- pagination starts here -->
-                
+
                 <!-- pagination ends here -->
             </div>
         </div>
@@ -555,171 +553,685 @@
         </div>
     </div>
     <!-- Filter Model ends here -->
-    <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="payLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-slide-top" style="max-width: 600px">
-            <div class="modal-content p-3">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        Create Affiliate Profile
-                    </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body pt-0">
-                    <form action="">
-                        <div class="row row-cols-md-2">
-                            <div class="mb-3">
-                                <label for="name" class="form-label text-dark text-sm required">
-                                    Name</label>
-                                <input id="name" class="shadow-none rounded-3 form-control"
-                                    placeholder="Enter your name" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label text-dark text-sm required">
-                                    Phone</label>
-                                <input id="phone" class="shadow-none rounded-3 form-control"
-                                    placeholder="Enter your phone" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label text-dark text-sm">
-                                    Email</label>
-                                <input id="email" class="shadow-none rounded-3 form-control"
-                                    placeholder="Enter your phone" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="gndr" class="form-label text-dark text-sm required">Gender</label>
-                                <select id="gndr" class="shadow-none rounded-3 form-select">
-                                    <option selected value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
+    <div class="modal fade"
+    id="addProfileModal"
+    tabindex="-1"
+    aria-labelledby="addProfileModalLabel"
+    aria-hidden="true">
 
-                            <div class="mb-3">
-                                <label for="cntry" class="form-label text-dark text-sm required">Country</label>
-                                <select id="cntry" class="shadow-none rounded-3 form-select">
-                                    <option selected value="Bangladesh">
-                                        Bangladesh
-                                    </option>
-                                    <option value="Option 1">Option 1</option>
-                                    <option value="Option 2">Option 2</option>
-                                    <option value="Option 3">Option 3</option>
-                                    <option value="Option 4">Option 4</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="cty" class="form-label text-dark text-sm required">City</label>
-                                <select id="cty" class="shadow-none rounded-3 form-select">
-                                    <option selected value="dhaka">Dhaka</option>
-                                    <option value="Option 1">Option 1</option>
-                                    <option value="Option 2">Option 2</option>
-                                    <option value="Option 3">Option 3</option>
-                                    <option value="Option 4">Option 4</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="cntry" class="form-label text-dark text-sm required">Location</label>
-                                <select id="lction" class="shadow-none rounded-3 form-select">
-                                    <option selected value="Mirpur 1">Location</option>
-                                    <option value="Option 1">Option 1</option>
-                                    <option value="Option 2">Option 2</option>
-                                    <option value="Option 3">Option 3</option>
-                                    <option value="Option 4">Option 4</option>
-                                </select>
-                            </div>
-                            <div class="mb-3 mb-md-0">
-                                <label for="acom" class="form-label text-dark text-sm required">
-                                    Affiliate Commission</label>
-                                <input id="acom" class="shadow-none rounded-3 form-control bg-light"
-                                    placeholder="12% / By Defult" disabled />
-                            </div>
+    <div class="modal-dialog modal-dialog-slide-top" style="max-width: 600px">
 
-                            <div class="mb-3 mb-md-0">
-                                <label for="pass" class="form-label text-dark text-sm required">
-                                    Password</label>
-                                <input id="Password" class="shadow-none rounded-3 form-control bg-light"
-                                    placeholder="12345678 / By Defult" disabled />
-                            </div>
-                            <div class="mb-3 mb-md-0">
-                                <label for="pass" class="form-label text-dark text-sm required">
-                                    Re-Password</label>
-                                <input id="Password" class="shadow-none rounded-3 form-control bg-light"
-                                    placeholder="12345678 / By Defult" disabled />
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary w-100">
-                        Submit
-                    </button>
-                </div>
+        <div class="modal-content p-3">
+
+            <div class="modal-header">
+
+                <h1 class="modal-title fs-5" id="addProfileModalLabel">
+                    Create CP Profile
+                </h1>
+
+                <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
+                </button>
+
             </div>
+
+
+            <div class="modal-body pt-0">
+
+                <form id="addProfileForm"
+                    action="{{ route('admin.cpprofile.store') }}"
+                    method="POST">
+
+                    @csrf
+
+                    <div class="row row-cols-md-2">
+
+                        {{-- Name --}}
+                        <div class="mb-3">
+
+                            <label for="cp_name"
+                                class="form-label text-dark text-sm required">
+                                Name
+                            </label>
+
+                            <input type="text"
+                                name="name"
+                                id="cp_name"
+                                class="shadow-none rounded-3 form-control"
+                                placeholder="Enter your name"
+                                required>
+
+                        </div>
+
+
+                        {{-- Phone --}}
+                        <div class="mb-3">
+
+                            <label for="cp_phone"
+                                class="form-label text-dark text-sm required">
+                                Phone
+                            </label>
+
+                            <input type="text"
+                                name="phone"
+                                id="cp_phone"
+                                class="shadow-none rounded-3 form-control"
+                                placeholder="Enter your phone"
+                                required>
+
+                        </div>
+
+
+                        {{-- Email --}}
+                        <div class="mb-3">
+
+                            <label for="cp_email"
+                                class="form-label text-dark text-sm">
+                                Email
+                            </label>
+
+                            <input type="email"
+                                name="email"
+                                id="cp_email"
+                                class="shadow-none rounded-3 form-control"
+                                placeholder="Enter your email">
+
+                        </div>
+
+
+                        {{-- Gender --}}
+                        <div class="mb-3">
+
+                            <label for="cp_gender"
+                                class="form-label text-dark text-sm required">
+                                Gender
+                            </label>
+
+                            <select name="gender"
+                                id="cp_gender"
+                                class="shadow-none rounded-3 form-select"
+                                required>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- Country --}}
+                        <div class="mb-3">
+
+                            <label for="country_id"
+                                class="form-label text-dark text-sm required">
+                                Country
+                            </label>
+
+                            <select name="country_id"
+                                id="country_id"
+                                class="shadow-none rounded-3 form-select"
+                                required>
+
+                                <option value="">
+                                    Select Country
+                                </option>
+
+                                @foreach ($countries as $country)
+
+                                    <option value="{{ $country->id }}">
+                                        {{ $country->name }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- City --}}
+                        <div class="mb-3">
+
+                            <label for="city_id"
+                                class="form-label text-dark text-sm required">
+                                City
+                            </label>
+
+                            <select name="city_id"
+                                id="city_id"
+                                class="shadow-none rounded-3 form-select"
+                                required>
+
+                                <option value="">
+                                    Select City
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- Location --}}
+                        <div class="mb-3">
+
+                            <label for="location_id"
+                                class="form-label text-dark text-sm required">
+                                Location
+                            </label>
+
+                            <select name="location_id"
+                                id="location_id"
+                                class="shadow-none rounded-3 form-select"
+                                required>
+
+                                <option value="">
+                                    Select Location
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- Password --}}
+                        <div class="mb-3 mb-md-0">
+
+                            <label class="form-label text-dark text-sm required">
+                                Password
+                            </label>
+
+                            <input type="text"
+                                class="shadow-none rounded-3 form-control bg-light"
+                                value="12345678"
+                                disabled>
+
+                        </div>
+
+
+                        {{-- Re Password --}}
+                        <div class="mb-3 mb-md-0">
+
+                            <label class="form-label text-dark text-sm required">
+                                Re-Password
+                            </label>
+
+                            <input type="text"
+                                class="shadow-none rounded-3 form-control bg-light"
+                                value="12345678"
+                                disabled>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="submit"
+                    form="addProfileForm"
+                    id="submitProfileBtn"
+                    class="btn btn-primary w-100">
+
+                    Submit
+
+                </button>
+
+            </div>
+
         </div>
+
     </div>
+
+</div>
     <!-- main content section ends here -->
 </div>
 
 @endsection
 @push('page_scripts')
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" /> --}}
 
 <script>
-$(document).on('click', '.pagination-link', function(e) {
+    $(document).on('click', '.pagination-link', function (e) {
 
-    e.preventDefault();
+        e.preventDefault();
 
-    let url = $(this).attr('href');
+        let url = $(this).attr('href');
 
-    $.ajax({
+        $.ajax({
 
-        url: url,
-        type: 'GET',
+            url: url,
+            type: 'GET',
 
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        },
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
 
-        beforeSend: function() {
+            beforeSend: function () {
 
-            $('#partnerTable').css({
-                'opacity': '0.5',
-                'pointer-events': 'none'
-            });
+                $('#partnerTable').css({
+                    'opacity': '0.5',
+                    'pointer-events': 'none'
+                });
 
-        },
+            },
 
-        success: function(response) {
+            success: function (response) {
 
-            $('#partnerTable').html(response.html);
+                $('#partnerTable').html(response.html);
 
-            $('#partnerPagination').html(response.pagination);
+                $('#partnerPagination').html(response.pagination);
 
-            window.history.pushState({}, '', url);
+                window.history.pushState({}, '', url);
 
-        },
+            },
 
-        error: function(xhr) {
+            error: function (xhr) {
 
-            console.log(xhr.responseText);
+                console.log(xhr.responseText);
 
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'Unable to load data.'
-            });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Unable to load data.'
+                });
 
-        },
+            },
 
-        complete: function() {
+            complete: function () {
 
-            $('#partnerTable').css({
-                'opacity': '1',
-                'pointer-events': 'auto'
-            });
+                $('#partnerTable').css({
+                    'opacity': '1',
+                    'pointer-events': 'auto'
+                });
 
+            }
+
+        });
+
+    });
+
+</script>
+
+<script>
+$(document).ready(function () {
+
+    console.log('CP Profile JS Loaded');
+    console.log('jQuery version:', $.fn.jquery);
+
+
+    // =====================================================
+    // SELECT2 INITIALIZATION
+    // =====================================================
+
+    $('#country_id').select2({
+        width: '100%',
+        dropdownParent: $('#addProfileModal')
+    });
+
+    $('#city_id').select2({
+        width: '100%',
+        dropdownParent: $('#addProfileModal')
+    });
+
+    $('#location_id').select2({
+        width: '100%',
+        dropdownParent: $('#addProfileModal')
+    });
+
+
+    // =====================================================
+    // COUNTRY -> CITY
+    // =====================================================
+
+    $('#country_id').on('change', function () {
+
+        let c_id = $(this).val();
+
+        console.log('Country ID:', c_id);
+
+
+        // Reset city
+        $('#city_id')
+            .empty()
+            .append('<option value="">Loading...</option>')
+            .val('')
+            .trigger('change');
+
+
+        // Reset location
+        $('#location_id')
+            .empty()
+            .append('<option value="">Select Location</option>')
+            .val('')
+            .trigger('change');
+
+
+        if (!c_id) {
+
+            $('#city_id')
+                .empty()
+                .append('<option value="">Select City</option>')
+                .val('')
+                .trigger('change');
+
+            return;
         }
+
+
+        $.ajax({
+
+            url: '{{ route("get_city") }}',
+
+            type: 'POST',
+
+            data: {
+                c_id: c_id,
+                _token: '{{ csrf_token() }}'
+            },
+
+            beforeSend: function () {
+
+                $('#city_id').prop('disabled', true);
+
+            },
+
+            success: function (result) {
+
+                console.log('City response:', result);
+
+
+                $('#city_id')
+                    .empty()
+                    .html(result)
+                    .val('')
+                    .trigger('change');
+
+
+                $('#city_id').prop('disabled', false);
+
+            },
+
+            error: function (xhr) {
+
+                console.log('City Error:', xhr.responseText);
+
+
+                $('#city_id')
+                    .empty()
+                    .append(
+                        '<option value="">Select City</option>'
+                    )
+                    .val('')
+                    .trigger('change');
+
+
+                $('#city_id').prop('disabled', false);
+
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Unable to load cities.'
+                });
+
+            }
+
+        });
+
+    });
+
+
+
+    // =====================================================
+    // CITY -> LOCATION
+    // =====================================================
+
+    $('#city_id').on('change', function () {
+
+        let city_id = $(this).val();
+
+        console.log('City ID:', city_id);
+
+
+        $('#location_id')
+            .empty()
+            .append('<option value="">Loading...</option>')
+            .val('')
+            .trigger('change');
+
+
+        if (!city_id) {
+
+            $('#location_id')
+                .empty()
+                .append(
+                    '<option value="">Select Location</option>'
+                )
+                .val('')
+                .trigger('change');
+
+            return;
+        }
+
+
+        $.ajax({
+
+            url: '{{ route("get_location") }}',
+
+            type: 'POST',
+
+            data: {
+                city_id: city_id,
+                _token: '{{ csrf_token() }}'
+            },
+
+            beforeSend: function () {
+
+                $('#location_id').prop('disabled', true);
+
+            },
+
+            success: function (result) {
+
+                console.log('Location response:', result);
+
+
+                $('#location_id')
+                    .empty()
+                    .html(result)
+                    .val('')
+                    .trigger('change');
+
+
+                $('#location_id').prop('disabled', false);
+
+            },
+
+            error: function (xhr) {
+
+                console.log(
+                    'Location Error:',
+                    xhr.responseText
+                );
+
+
+                $('#location_id')
+                    .empty()
+                    .append(
+                        '<option value="">Select Location</option>'
+                    )
+                    .val('')
+                    .trigger('change');
+
+
+                $('#location_id').prop('disabled', false);
+
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Unable to load locations.'
+                });
+
+            }
+
+        });
+
+    });
+
+
+
+    // =====================================================
+    // CREATE CP PROFILE
+    // =====================================================
+
+    $('#addProfileForm').on('submit', function (e) {
+
+        e.preventDefault();
+
+
+        let form = $(this);
+
+        let submitBtn = $('#submitProfileBtn');
+
+
+        submitBtn
+            .prop('disabled', true)
+            .html(
+                '<span class="spinner-border spinner-border-sm me-1"></span> Saving...'
+            );
+
+
+        $.ajax({
+
+            url: form.attr('action'),
+
+            type: 'POST',
+
+            data: form.serialize(),
+
+
+            success: function (response) {
+
+
+
+                $('#addProfileModal').modal('hide');
+
+
+                Swal.fire({
+
+                    icon: 'success',
+
+                    title: 'Success!',
+
+                    text: response.message ||
+                        'CP Profile created successfully.',
+
+                    timer: 1800,
+
+                    showConfirmButton: false
+
+                });
+
+
+                form[0].reset();
+
+
+                // Reset country
+                $('#country_id')
+                    .val('')
+                    .trigger('change');
+
+
+                // Reset city
+                $('#city_id')
+                    .empty()
+                    .append(
+                        '<option value="">Select City</option>'
+                    )
+                    .val('')
+                    .trigger('change');
+
+
+                // Reset location
+                $('#location_id')
+                    .empty()
+                    .append(
+                        '<option value="">Select Location</option>'
+                    )
+                    .val('')
+                    .trigger('change');
+
+
+                setTimeout(function () {
+
+                    location.reload();
+
+                }, 1000);
+
+            },
+
+
+            error: function (xhr) {
+
+
+
+                let message =
+                    'Something went wrong. Please try again.';
+
+
+                if (
+                    xhr.status === 422 &&
+                    xhr.responseJSON &&
+                    xhr.responseJSON.errors
+                ) {
+
+                    message = Object.values(
+                        xhr.responseJSON.errors
+                    )
+                    .flat()
+                    .join('<br>');
+
+                }
+
+
+                Swal.fire({
+
+                    icon: 'error',
+
+                    title: 'Validation Error!',
+
+                    html: message
+
+                });
+
+            },
+
+
+            complete: function () {
+
+                submitBtn
+                    .prop('disabled', false)
+                    .html('Submit');
+
+            }
+
+        });
 
     });
 
 });
 </script>
-
 @endpush
