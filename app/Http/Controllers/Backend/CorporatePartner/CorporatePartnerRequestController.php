@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CorporatePartner;
 use Illuminate\Http\Request;
 use App\Models\CorporatePartnerRequest;
+use App\Models\PartnerContactInfo;
 use App\Models\Tutor;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,6 +22,20 @@ class CorporatePartnerRequestController extends Controller
             $paginationLimit = 30;
         }
 
+        // Counts
+        $counts = CorporatePartnerRequest::selectRaw("
+            COUNT(*) as total_request,
+            SUM(status = 'approved') as total_approved,
+            SUM(status = 'rejected') as total_cancel,
+            SUM(status = 'pending') as total_pending
+        ")->first();
+
+        $totalRequest  = $counts->total_request;
+        $totalApproved = $counts->total_approved;
+        $totalCancel   = $counts->total_cancel;
+        $totalPending  = $counts->total_pending;
+
+        // Pagination
         $requests = CorporatePartnerRequest::with('tutor', 'tutor_personal_info')
             ->latest()
             ->paginate($paginationLimit)
@@ -28,21 +43,30 @@ class CorporatePartnerRequestController extends Controller
 
         if ($request->ajax()) {
             return response()->json([
-                'html' => view('backend.corporatepartner.partials.table', compact('requests'))->render(),
+                'html' => view(
+                    'backend.corporatepartner.partials.table',
+                    compact('requests')
+                )->render(),
+
                 'pagination' => $requests->links()->render(),
             ]);
         }
 
         return view('backend.corporatepartner.index', compact(
             'requests',
-            'paginationLimit'
+            'paginationLimit',
+            'totalRequest',
+            'totalApproved',
+            'totalCancel',
+            'totalPending'
         ));
     }
     public function apply($id)
     {
         try {
             $request = CorporatePartnerRequest::findOrFail($id);
-            $tutor = Tutor::findOrFail($request->tutor_id);
+            $tutor = Tutor::with('tutor_personal_info')->findOrFail($request->tutor_id);
+
 
             // Already Corporate Partner check
             if (
@@ -58,6 +82,7 @@ class CorporatePartnerRequestController extends Controller
             $corporatePartner = new CorporatePartner();
             $corporatePartner->name              = $tutor->name;
             $corporatePartner->phone             = $tutor->phone;
+            $corporatePartner->gender             = $tutor->gender;
             $corporatePartner->email             = $tutor->email;
             $corporatePartner->otp               = $tutor->otp;
             $corporatePartner->otp_expiry        = $tutor->otp_expiry;
@@ -68,6 +93,18 @@ class CorporatePartnerRequestController extends Controller
             $corporatePartner->save();
 
             $corporatePartner->get_corporate_partner_unique_id();
+
+            // $user = auth()->user();
+            PartnerContactInfo::updateOrCreate(
+                [
+                    'partner_id' => $corporatePartner->id, // Search condition
+                ],
+                [
+                    'country_id' => $tutor->tutor_personal_info->country_id ?? null,
+                    'city_id' => $tutor->tutor_personal_info->city_id ?? null,
+                    'location_id' => $tutor->tutor_personal_info->location_id ?? null,
+                ]
+            );
 
             $request->update([
                 'status' => 'approved',

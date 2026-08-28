@@ -34,6 +34,57 @@
 @section('content')
 <main class="container-custom">
     @include('backend.corporatepartner.menu')
+    <div class="row">
+
+        {{-- Total Request --}}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Request</h6>
+                    <h3 class="fw-bold mb-0">
+                        {{ $totalRequest }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        {{-- Total Approved --}}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Approved</h6>
+                    <h3 class="fw-bold text-success mb-0">
+                        {{ $totalApproved }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        {{-- Total Cancel --}}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Cancel</h6>
+                    <h3 class="fw-bold text-danger mb-0">
+                        {{ $totalCancel }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        {{-- Total Pending --}}
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Pending</h6>
+                    <h3 class="fw-bold text-warning mb-0">
+                        {{ $totalPending }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
     <div class="ps-3" style="padding-right: 13px">
 
         <div class="d-flex justify-content-between flex-column flex-lg-row gap-2 gap-lg-0">
@@ -64,12 +115,14 @@
                                             <div class="pb-3">
                                                 <label for="datef" class="form-label">Date from</label>
                                                 <div>
-                                                    <input type="date" class="form-control shadow rounded-2" id="datef" onchange="inputChange('created_at >=', this.id)" />
+                                                    <input type="date" class="form-control shadow rounded-2" id="datef"
+                                                        onchange="inputChange('created_at >=', this.id)" />
                                                 </div>
                                             </div>
                                             <div class="pb-3">
                                                 <label for="datet" class="form-label">Date To</label>
-                                                <input type="date" class="form-control shadow rounded-2" id="datet" onchange="inputChange('created_at <=', this.id)" />
+                                                <input type="date" class="form-control shadow rounded-2" id="datet"
+                                                    onchange="inputChange('created_at <=', this.id)" />
                                             </div>
                                             <div class="pb-3">
                                                 <label for="crby" class="form-label">Created By</label>
@@ -296,7 +349,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                                <div class="mb-3 ms-4" style="
+                                            <div class="mb-3 ms-4" style="
                                                 margin-top: 34px;
                                                 width: 1px;
                                                 background-color: #f0f1f2;
@@ -430,10 +483,8 @@
 
 
             <form id="paginationLimitForm">
-                <select id="cprequestpagination"
-                        name="pagination_limit"
-                        class="form-select rounded"
-                        style="width: 100px">
+                <select id="cprequestpagination" name="pagination_limit" class="form-select rounded"
+                    style="width: 100px">
 
                     <option value="1" {{ $paginationLimit == 30 ? 'selected' : '' }}>
                         30
@@ -467,7 +518,7 @@
 
 
         </div>
-</div>
+    </div>
 
 
     <div class=" my-5">
@@ -620,7 +671,7 @@
                                 .prop('disabled', true)
                                 .html(
                                     '<i class="fas fa-times-circle"></i> Cancelled'
-                                    );
+                                );
 
                         });
 
@@ -664,53 +715,54 @@
 
 {{-- Pagination --}}
 <script>
-$(document).on('change', '#cprequestpagination', function () {
+    $(document).on('change', '#cprequestpagination', function () {
 
-    let limit = $(this).val();
+        let limit = $(this).val();
 
-    $.ajax({
-        url: "{{ route('admin.cprequest.index') }}",
-        type: "GET",
-        data: {
-            pagination_limit: limit
-        },
+        $.ajax({
+            url: "{{ route('admin.cprequest.index') }}",
+            type: "GET",
+            data: {
+                pagination_limit: limit
+            },
 
-        beforeSend: function () {
+            beforeSend: function () {
 
-            $('#requestsTable').css({
-                'opacity': '0.5',
-                'pointer-events': 'none'
-            });
+                $('#requestsTable').css({
+                    'opacity': '0.5',
+                    'pointer-events': 'none'
+                });
 
-        },
+            },
 
-        success: function (response) {
+            success: function (response) {
 
-            $('#requestsTable').html(response.html);
+                $('#requestsTable').html(response.html);
 
-        },
+            },
 
-        error: function () {
+            error: function () {
 
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'Something went wrong. Please try again.'
-            });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.'
+                });
 
-        },
+            },
 
-        complete: function () {
+            complete: function () {
 
-            $('#requestsTable').css({
-                'opacity': '1',
-                'pointer-events': 'auto'
-            });
+                $('#requestsTable').css({
+                    'opacity': '1',
+                    'pointer-events': 'auto'
+                });
 
-        }
+            }
+        });
+
     });
 
-});
 </script>
 
 @endpush
