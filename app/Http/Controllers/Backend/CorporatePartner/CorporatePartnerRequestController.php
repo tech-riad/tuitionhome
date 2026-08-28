@@ -11,14 +11,33 @@ use Illuminate\Support\Facades\Hash;
 
 class CorporatePartnerRequestController extends Controller
 {
-    public function index()
+   public function index(Request $request)
     {
+        $paginationLimit = (int) $request->get('pagination_limit', 30);
+
+        $allowedLimits = [30, 50, 100, 200, 400, 500];
+
+        if (!in_array($paginationLimit, $allowedLimits)) {
+            $paginationLimit = 30;
+        }
+
         $requests = CorporatePartnerRequest::with('tutor', 'tutor_personal_info')
-            ->paginate(1);
+            ->latest()
+            ->paginate($paginationLimit)
+            ->withQueryString();
 
-        return view('backend.corporatepartner.index', compact('requests'));
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('backend.corporatepartner.partials.table', compact('requests'))->render(),
+                'pagination' => $requests->links()->render(),
+            ]);
+        }
+
+        return view('backend.corporatepartner.index', compact(
+            'requests',
+            'paginationLimit'
+        ));
     }
-
     public function apply($id)
     {
         try {
