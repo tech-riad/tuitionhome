@@ -273,20 +273,34 @@ class SettingController extends Controller
 
         $data = $request->only('name', 'link');
 
+        // Upload logo to R2
         if ($request->hasFile('logo')) {
-            $filePath = $request->file('logo')->store('logos', 'public');
+
+            $file = $request->file('logo');
+
+            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            Storage::disk('r2')->put(
+                'logos/' . $fileName,
+                file_get_contents($file->getRealPath())
+            );
+
+            $data['logo'] = $fileName;
+        } else {
+            $data['logo'] = null;
         }
 
-        // Convert roles array to a comma-separated string
-        $data['roles'] = $request->roles ? implode(',', $request->roles) : null;
-
-        $data['logo'] = $filePath ?? null;
+        // Convert roles array to comma-separated string
+        $data['roles'] = !empty($request->roles)
+            ? implode(',', $request->roles)
+            : null;
 
         SocialMedia::create($data);
 
-
-
-        return response()->json(['success' => true, 'message' => 'Social media account added successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Social media account added successfully',
+        ]);
     }
 
 
@@ -295,7 +309,10 @@ class SettingController extends Controller
         $socialMedia = SocialMedia::find($id);
 
         if (!$socialMedia) {
-            return response()->json(['success' => false, 'message' => 'Not Found'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Not Found'
+            ], 404);
         }
 
         return response()->json([
@@ -304,8 +321,12 @@ class SettingController extends Controller
                 'id' => $socialMedia->id,
                 'name' => $socialMedia->name,
                 'link' => $socialMedia->link,
-                'logo' => $socialMedia->logo ? asset('storage/' . $socialMedia->logo) : null,
-                'roles' => $socialMedia->roles // Ensure roles are correctly formatted
+
+                'logo' => $socialMedia->logo
+                    ? Storage::disk('r2')->url('logos/' . $socialMedia->logo)
+                    : null,
+
+                'roles' => $socialMedia->roles,
             ]
         ]);
     }
@@ -320,22 +341,62 @@ class SettingController extends Controller
             'roles' => 'nullable|array',
         ]);
 
-        $socialMedia = SocialMedia::findOrFail($id);
-        $socialMedia->update($request->only('name', 'link'));
+        try {
 
-        if ($request->hasFile('logo')) {
-            if (file_exists(public_path('storage/' . $socialMedia->logo))) {
-                unlink(public_path('storage/' . $socialMedia->logo));
+            $socialMedia = SocialMedia::findOrFail($id);
+
+            // Update name and link
+            $socialMedia->name = $request->name;
+            $socialMedia->link = $request->link;
+
+            // Update logo
+            if ($request->hasFile('logo')) {
+
+                // Delete old logo from R2
+                if (!empty($socialMedia->logo)) {
+
+                    $oldLogoPath = 'logos/' . $socialMedia->logo;
+
+                    if (Storage::disk('r2')->exists($oldLogoPath)) {
+                        Storage::disk('r2')->delete($oldLogoPath);
+                    }
+                }
+
+                // New logo
+                $file = $request->file('logo');
+
+                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                // Upload new logo to R2
+                Storage::disk('r2')->put(
+                    'social-media-logos/' . $fileName,
+                    file_get_contents($file->getRealPath())
+                );
+
+                // Save only filename in database
+                $socialMedia->logo = $fileName;
             }
 
-            $logoPath = $request->file('logo')->store('logos', 'public');
-            $socialMedia->logo = $logoPath;
+            // Update roles
+            $socialMedia->roles = !empty($request->roles)
+                ? implode(',', $request->roles)
+                : null;
+
+            $socialMedia->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Updated successfully',
+            ]);
+
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $socialMedia->roles = implode(',', $request->roles ?? []);
-        $socialMedia->save();
-
-        return response()->json(['success' => true, 'message' => 'Updated successfully']);
     }
 
 
@@ -344,20 +405,36 @@ class SettingController extends Controller
     public function destroy($id)
     {
         try {
+
             $socialMedia = SocialMedia::findOrFail($id);
 
-            if ($socialMedia->logo && Storage::exists('public/' . $socialMedia->logo)) {
-                Storage::delete('public/' . $socialMedia->logo);
+            // Delete logo from R2
+            if (!empty($socialMedia->logo)) {
+
+                $logoPath = 'logos/' . $socialMedia->logo;
+
+                if (Storage::disk('r2')->exists($logoPath)) {
+                    Storage::disk('r2')->delete($logoPath);
+                }
             }
 
+            // Delete database record
             $socialMedia->delete();
 
-            return response()->json(['success' => true, 'message' => 'Social media account deleted successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to delete the account.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Social media account deleted successfully.'
+            ]);
+
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete the account.',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
-
 
 
 
