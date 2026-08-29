@@ -369,7 +369,7 @@ class SettingController extends Controller
 
                 // Upload new logo to R2
                 Storage::disk('r2')->put(
-                    'social-media-logos/' . $fileName,
+                    'logos/' . $fileName,
                     file_get_contents($file->getRealPath())
                 );
 
