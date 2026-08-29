@@ -129,7 +129,7 @@
                                 <div class="card" style="width: 12rem;">
                                     <div class="image-container">
                                         <img class="card-img-top"
-                                        src="{{ Storage::disk('r2')->url('social-media-logos/' . $item->logo) }}"
+                                        src="{{ Storage::disk('r2')->url('logos/' . $item->logo) }}"
                                         alt="{{ $item->name }}"
                                         style="padding:40px;">
                                         <div class="overlay">
