@@ -20,59 +20,102 @@ class CorporateAgentCOntroller extends Controller
 
         $corporateAgent = CorporateAgent::findOrFail($user->id);
 
-        // Delete old image from R2
-        if ($corporateAgent->image) {
-            if (Storage::disk('r2')->exists('corporate-agent-images/' . $corporateAgent->image)) {
-                Storage::disk('r2')->delete('corporate-agent-images/' . $corporateAgent->image);
+        // Validate image
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png,bmp|max:5120',
+        ]);
+
+        try {
+
+            if ($request->hasFile('image')) {
+
+                $image = $request->file('image');
+
+                // Delete old image from R2
+                if (!empty($corporateAgent->image)) {
+
+                    $oldImagePath = 'corporate-agent-images/' . $corporateAgent->image;
+
+                    if (Storage::disk('r2')->exists($oldImagePath)) {
+                        Storage::disk('r2')->delete($oldImagePath);
+                    }
+                }
+
+                // Generate unique image name
+                $imageName = $corporateAgent->id . '_' . rand(1234, 9999) . '_' . time() . '.jpg';
+
+                // Load image
+                $imgResource = null;
+
+                switch (strtolower($image->getClientOriginalExtension())) {
+
+                    case 'jpg':
+                    case 'jpeg':
+                        $imgResource = imagecreatefromjpeg($image->getPathname());
+                        break;
+
+                    case 'png':
+                        $imgResource = imagecreatefrompng($image->getPathname());
+                        break;
+
+                    case 'bmp':
+                        $imgResource = imagecreatefrombmp($image->getPathname());
+                        break;
+
+                    default:
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Unsupported image format.',
+                        ], 422);
+                }
+
+                if (!$imgResource) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Unable to process the image.',
+                    ], 422);
+                }
+
+                // Convert image to JPG in memory
+                ob_start();
+
+                imagejpeg($imgResource, null, 90);
+
+                $imageContent = ob_get_clean();
+
+                // Free memory
+                imagedestroy($imgResource);
+
+                // Upload to R2
+                Storage::disk('r2')->put(
+                    'corporate-agent-images/' . $imageName,
+                    $imageContent,
+                    'public'
+                );
+
+                // Save image name in database
+                $corporateAgent->image = $imageName;
+                $corporateAgent->save();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Image uploaded successfully.',
+                    'data' => new CorporateAgentResource($corporateAgent),
+                ], 200);
             }
-        }
 
-        if ($request->hasFile('image')) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No image file found.',
+            ], 422);
 
-            $image = $request->file('image');
-            $imageName = $corporateAgent->id . '_' . rand(1234, 9999) . time() . '.jpg';
+        } catch (\Throwable $e) {
 
-            // Load image
-            $imgResource = null;
-
-            switch (strtolower($image->getClientOriginalExtension())) {
-
-                case 'jpg':
-                case 'jpeg':
-                    $imgResource = imagecreatefromjpeg($image->getPathname());
-                    break;
-
-                case 'bmp':
-                    $imgResource = imagecreatefrombmp($image->getPathname());
-                    break;
-
-                case 'png':
-                    $imgResource = imagecreatefrompng($image->getPathname());
-                    break;
-
-                default:
-                    throw new \Exception('Unsupported image format');
-            }
-
-            // Convert to JPG in memory
-            ob_start();
-            imagejpeg($imgResource, null, 100);
-            $imageContent = ob_get_clean();
-
-            // Upload to R2
-            Storage::disk('r2')->put(
-                'corporate-agent-images/' . $imageName,
-                $imageContent
-            );
-
-            $corporateAgent->image = $imageName;
-            $corporateAgent->save();
-
-            response()->json([
-                'status' => true,
-                'message' => 'Image uploaded successfully.',
-                'data' => new CorporateAgentResource($corporateAgent)
-            ]);
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong while uploading the image.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
     public function getCorporateAgent(Request $request)
