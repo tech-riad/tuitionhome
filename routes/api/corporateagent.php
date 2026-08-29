@@ -22,4 +22,5 @@ Route::group(['middleware' => ['auth:ca-api', 'scopes:corporate_agents']], funct
 
     Route::post('/corporate-agent/update-personal-info', [CorporateAgentCOntroller::class, 'updatePersonalInfo']);
     Route::post('/corporate-agent/update-contact-info', [CorporateAgentCOntroller::class, 'updateContactInfo']);
+    Route::post('/corporate-agent/image-upload', [CorporateAgentCOntroller::class, 'imageUpload']);
 });

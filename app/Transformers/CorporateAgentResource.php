@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class CorporateAgentResource extends JsonResource
 {
@@ -21,7 +22,7 @@ class CorporateAgentResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'gender' => $this->gender,
-            'image' => $this->image ? url('storage/corporate-agent-images/' . $this->image) : null,
+            'image' => $this->image ? Storage::disk('r2')->url('corporate-agent-images/' . $this->image) : null,
             'is_verified' => $this->phone_verified_at ? true : false,
             'phone_verified_at' => $this->phone_verified_at,
             'created_at' => $this->created_at,
