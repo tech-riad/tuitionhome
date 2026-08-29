@@ -128,8 +128,10 @@
                             <div class="col-lg-3">
                                 <div class="card" style="width: 12rem;">
                                     <div class="image-container">
-                                        <img class="card-img-top" src="{{ asset('storage/' . $item->logo) }}"
-                                            alt="Card image cap" style="padding:40px;">
+                                        <img class="card-img-top"
+                                        src="{{ Storage::disk('r2')->url('social-media-logos/' . $item->logo) }}"
+                                        alt="{{ $item->name }}"
+                                        style="padding:40px;">
                                         <div class="overlay">
 
                                             <a href="javascript:void(0);" class="editSocialMediaBtn" data-id="{{ $item->id }}">
