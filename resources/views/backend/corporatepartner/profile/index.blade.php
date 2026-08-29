@@ -949,7 +949,6 @@ $(document).ready(function () {
 
             success: function (result) {
 
-                console.log('City response:', result);
 
 
                 $('#city_id')
@@ -965,7 +964,6 @@ $(document).ready(function () {
 
             error: function (xhr) {
 
-                console.log('City Error:', xhr.responseText);
 
 
                 $('#city_id')

@@ -49,7 +49,7 @@
                 </span>
                 @endif
             </td>
-            <td>—</td>
+            <td>{{$request->approved_by ?? 'N/A'}} || {{$request->rejected_by ?? 'N/A'}}</td>
             <td>
                 <div class="d-flex justify-content-center gap-1">
                     @if($request->status == 'approved')

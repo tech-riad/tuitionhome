@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class CorporatePartnerResource extends JsonResource
 {
@@ -21,7 +22,7 @@ class CorporatePartnerResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'gender' => $this->gender,
-            'image' => $this->image ? url('storage/corporate-partner-images/' . $this->image) : null,
+            'image' => $this->image ? Storage::disk('r2')->url('corporate-partner-images/' . $this->image) : null,
             'is_verified' => $this->phone_verified_at ? true : false,
             'phone_verified_at' => $this->phone_verified_at,
             'email_verified_at' => $this->email_verified_at,
