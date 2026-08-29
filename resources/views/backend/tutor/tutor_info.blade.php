@@ -66,41 +66,74 @@
                     @endif
 
                     @if ($tutor->image != null)
-                    {{-- <div class="t-user-details mx-auto text-center my-4"><img
-                            src="https://hellott.xyz/storage/tutor-images/{{$tutor->image}}"
-                    loading="lazy" alt="image" class="profile-img"
-                    style="width: 70px; min-height: 80px; object-fit: cover; margin-top: 16px;">
 
-                </div> --}}
-                <div class="t-user-details mx-auto text-center my-4" data-bs-toggle="modal"
-                    data-bs-target="#zoomProfileImage" style="cursor: pointer;"><img
-                        src="https://hellott.xyz/storage/tutor-images/{{$tutor->image}}" alt="image" class="profile-img"
-                        style="width: 80px; height: 90px; object-fit: cover; margin-top: 16px;">
-                    <div class="modal fade" id="zoomProfileImage" tabindex="-1" aria-labelledby="zoomProfileImage"
-                        style="display: none;" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body d-flex justify-content-center flex-column align-items-center">
-                                    <img src="https://hellott.xyz/storage/tutor-images/{{$tutor->image}}" alt="image"
-                                        class="rounded"
-                                        style="min-height: 400px; object-fit: cover; height: 500px; width: 100%; border: 1px solid rgb(222, 226, 230);"><button
-                                        type="button" class="btn-close d-none" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                    <h4 class="mb-0 mt-3 text-capitalize one-line">{{$tutor->name}}</h4>
+                        @php
+                            $profileImage = Storage::disk('r2')->url('tutor-images/' . $tutor->image);
+                        @endphp
+
+                        <div class="t-user-details mx-auto text-center my-4"
+                            data-bs-toggle="modal"
+                            data-bs-target="#zoomProfileImage"
+                            style="cursor: pointer;">
+
+                            <img src="{{ $profileImage }}"
+                                loading="lazy"
+                                alt="{{ $tutor->name }}"
+                                class="profile-img"
+                                style="width: 80px; height: 90px; object-fit: cover; margin-top: 16px;">
+
+                            <div class="modal fade"
+                                id="zoomProfileImage"
+                                tabindex="-1"
+                                aria-labelledby="zoomProfileImage"
+                                style="display: none;"
+                                aria-hidden="true">
+
+                                <div class="modal-dialog modal-dialog-centered">
+
+                                    <div class="modal-content">
+
+                                        <div class="modal-body d-flex justify-content-center flex-column align-items-center">
+
+                                            <img src="{{ $profileImage }}"
+                                                alt="{{ $tutor->name }}"
+                                                class="rounded"
+                                                style="min-height: 400px; object-fit: cover; height: 500px; width: 100%; border: 1px solid rgb(222, 226, 230);">
+
+                                            <button type="button"
+                                                class="btn-close d-none"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                            </button>
+
+                                            <h4 class="mb-0 mt-3 text-capitalize one-line">
+                                                {{ $tutor->name }}
+                                            </h4>
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
+
                             </div>
+
                         </div>
-                    </div>
-                </div>
-                @else
-                <div class="t-user-details mx-auto text-center my-4"><img
-                        src="https://banner2.cleanpng.com/20180329/zue/kisspng-computer-icons-user-profile-person-5abd85306ff7f7.0592226715223698404586.jpg"
-                        loading="lazy" alt="image" class="profile-img"
-                        style="width: 70px; min-height: 80px; object-fit: cover; margin-top: 16px;">
 
-                </div>
+                    @else
 
-                @endif
+                        <div class="t-user-details mx-auto text-center my-4">
+
+                            <img src="https://banner2.cleanpng.com/20180329/zue/kisspng-computer-icons-user-profile-person-5abd85306ff7f7.0592226715223698404586.jpg"
+                                loading="lazy"
+                                alt="User"
+                                class="profile-img"
+                                style="width: 70px; min-height: 80px; object-fit: cover; margin-top: 16px;">
+
+                        </div>
+
+                    @endif
+
 
                 <h3 class="profile-username text-center">
 
@@ -983,136 +1016,178 @@
                 <div class="card-body">
 
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">SSC/O Level /Dakhil/Certificate</strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->ssc_c ) }}"
-                                        target="_blank">
-                                        <img width="320" height="150"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->ssc_c) }}">
-                                    </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">SSC/O Level /Dakhil/Marksheet</strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->ssc_m) }}"
-                                        target="_blank">
-                                        <img width="320" height="150"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->ssc_m) }}">
-                                    </a>
-                                    @endif
+                <div class="row">
 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">HSC/A Level /Alim/Certificate </strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->hsc_c) }}"
-                                        target="_blank">
-                                        <img width="320" height="150"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->hsc_c) }}">
-                                    </a>
-                                    @endif
+                    {{-- SSC Certificate --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">SSC/O Level / Dakhil / Certificate</strong>
 
-                                </div>
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->ssc_c)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_c) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_c) }}"
+                                            alt="SSC Certificate">
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">HSC/A Level /Alim/Marksheet</strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->hsc_m) }}"
-                                        target="_blank">
-                                        <img width="320" height="150" border="0" align="center"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->hsc_m) }}">
-                                    </a>
-                                    @endif
+                    {{-- SSC Marksheet --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">SSC/O Level / Dakhil / Marksheet</strong>
 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">Nid/Passport/Birth Certificate</strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->nid) }}"
-                                        target="_blank">
-                                        <img width="320" height="150" border="0" align="center"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->nid) }}">
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->ssc_m)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_m) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_m) }}"
+                                            alt="SSC Marksheet">
                                     </a>
-                                    @endif
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">CV </strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->cv) }}"
-                                        target="_blank">
-                                        <img width="320" height="150" border="0" align="center"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->cv) }}">
-                                    </a>
-                                    @endif
-
-                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">Admission Slip/University Id
-                                    Certificate</strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->university_c) }}"
-                                        target="_blank">
-                                        <img width="320" height="150" border="0" align="center"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->university_c) }}">
-                                    </a>
-                                    @endif
 
-                                </div>
+                    {{-- HSC Certificate --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">HSC/A Level / Alim / Certificate</strong>
+
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->hsc_c)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_c) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_c) }}"
+                                            alt="HSC Certificate">
+                                    </a>
+                                @endif
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <strong style="text-align: center;">Others</strong>
-                                <div class="card-body">
-                                    @if($tutor->TutorCertificate != null)
-                                    <a href="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->others) }}"
-                                        target="_blank">
-                                        <img width="320" height="150" border="0" align="center"
-                                            src="{{ asset('storage/tutor-certificate/'. $tutor->TutorCertificate->others) }}">
-                                    </a>
-                                    @endif
-
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    {{-- HSC Marksheet --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">HSC/A Level / Alim / Marksheet</strong>
+
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->hsc_m)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_m) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_m) }}"
+                                            alt="HSC Marksheet">
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {{-- NID --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">NID / Passport / Birth Certificate</strong>
+
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->nid)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->nid) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->nid) }}"
+                                            alt="NID / Passport / Birth Certificate">
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {{-- CV --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">CV</strong>
+
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->cv)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->cv) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->cv) }}"
+                                            alt="CV">
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    {{-- University Certificate --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">
+                                Admission Slip / University ID Certificate
+                            </strong>
+
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->university_c)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->university_c) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->university_c) }}"
+                                            alt="University Certificate">
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {{-- Others --}}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <strong style="text-align: center;">Others</strong>
+
+                            <div class="card-body">
+                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->others)
+                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->others) }}"
+                                    target="_blank">
+                                        <img width="320"
+                                            height="150"
+                                            src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->others) }}"
+                                            alt="Other Document">
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
                 </div>
             </div>
         </div>
@@ -1628,72 +1703,128 @@ $tutor_note_desc = App\Models\TutorNote::where('tutor_id',$tutor->id)->latest('c
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+
                                                             <tr>
+
+                                                                {{-- SSC Certificate --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->ssc_c ) }}"
+                                                                    @if($item->ssc_c)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_c) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->ssc_c) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_c) }}"
+                                                                                alt="SSC Certificate"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- SSC Marksheet --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->ssc_m ) }}"
+                                                                    @if($item->ssc_m)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_m) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->ssc_m) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_m) }}"
+                                                                                alt="SSC Marksheet"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- HSC Certificate --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->hsc_c ) }}"
+                                                                    @if($item->hsc_c)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_c) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->hsc_c) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_c) }}"
+                                                                                alt="HSC Certificate"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- HSC Marksheet --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->hsc_m ) }}"
+                                                                    @if($item->hsc_m)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_m) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->hsc_m) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_m) }}"
+                                                                                alt="HSC Marksheet"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- University Certificate --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->university_c ) }}"
+                                                                    @if($item->university_c)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->university_c) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->university_c) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->university_c) }}"
+                                                                                alt="University Certificate"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- NID --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->nid ) }}"
+                                                                    @if($item->nid)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->nid) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->nid) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->nid) }}"
+                                                                                alt="NID"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- CV --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->cv ) }}"
+                                                                    @if($item->cv)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->cv) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->cv) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->cv) }}"
+                                                                                alt="CV"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- Others --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->others ) }}"
+                                                                    @if($item->others)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->others) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-certificate/'. $item->others) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->others) }}"
+                                                                                alt="Other Document"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
+
+                                                                {{-- Profile Image --}}
                                                                 <td>
-                                                                    <a href="{{ asset('storage/tutor-certificate/'. $item->profile_image ) }}"
+                                                                    @if($item->profile_image)
+                                                                        <a href="{{ Storage::disk('r2')->url('tutor-log-images/' . $item->profile_image) }}"
                                                                         target="_blank">
-                                                                        <img src="{{ asset('storage/tutor-log-images/'. $item->profile_image) }}"
-                                                                            alt="image" width="250" height="80">
-                                                                    </a>
+                                                                            <img src="{{ Storage::disk('r2')->url('tutor-log-images/' . $item->profile_image) }}"
+                                                                                alt="Profile Image"
+                                                                                width="250"
+                                                                                height="80">
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
 
                                                             </tr>
+
                                                         </tbody>
                                                     </table>
                                                 </div>
