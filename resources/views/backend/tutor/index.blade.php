@@ -602,10 +602,7 @@
 
 
 
-                                <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
-                                    data-bs-toggle="modal" data-bs-target="#tutorNoteModal">
-                                    Note
-                                </button>
+                                <button type="button" class="btn btn-sm btn-primary" data-tutor-id="{{ $tutor->id }}" onclick="btnNote(this.dataset.tutorId)" data-bs-toggle="modal" data-bs-target="#tutorNoteModal"> Note </button>
                             </td>
                         </tr>
                         @endforeach
@@ -1400,82 +1397,92 @@
 
 
 <!-- Note model -->
-<div class="modal fade" id="tutorNoteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Note Modal -->
+<div class="modal fade"
+     id="tutorNoteModal"
+     tabindex="-1"
+     aria-labelledby="tutorNoteModalLabel"
+     aria-hidden="true">
+
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
         <div class="modal-content">
+
             <div class="modal-header">
 
-                <h5 class="modal-title" id="exampleModalLabel">Note Details </h5>
+                <h5 class="modal-title" id="tutorNoteModalLabel">
+                    Note Details
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
 
             </div>
+
             <div class="modal-body">
-                <div>
 
-
-                    <div id="allNote">
-                        <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
-                            <div class="d-flex justify-content-between align-items-center" id="singleNote">
-                                <div>
-                                    <p class="mb-0 text-dark fs-5">Sohag Sarkar</p>
-                                    <p class="text-info" style="font-size: 12px">ID-23456</p>
-                                </div>
-                                <div>
-                                    <p>June 17, 2023</p>
-                                </div>
-                            </div>
-                            <p>note body</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p>Read More</p>
-                                </div>
-                                <div>
-                                    <button class="btn btn-primary py-1">Edit</button>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-                    </div>
-
-
-
-
-                    <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-
-                        </div>
-
-                        <form action="{{route('admin.tutor.note')}}" method="POST" id="tutorNote">
-
-                            @csrf
-
-                            <input type="hidden" name="tutor_id" id="note_tutor_id">
-                            <div class="form-group">
-                                <label>Add Note</label>
-                                <textarea name="note" class="form-control" rows="5" id="tutor_note"
-                                    required=""></textarea>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center">
-
-                                <div>
-
-                                    {{-- <button class="btn btn-primary py-1">Save</button> --}}
-                                </div>
-                                <div>
-                                    <button class="btn btn-primary py-1">Save</button>
-                                </div>
-                        </form>
+                <!-- Existing Notes -->
+                <div id="allNote">
+                    <div class="text-center text-muted py-3">
+                        Loading...
                     </div>
                 </div>
+
+                <!-- Add Note -->
+                <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
+
+                    <form action="{{ route('admin.tutor.note') }}"
+                          method="POST"
+                          id="tutorNote">
+
+                        @csrf
+
+                        <input type="hidden"
+                               name="tutor_id"
+                               id="note_tutor_id"
+                               value="">
+
+                        <div class="form-group mb-3">
+
+                            <label for="tutor_note">
+                                Add Note
+                            </label>
+
+                            <textarea
+                                name="note"
+                                class="form-control"
+                                rows="5"
+                                id="tutor_note"
+                                required></textarea>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+
+                            <button type="submit"
+                                    class="btn btn-primary py-1">
+                                Save
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
             </div>
+
+            <div class="modal-footer">
+                <div class="py-1"></div>
+            </div>
+
         </div>
-        <div class="modal-footer">
-            <div class="py-2"></div>
-        </div>
+
     </div>
+
 </div>
 </div>
 
@@ -1486,44 +1493,7 @@
 
 
 {{-- start Note modal --}}
-<div class="modal fade" id="noteModal" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5>Add Note for </h5> &nbsp<h5 id="tutor_name"></h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
 
-            <div class="modal-body">
-                <form id="" method="post" action="route('admin.tutor.note-create')">
-                    @csrf
-
-                    <input type="hidden" name="_method" value="put" />
-                    <input class="form-control" type="hidden" id="tutor_id" name="tutor_id" value="">
-                    <input type="hidden" value="{{ route('admin.tutor.note-create') }}" id="tutor_note_create_route" />
-
-                    <div class="form-group">
-                        <label>Note</label>
-                        <textarea name="note" class="form-control" rows="8" id="tutor_note" required=""></textarea>
-                    </div>
-
-                    {{--
-            <textarea name="long_description" class="form-control" rows="8" id="long_description" required>
-            </textarea> --}}
-
-                    {{-- <p>Some text in the modal.</p> --}}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="btnCreateNote(event)">Save Note</button>
-            </div>
-            </form>
-
-        </div>
-
-    </div>
-</div>
 
 {{-- end note modal --}}
 

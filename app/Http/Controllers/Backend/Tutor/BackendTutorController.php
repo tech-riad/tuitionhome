@@ -392,33 +392,38 @@ public function updateStatus(Request $request, $id)
 
     public function tutorNote(Request $request)
     {
+        $request->validate([
+            'tutor_id' => 'required|integer',
+            'note'     => 'required|string',
+        ]);
 
+        $note = new TutorNote();
 
-        $note              = new TutorNote();
-        $note->body        = $request->note;
-        $note->tutor_id    = $request->tutor_id;
-        $note->created_by  = Auth::user()->name;
+        $note->tutor_id   = $request->tutor_id;
+        $note->body       = $request->note;
+        $note->created_by = Auth::user()->name;
+
         $note->save();
 
         return response()->json([
-            'status'=>true,
-            'message'=>'note added Successfully!',
-            'data' =>$note]);
-
+            'status'  => true,
+            'message' => 'Note added successfully!',
+            'data'    => $note
+        ]);
     }
 
     public function getNote(Request $request)
-    {
+{
+    $notes = TutorNote::where('tutor_id', $request->id)
+        ->orderBy('id', 'desc')
+        ->get();
 
-
-        $id     = $request->id;
-        $notes  = TutorNote::where('tutor_id', $id)->orderBy('id', 'desc')->get();
-
-        return response()->json([
-            'status'=>true,
-            'message'=>'note added Successfully!',
-            'data' =>$notes]);
-    }
+    return response()->json([
+        'status'  => true,
+        'message' => 'Notes fetched successfully!',
+        'data'    => $notes
+    ]);
+}
 
 
 

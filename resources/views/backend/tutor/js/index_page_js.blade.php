@@ -259,200 +259,274 @@ success:function(response){
 
 // tutor note
 
-$(function () {
-        $("#tutorNote").on("submit", function (event) {
-            event.preventDefault();
+// ==========================================
+// TUTOR NOTE SYSTEM
+// ==========================================
 
+$(document).ready(function () {
 
-            const formElement = document.getElementById('tutorNote');
-             const formData = new FormData(formElement);
+    // ------------------------------------------
+    // Add Note
+    // ------------------------------------------
+    $(document).on('submit', '#tutorNote', function (event) {
 
-             const parent_id = formData.get('tutor_id');
-             var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        event.preventDefault();
 
+        const form = this;
 
-            $.ajax({
-                url: $(this).attr("action"),
-                method: $(this).attr("method"),
-                data: new FormData(this),
-                processData: false,
-                datatype: JSON,
-                contentType: false,
-                headers: {
-                          'X-CSRF-TOKEN': csrfToken
-                         },
+        // IMPORTANT:
+        // Always take tutor ID from hidden input
+        const tutorId = $('#note_tutor_id').val();
 
-                success: function (response) {
+        console.log('Saving note for tutor:', tutorId);
+
+        if (!tutorId) {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Tutor ID missing!',
+                text: 'Please select a tutor first.'
+            });
+
+            return;
+        }
+
+        const formData = new FormData(form);
+
+        // Force current tutor ID
+        formData.set('tutor_id', tutorId);
+
+        $.ajax({
+
+            url: $(form).attr('action'),
+
+            type: 'POST',
+
+            data: formData,
+
+            processData: false,
+
+            contentType: false,
+
+            dataType: 'json',
+
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+
+            beforeSend: function () {
+
+                $(form).find('button[type="submit"]')
+                    .prop('disabled', true)
+                    .text('Saving...');
+            },
+
+            success: function (response) {
+
+                console.log('Note saved:', response);
+
+                if (response.status) {
 
                     Swal.fire({
-                                position: "top-end",
-                                icon: "success",
-                                title: "note added successfully",
-                                showConfirmButton: false,
-                                timer: 1500,
-                            });
-                    $("#tutorNote")[0].reset();
-                    btnNote(parent_id);
-                },
+                        position: "top-end",
+                        icon: "success",
+                        title: "Note added successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
 
-                error: function (err) {
-                    let error = err.responseJSON;
-                    console.log(error);
-                },
-            });
+                    // Clear textarea only
+                    $('#tutor_note').val('');
+
+                    // IMPORTANT:
+                    // Don't lose tutor ID after reset
+                    $('#note_tutor_id').val(tutorId);
+
+                    // Reload notes for SAME tutor
+                    btnNote(tutorId);
+                }
+
+            },
+
+            error: function (xhr) {
+
+                console.log('Note save error:', xhr.responseText);
+
+                let message = 'Something went wrong!';
+
+                if (xhr.responseJSON) {
+
+                    if (xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+
+                    if (xhr.responseJSON.errors) {
+                        console.log(xhr.responseJSON.errors);
+                    }
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+
+            },
+
+            complete: function () {
+
+                $(form).find('button[type="submit"]')
+                    .prop('disabled', false)
+                    .text('Save');
+            }
+
         });
+
     });
 
 
+    // ------------------------------------------
+    // Load Tutor Notes
+    // ------------------------------------------
+    window.btnNote = function (id) {
 
-    let filter = {};
-        let orFilter = [];
+        // Convert to string so we can compare reliably
+        const tutorId = String(id);
 
-    // let orFilter = ['group_or_major','university_type' ,'department_id'];
-    function filterChange(colname, id){
+        console.log('Opening notes for tutor:', tutorId);
 
-        filter[colname]=$("#"+id).val();
+        // IMPORTANT
+        // Set current tutor ID
+        $('#note_tutor_id').val(tutorId);
 
-      var input = '';
+        // Clear old notes immediately
+        $('#allNote').html(`
+            <div class="text-center text-muted py-3">
+                Loading...
+            </div>
+        `);
 
-      const orDatas = new Map();
-      Object.entries(filter).forEach((entry,index) => {
-          const [key, value] = entry;
+        $.ajax({
 
+            url: '{{ route("admin.tutor.getnote") }}',
 
-          if(orFilter.includes(key)){
-            orDatas.set(key, value);
-          }
-          else{
-            if(index==(Object.keys(filter).length-1)){
-                if(key=='created_at <' || key=='country_id' || key=='city_id' || key=='created_at >' || key=='gender' || key =='tutoring_experience' || key =='religion' || key=='blood_group' || key =='method_id' || key =='group_or_major' || key=='blood_group' || key =='method_id' || key =='institute_id' || key=='category_id' || key=='curriculum_id' || key=='location_id'
-                || key=='university_type' || key=='degree_name' || key=='department_id' || key=="degree_name='honours' and institute_id" || key=="degree_name='ssc' and institute_id" || key=="degree_name='hsc' and institute_id" || key=="department_id" || key=="expected_salary" || key=="education_board"){
-                    input+= `${key}='${value}' `;
+            type: 'GET',
+
+            data: {
+                id: tutorId
+            },
+
+            dataType: 'json',
+
+            success: function (response) {
+
+                let html = '';
+
+                if (
+                    response.status &&
+                    response.data &&
+                    response.data.length > 0
+                ) {
+
+                    response.data.forEach(function (note) {
+
+                        html += `
+                            <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <p class="mb-0 text-dark fs-5">
+                                            ${escapeHtml(note.created_by ?? '')}
+                                        </p>
+
+                                        <p class="text-info mb-0"
+                                           style="font-size: 12px">
+                                            ${escapeHtml(note.emp_id ?? '')}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p class="mb-0">
+                                            ${formatNoteDate(note.created_at)}
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <p class="mt-2 mb-2">
+                                    ${escapeHtml(note.body ?? '')}
+                                </p>
+
+                            </div>
+                        `;
+
+                    });
+
+                } else {
+
+                    html = `
+                        <div class="text-center text-muted py-4">
+                            No notes found for this tutor.
+                        </div>
+                    `;
                 }
-                else{
-                    input+= `${key} in (${value})` ;
-                }
-            }
-            else{
-                if(key=='created_at <' || key=='country_id' || key=='city_id' || key=='created_at >' || key=='gender' || key =='tutoring_experience' || key =='religion' || key=='blood_group' || key =='method_id' || key =='group_or_major' || key=='blood_group' || key =='method_id' || key =='institute_id' || key=='category_id' || key=='curriculum_id' || key=='location_id'
-                || key=='university_type' || key=='degree_name' || key=='department_id' || key=="degree_name='honours' and institute_id" || key=="degree_name='ssc' and institute_id" || key=="degree_name='hsc' and institute_id" || key=="department_id" || key=="expected_salary" || key=="education_board"){
-                        input+= `${key}='${value}' and `;
-                }
-                else{
-                    input+= `${key} in (${value}) and ` ;
-                }
-            }
-        }
 
+                $('#allNote').html(html);
 
-      });
+            },
 
-      if(orDatas.size>0){
-            input+= '('
-        }
-        orDatas.forEach((value,key)=>{
-            const currLen = Array.from(orDatas);
-            const lastEntry = currLen[currLen.length-1];
-            const [lkey,lvalus] = lastEntry;
+            error: function (xhr) {
 
+                console.log('Get notes error:', xhr.responseText);
 
+                $('#allNote').html(`
+                    <div class="alert alert-danger">
+                        Failed to load notes.
+                    </div>
+                `);
 
-            if(lkey==key){
-                input+= `${key} = '${value}' ` ;
-            }
-            else{
-                input+= `${key} = '${value}' or ` ;
             }
 
         });
-        if(orDatas.size>0){
-            input+= ')'
+
+    };
+
+
+    // ------------------------------------------
+    // Date Format
+    // ------------------------------------------
+    window.formatNoteDate = function (dateString) {
+
+        if (!dateString) {
+            return '';
         }
 
-    //    console.log(input);
+        const date = new Date(dateString);
+
+        if (isNaN(date.getTime())) {
+            return '';
+        }
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}-${month}-${year}`;
+    };
 
 
-      $('#searchInput').val(input);
+    // ------------------------------------------
+    // Prevent XSS in Note Body
+    // ------------------------------------------
+    window.escapeHtml = function (value) {
 
+        return $('<div>')
+            .text(value)
+            .html();
+    };
 
-
-
-
-    }
-
-
-    $.date = function(dateObject) {
-    const myArray = dateObject.split("T");
-    var d = new Date(myArray[0]);
-    var day = d.getDate();
-    var month = d.getMonth() + 1;
-    var year = d.getFullYear();
-    if (day < 10) {
-        day = "0" + day;
-    }
-    if (month < 10) {
-        month = "0" + month;
-    }
-    var date = day + "-" + month + "-" + year;
-
-    return date;
-};
-
-
-    function btnNote(id){
-
-
-        $('#note_tutor_id').val(id);
-
-        //  console.log(id);
-
-             $.ajax({
-                url:'{{route("admin.tutor.getnote")}}',
-                type:'get',
-                data: {
-                       id:id,
-                       },
-                success:function (response){
-
-                    let html ='';
-
-                    var notes = response.data
-                    for(i=0 ; i<notes.length; i++){
-
-                        // console.log(notes[i].body);
-
-
-
-                  html+= '<div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3" >\
-                    <div class="d-flex justify-content-between align-items-center" id="singleNote">\
-                        <div>\
-                          <p class="mb-0 text-dark fs-5">'+notes[i].created_by+'</p>\
-                          <p class="text-info" style="font-size: 12px">ID-23456</p>\
-                        </div>\
-                        <div><p>'+ $.date(notes[i].created_at)+'</p></div>\
-                      </div>\
-                      <p>'+notes[i].body+'</p>\
-                      <div class="d-flex justify-content-between align-items-center">\
-                        <div>\
-                          <p>Read More</p>\
-                        </div>\
-                        <div>\
-                        </div>\
-                    </div>\
-                  </div>';
-
-                }
-
-
-                    $('#allNote').html(html);
-
-
-
-                }
-            });
-
-}
-
+});
 
 
 
