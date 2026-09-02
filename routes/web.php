@@ -401,9 +401,9 @@ Route::delete('/admin/tutor/{tutor}/delete',[BackendTutorController::class,'dele
 // Route::get('/admin/tutor/{tutor}/note',[BackendTutorController::class,'note'])->name('admin.tutor.note');
 Route::post('/admin/tutor/note/create',[BackendTutorController::class,'createNote'])->name('admin.tutor.note-create')->middleware('permission:tutor-trash-page');
 
-Route::post('/admin/tutor/note/add',[BackendTutorController::class,'tutorNote'])->name('admin.tutor.note')->middleware('permission:tutor-trash-page');
+Route::any('/admin/tutor/note/add',[BackendTutorController::class,'tutorNote'])->name('admin.tutor.note')->middleware('permission:tutor-trash-page');
 
-Route::get('/admin/note/tutor/get',[BackendTutorController::class,'getNote'])->name('admin.tutor.getnote')->middleware('permission:tutor-trash-page');
+Route::any('/admin/note/tutor/get',[BackendTutorController::class,'getNote'])->name('admin.tutor.getnote')->middleware('permission:tutor-trash-page');
 
 
 

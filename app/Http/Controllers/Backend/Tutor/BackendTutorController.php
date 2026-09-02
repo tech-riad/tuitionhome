@@ -413,17 +413,14 @@ public function updateStatus(Request $request, $id)
     }
 
     public function getNote(Request $request)
-{
-    $notes = TutorNote::where('tutor_id', $request->id)
-        ->orderBy('id', 'desc')
-        ->get();
-
-    return response()->json([
-        'status'  => true,
-        'message' => 'Notes fetched successfully!',
-        'data'    => $notes
-    ]);
-}
+    {
+        return response()->json([
+            'request_id' => $request->id,
+            'notes' => TutorNote::where('tutor_id', $request->id)
+                ->orderBy('id', 'desc')
+                ->get(),
+        ]);
+    }
 
 
 

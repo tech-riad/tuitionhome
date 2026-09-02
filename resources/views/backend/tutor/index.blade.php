@@ -602,8 +602,14 @@
 
 
 
-                                <button type="button" class="btn btn-sm btn-primary" data-tutor-id="{{ $tutor->id }}" onclick="btnNote(this.dataset.tutorId)" data-bs-toggle="modal" data-bs-target="#tutorNoteModal"> Note </button>
-                            </td>
+                            <button type="button"
+                                class="btn btn-sm btn-primary btn-note"
+                                data-tutor-id="{{ $tutor->id }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#tutorNoteModal">
+                                Note
+                            </button>                            
+                        </td>
                         </tr>
                         @endforeach
 

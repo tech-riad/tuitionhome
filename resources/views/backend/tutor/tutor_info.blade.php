@@ -18,6 +18,7 @@
         padding: 10px;
         border-radius: 10px;
     }
+
 </style>
 <div class="box-title bg-white" style="color: black">
     <div class="row">
@@ -67,50 +68,36 @@
 
                     @if ($tutor->image != null)
 
-                        @php
-                            $profileImage = Storage::disk('r2')->url('tutor-images/' . $tutor->image);
-                        @endphp
+                    @php
+                    $profileImage = Storage::disk('r2')->url('tutor-images/' . $tutor->image);
+                    @endphp
 
-                        <div class="t-user-details mx-auto text-center my-4"
-                            data-bs-toggle="modal"
-                            data-bs-target="#zoomProfileImage"
-                            style="cursor: pointer;">
+                    <div class="t-user-details mx-auto text-center my-4" data-bs-toggle="modal"
+                        data-bs-target="#zoomProfileImage" style="cursor: pointer;">
 
-                            <img src="{{ $profileImage }}"
-                                loading="lazy"
-                                alt="{{ $tutor->name }}"
-                                class="profile-img"
-                                style="width: 80px; height: 90px; object-fit: cover; margin-top: 16px;">
+                        <img src="{{ $profileImage }}" loading="lazy" alt="{{ $tutor->name }}" class="profile-img"
+                            style="width: 80px; height: 90px; object-fit: cover; margin-top: 16px;">
 
-                            <div class="modal fade"
-                                id="zoomProfileImage"
-                                tabindex="-1"
-                                aria-labelledby="zoomProfileImage"
-                                style="display: none;"
-                                aria-hidden="true">
+                        <div class="modal fade" id="zoomProfileImage" tabindex="-1" aria-labelledby="zoomProfileImage"
+                            style="display: none;" aria-hidden="true">
 
-                                <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-dialog modal-dialog-centered">
 
-                                    <div class="modal-content">
+                                <div class="modal-content">
 
-                                        <div class="modal-body d-flex justify-content-center flex-column align-items-center">
+                                    <div
+                                        class="modal-body d-flex justify-content-center flex-column align-items-center">
 
-                                            <img src="{{ $profileImage }}"
-                                                alt="{{ $tutor->name }}"
-                                                class="rounded"
-                                                style="min-height: 400px; object-fit: cover; height: 500px; width: 100%; border: 1px solid rgb(222, 226, 230);">
+                                        <img src="{{ $profileImage }}" alt="{{ $tutor->name }}" class="rounded"
+                                            style="min-height: 400px; object-fit: cover; height: 500px; width: 100%; border: 1px solid rgb(222, 226, 230);">
 
-                                            <button type="button"
-                                                class="btn-close d-none"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close">
-                                            </button>
+                                        <button type="button" class="btn-close d-none" data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                        </button>
 
-                                            <h4 class="mb-0 mt-3 text-capitalize one-line">
-                                                {{ $tutor->name }}
-                                            </h4>
-
-                                        </div>
+                                        <h4 class="mb-0 mt-3 text-capitalize one-line">
+                                            {{ $tutor->name }}
+                                        </h4>
 
                                     </div>
 
@@ -120,520 +107,726 @@
 
                         </div>
 
+                    </div>
+
                     @else
 
-                        <div class="t-user-details mx-auto text-center my-4">
+                    <div class="t-user-details mx-auto text-center my-4">
 
-                            <img src="https://banner2.cleanpng.com/20180329/zue/kisspng-computer-icons-user-profile-person-5abd85306ff7f7.0592226715223698404586.jpg"
-                                loading="lazy"
-                                alt="User"
-                                class="profile-img"
-                                style="width: 70px; min-height: 80px; object-fit: cover; margin-top: 16px;">
+                        <img src="https://banner2.cleanpng.com/20180329/zue/kisspng-computer-icons-user-profile-person-5abd85306ff7f7.0592226715223698404586.jpg"
+                            loading="lazy" alt="User" class="profile-img"
+                            style="width: 70px; min-height: 80px; object-fit: cover; margin-top: 16px;">
 
-                        </div>
+                    </div>
 
                     @endif
 
 
-                <h3 class="profile-username text-center">
+                    <h3 class="profile-username text-center">
 
-                    {{@$tutor->name}}
+                        {{@$tutor->name}}
 
-                    @if(@$tutor->is_premium == 1)
-                    <img height="30px" src="https://tuitionterminal.com.bd/assets/premium-regular-9c7ea3fd.svg" alt="">
-                    @endif
-                    @if(@$tutor->is_premium_pro == 1)
-                    <img height="30px" src="https://tuitionterminal.com.bd/assets/premium-pro-fc790c7d.svg" alt="">
-                    @endif
-                    @if(@$tutor->is_premium_advance == 1)
-                    <img height="30px" src="https://tuitionterminal.com.bd/assets/premium-advance-4b8e47d2.svg" alt="">
-                    @endif
-                    @if(@$tutor->is_verified == 1)
-                    <i style="color:#007BFF" class="far fa-check-circle"></i>
-                    @endif
-                    @if(@$tutor->is_internal_verify == 1 && $tutor->is_verified == 0)
-                    <i style="color:#ed228b" class="far fa-check-circle"></i>
-                    @endif
-                    @if(@$tutor->is_featured == 1)
-                    <img height="30px" src="https://tuitionterminal.com.bd/assets/featured-icon-0c358655.svg" alt="">
-
-                    @endif
-                    @if(@$tutor->is_boost == 1)
-                    <img height="30px" src="https://tuitionterminal.com.bd/assets/boost-icon-d47ce3c5.svg" alt="">
-
-                    @endif
-                </h3>
-
-
-
-                </h3>
-                <p class="text-muted text-center">Phone: {{@$tutor->phone}}</p>
-                <p class="text-muted text-center">ID: {{@$tutor->unique_id}}</p>
-                <p class="text-muted text-center"> Email: {{@$tutor->email}}</p>
-                <ul class="list-group list-group-unbordered mb-3">
-                    <li class="list-group-item">
-                        <b>Tutor Balances </b>
-                        <h3 class="float-right text-bg-danger">{{$tutor->balances ?? 0}}</h3>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Verified</b>
-                        <a class="float-right">
-                            {{@$tutor->is_verified ?? ''}}
-                            @if ($tutor->is_verified != null)
-                            ({{$tutor->verifier->name ?? ''}})
-                            @endif
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Internal Verify</b>
-                        <a class="float-right">
-                            {{@$tutor->is_internal_verify ?? ''}}
-                            @if ($tutor->is_internal_verify != 0)
-                            ({{$tutor->verifier->name ?? ''}})
-                            @endif
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Fetured</b>
-                        <a class="float-right">
-                            {{$tutor->is_featured ?? ''}}
-                            @if ($tutor->is_featured != null)
-                            ({{$tutor->feature->name ?? ''}})
-                            @endif
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        @if ($tutor->is_premium == 1)
-                        <b>Premium</b>
-                        @elseif($tutor->is_premium_pro == 1)
-                        <b>Premium Pro</b>
-                        @elseif($tutor->is_premium_advance == 1)
-                        <b>Premium Advance</b>
+                        @if(@$tutor->is_premium == 1)
+                        <img height="30px" src="https://tuitionterminal.com.bd/assets/premium-regular-9c7ea3fd.svg"
+                            alt="">
                         @endif
+                        @if(@$tutor->is_premium_pro == 1)
+                        <img height="30px" src="https://tuitionterminal.com.bd/assets/premium-pro-fc790c7d.svg" alt="">
+                        @endif
+                        @if(@$tutor->is_premium_advance == 1)
+                        <img height="30px" src="https://tuitionterminal.com.bd/assets/premium-advance-4b8e47d2.svg"
+                            alt="">
+                        @endif
+                        @if(@$tutor->is_verified == 1)
+                        <i style="color:#007BFF" class="far fa-check-circle"></i>
+                        @endif
+                        @if(@$tutor->is_internal_verify == 1 && $tutor->is_verified == 0)
+                        <i style="color:#ed228b" class="far fa-check-circle"></i>
+                        @endif
+                        @if(@$tutor->is_featured == 1)
+                        <img height="30px" src="https://tuitionterminal.com.bd/assets/featured-icon-0c358655.svg"
+                            alt="">
 
-                        <a class="float-right">
+                        @endif
+                        @if(@$tutor->is_boost == 1)
+                        <img height="30px" src="https://tuitionterminal.com.bd/assets/boost-icon-d47ce3c5.svg" alt="">
+
+                        @endif
+                    </h3>
+
+
+
+                    </h3>
+                    <p class="text-muted text-center">Phone: {{@$tutor->phone}}</p>
+                    <p class="text-muted text-center">ID: {{@$tutor->unique_id}}</p>
+                    <p class="text-muted text-center"> Email: {{@$tutor->email}}</p>
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item">
+                            <b>Tutor Balances </b>
+                            <h3 class="float-right text-bg-danger">{{$tutor->balances ?? 0}}</h3>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Verified</b>
+                            <a class="float-right">
+                                {{@$tutor->is_verified ?? ''}}
+                                @if ($tutor->is_verified != null)
+                                ({{$tutor->verifier->name ?? ''}})
+                                @endif
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Internal Verify</b>
+                            <a class="float-right">
+                                {{@$tutor->is_internal_verify ?? ''}}
+                                @if ($tutor->is_internal_verify != 0)
+                                ({{$tutor->verifier->name ?? ''}})
+                                @endif
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Fetured</b>
+                            <a class="float-right">
+                                {{$tutor->is_featured ?? ''}}
+                                @if ($tutor->is_featured != null)
+                                ({{$tutor->feature->name ?? ''}})
+                                @endif
+                            </a>
+                        </li>
+                        <li class="list-group-item">
                             @if ($tutor->is_premium == 1)
-                            {{$tutor->is_premium ?? ''}}
+                            <b>Premium</b>
                             @elseif($tutor->is_premium_pro == 1)
-                            {{$tutor->is_premium_pro ?? ''}}
+                            <b>Premium Pro</b>
                             @elseif($tutor->is_premium_advance == 1)
-                            {{$tutor->is_premium_advance ?? ''}}
+                            <b>Premium Advance</b>
                             @endif
 
-                            @if ($tutor->is_premium != null || $tutor->is_premium_pro != null ||
-                            $tutor->is_premium_advance != null)
-                            ({{$tutor->premire->name ?? ''}})
-                            @endif
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Premium From - To</b>
-                        <a class="float-right">
-                            {{ $tutor->premium_date ? \Carbon\Carbon::parse($tutor->premium_date)->format('Y-m-d') : '' }}
-                            <br>
-                            {{ $tutor->premium_expire ? \Carbon\Carbon::parse($tutor->premium_expire)->format('Y-m-d') : '' }}
-                        </a>
-                    </li>
+                            <a class="float-right">
+                                @if ($tutor->is_premium == 1)
+                                {{$tutor->is_premium ?? ''}}
+                                @elseif($tutor->is_premium_pro == 1)
+                                {{$tutor->is_premium_pro ?? ''}}
+                                @elseif($tutor->is_premium_advance == 1)
+                                {{$tutor->is_premium_advance ?? ''}}
+                                @endif
 
-                </ul>
-            </div>
-        </div>
+                                @if ($tutor->is_premium != null || $tutor->is_premium_pro != null ||
+                                $tutor->is_premium_advance != null)
+                                ({{$tutor->premire->name ?? ''}})
+                                @endif
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Premium From - To</b>
+                            <a class="float-right">
+                                {{ $tutor->premium_date ? \Carbon\Carbon::parse($tutor->premium_date)->format('Y-m-d') : '' }}
+                                <br>
+                                {{ $tutor->premium_expire ? \Carbon\Carbon::parse($tutor->premium_expire)->format('Y-m-d') : '' }}
+                            </a>
+                        </li>
+                        <li>
 
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">About Me here</h3>
-            </div>
+                        </li>
 
-
-            <div class="card-body">
-                <strong> <i class="far fa-file-alt mr-1"></i> Education</strong>
-
-                @foreach($tutor->tutor_education ?? [] as $tutor_edu)
-                <p class="text-muted text-capitalize">
-                    <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-                    {{$tutor_edu->degree_name}} {{ data_get($tutor_edu->curriculam, 'title', '') }}
-
-                    @if ($tutor_edu->departments)
-                    -> {{$tutor_edu->departments->title}}
-                    @endif
-                    @if ($tutor_edu->education_board)
-                    -> {{$tutor_edu->education_board}}
-                    @endif
-                    @if ($tutor_edu->group_or_major)
-                    -> {{$tutor_edu->group_or_major}}
-                    @endif
-                    @if ($tutor_edu->passing_year)
-                    -> {{$tutor_edu->passing_year}}
-                    @endif
-                    @if ($tutor_edu->gpa)
-                    -> {{$tutor_edu->gpa}}
-                    @endif
-                    <br>
-                    :::: {{$tutor_edu->institutes->title ?? ''}}
-                </p>
-                <hr>
-                @endforeach
-
-                <br>
-
-                <strong><i class="far fa-file-alt mr-1"></i>Location</strong>
-
-                <p class="text-muted">
-                    @if (@$tutor->tutor_personal_info->country)
-                    {{ $tutor->tutor_personal_info->country->name ?? ''}}
-                    @endif
-                    @if (@$tutor->tutor_personal_info->city)
-                    -> {{ $tutor->tutor_personal_info->city->name ?? ''}}
-                    @endif
-                    @if (@$tutor->tutor_personal_info->location)
-                    -> {{ $tutor->tutor_personal_info->location->name ?? ''}}
-                    @endif
-                </p>
-
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Preferable Tutoring Locations</strong>
-                <p class="text-muted">
-
-                    @foreach($tutor->tutor_prefered_locations ?? [] as $pl)
-                    <span class="badge badge-success">{{$pl->name}}</span>
-                    @endforeach
-
-
-                </p>
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Preferred Tutoring Category</strong>
-                <p class="text-muted">
-
-                    @foreach($tutor->tutor_categories ?? [] as $tc)
-                    <span class="badge badge-success">{{$tc->name}}</span>
-
-                    @endforeach
-
-
-                </p>
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Preferred Tutoring Courses/Classes</strong>
-                <p class="text-muted">
-                    @foreach($tutor->tutor_course ?? [] as $course)
-                    <span class="badge badge-success">{{ $course->name }}</span>
-                    @endforeach
-                </p>
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Preferred Tutoring Subjects</strong>
-                <br>
-                @if ($tutor->course_subjects != null)
-                @foreach ($tutor->course_subjects as $otcs)
-                <span class="badge badge-success">
-                    {{ $otcs->subject->title ?? 'N/A' }}
-                    @if (@$otcs->subject->tutor_course != null)
-                    @foreach ($otcs->subject->tutor_course as $course)
-                    ({{ $course->name ?? 'N/A' }})
-                    @endforeach
-                    @endif
-                </span>
-                @endforeach
-                @endif
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Tutoring Experience</strong>
-                <br>
-                <h6 class="mt-1 ml-4">
-                    @if ($tutor->tutor_personal_info)
-                    {{$tutor->tutor_personal_info->tutoring_experience ?? ''}}
-                    @if ($tutor->tutor_personal_info->tutoring_experience != null)
-                    Years
-                    @endif
-                    @endif
-                </h6>
-
-                <hr>
-
-                <strong><i class="far fa-file-alt mr-1"></i> Available Day</strong>
-                <br>
-                @foreach($tutor->tutor_days ?? [] as $day)
-                <span class="badge badge-success">{{$day->title}}</span>
-                @endforeach
-                <hr>
-
-                <strong><i class="far fa-file-alt mr-1"></i> Available Time</strong>
-                <br>
-                <h6 class="mt-1 ml-4">
-                    @if (isset($tutor->tutor_personal_info->available_from) &&
-                    isset($tutor->tutor_personal_info->available_to))
-                    @if (\Carbon\Carbon::hasFormat($tutor->tutor_personal_info->available_from, 'Y-m-d\TH:i:s.u\Z')
-                    && \Carbon\Carbon::hasFormat($tutor->tutor_personal_info->available_to, 'Y-m-d\TH:i:s.u\Z'))
-                    {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_from)->format('g:i A') }} to
-                    {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_to)->format('g:i A') }}
-                    @elseif (!empty($tutor->tutor_personal_info->available_from) &&
-                    !empty($tutor->tutor_personal_info->available_to) && preg_match('/^\d{1,2}:\d{2}$/',
-                    $tutor->tutor_personal_info->available_from) && preg_match('/^\d{1,2}:\d{2}$/',
-                    $tutor->tutor_personal_info->available_to))
-                    {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_from)->format('g A') }} to
-                    {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_to)->format('g A') }}
-                    @else
-                    N/A
-                    @endif
-                    @else
-                    N/A
-                    @endif
-                </h6>
-
-
-
-
-
-
-
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Tutoring Methods</strong>
-                <br>
-                @foreach($tutor->teaching_method ?? [] as $teaching_method)
-                <span class="badge badge-success">{{$teaching_method->name}}</span>
-                @endforeach
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Expected Salary</strong>
-                <br>
-                <p class="text-muted">{{$tutor->tutor_personal_info->expected_salary ?? 'N/A'}}</p>
-
-            </div>
-        </div>
-
-
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">Tutor Profile</h3>
+                    </ul>
+                </div>
             </div>
 
-            <div class="card-body">
-                <a href="https://tuitionterminal.com.bd/hub/tutor-details/{{$tutor->unique_id}}" target="_blank"
-                    class="btn btn-success btn-block">Visit Profile</a>
-            </div>
-            <div class="card-body">
-                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
-                    data-bs-target="#premiumModal_{{$tutor->id}}">
-                    Make Premium
-                </button>
-            </div>
-            <div class="card-body">
-                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
-                    data-bs-target="#verifyModal_{{$tutor->id}}">
-                    Make Verify
-                </button>
-            </div>
-            <div class="card-body">
-                @if ($tutor->is_internal_verify == 0)
-                <form  id="verifyTutor{{ $tutor->id }}"
-                    action="{{ route('admin.tutor.verify', ['tutor' => $tutor->id]) }}" method="POST">
-                    @csrf
-                    <button id="{{ $tutor->id }}" type="button" class="btn btn-block btn-success"
-                        onclick="verifyTutor(this, this.id)">Internal Verify</button>
-                </form>
-                @elseif($tutor->is_internal_verify == 1)
-                <button type="button" class="btn btn-block btn-danger">Internal Verify complete</button>
-
-                @endif
-            </div>
-            <div class="card-body">
-                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
-                    data-bs-target="#boostModal_{{$tutor->id}}">
-                    Make Boost
-                </button>
-            </div>
-
-            <div class="card-body text-center">
-                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                    Make a Review
-                </button>
-            </div>
-        </div>
+            <!-- Note Button -->
+            <button type="button"
+                    class="btn btn-md btn-danger btn-note mb-4"
+                    data-tutor-id="{{ $tutor->id }}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#tutorNoteModal_{{ $tutor->id }}">
+                Note Add
+            </button>
 
 
-        <!-- Review Modal -->
-        <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <form id="reviewForm" class="w-100">
-                    @csrf
-                    <input type="hidden" id="tutor_id" name="tutor_id" value="{{$tutor->id}}">
-                    <div class="modal-content p-4">
+            <br>
+
+
+
+            <!-- Note Modal -->
+            <div class="modal fade tutor-note-modal"
+                id="tutorNoteModal_{{ $tutor->id }}"
+                tabindex="-1"
+                aria-labelledby="tutorNoteModalLabel_{{ $tutor->id }}"
+                aria-hidden="true">
+
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+                    <div class="modal-content">
+
                         <div class="modal-header">
-                            <h5 class="modal-title" id="reviewModalLabel">Rate Your Experience</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                            <h5 class="modal-title"
+                                id="tutorNoteModalLabel_{{ $tutor->id }}">
+                                Note Details
+                            </h5>
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                            </button>
+
                         </div>
 
-                        <div class="modal-body py-0">
-                            <div class="text-center mb-3">
-                                <span class="rating">
-                                    <i class="fas fa-star" data-value="1"></i>
-                                    <i class="fas fa-star" data-value="2"></i>
-                                    <i class="fas fa-star" data-value="3"></i>
-                                    <i class="fas fa-star" data-value="4"></i>
-                                    <i class="fas fa-star" data-value="5"></i>
-                                </span>
-                                <input type="hidden" id="ratingValue" name="rating" value="0">
+                        <div class="modal-body">
+
+                            <!-- Existing Notes -->
+                            <div class="all-note">
+                                <div class="text-center text-muted py-3">
+                                    Loading...
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="reviewText" class="form-label fs-5 text-dark" style="font-weight: 500;">
-                                    Describe Your Review in Detail
-                                </label>
-                                <textarea class="form-control rounded-3 shadow-none" id="reviewText" name="description" rows="4"
-                                    required minlength="20" placeholder="Write your review here..."></textarea>
+
+                            <!-- Add Note -->
+                            <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
+
+                                <form action="{{ route('admin.tutor.note') }}"
+                                    method="POST"
+                                    class="tutor-note-form">
+
+                                    @csrf
+
+                                    <input type="hidden"
+                                        name="tutor_id"
+                                        class="note-tutor-id"
+                                        value="{{ $tutor->id }}">
+
+                                    <div class="form-group mb-3">
+
+                                        <label>
+                                            Add Note
+                                        </label>
+
+                                        <textarea name="note"
+                                                class="form-control tutor-note-text"
+                                                rows="5"
+                                                required></textarea>
+
+                                    </div>
+
+                                    <div class="d-flex justify-content-end">
+
+                                        <button type="submit"
+                                                class="btn btn-primary py-1 save-note-btn">
+                                            Save
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
                             </div>
+
                         </div>
 
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                            <div class="py-1"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">About Me here</h3>
+                </div>
+
+
+                <div class="card-body">
+                    <strong> <i class="far fa-file-alt mr-1"></i> Education</strong>
+
+                    @foreach($tutor->tutor_education ?? [] as $tutor_edu)
+                    <p class="text-muted text-capitalize">
+                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+                        {{$tutor_edu->degree_name}} {{ data_get($tutor_edu->curriculam, 'title', '') }}
+
+                        @if ($tutor_edu->departments)
+                        -> {{$tutor_edu->departments->title}}
+                        @endif
+                        @if ($tutor_edu->education_board)
+                        -> {{$tutor_edu->education_board}}
+                        @endif
+                        @if ($tutor_edu->group_or_major)
+                        -> {{$tutor_edu->group_or_major}}
+                        @endif
+                        @if ($tutor_edu->passing_year)
+                        -> {{$tutor_edu->passing_year}}
+                        @endif
+                        @if ($tutor_edu->gpa)
+                        -> {{$tutor_edu->gpa}}
+                        @endif
+                        <br>
+                        :::: {{$tutor_edu->institutes->title ?? ''}}
+                    </p>
+                    <hr>
+                    @endforeach
+
+                    <br>
+
+                    <strong><i class="far fa-file-alt mr-1"></i>Location</strong>
+
+                    <p class="text-muted">
+                        @if (@$tutor->tutor_personal_info->country)
+                        {{ $tutor->tutor_personal_info->country->name ?? ''}}
+                        @endif
+                        @if (@$tutor->tutor_personal_info->city)
+                        -> {{ $tutor->tutor_personal_info->city->name ?? ''}}
+                        @endif
+                        @if (@$tutor->tutor_personal_info->location)
+                        -> {{ $tutor->tutor_personal_info->location->name ?? ''}}
+                        @endif
+                    </p>
+
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Preferable Tutoring Locations</strong>
+                    <p class="text-muted">
+
+                        @foreach($tutor->tutor_prefered_locations ?? [] as $pl)
+                        <span class="badge badge-success">{{$pl->name}}</span>
+                        @endforeach
+
+
+                    </p>
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Preferred Tutoring Category</strong>
+                    <p class="text-muted">
+
+                        @foreach($tutor->tutor_categories ?? [] as $tc)
+                        <span class="badge badge-success">{{$tc->name}}</span>
+
+                        @endforeach
+
+
+                    </p>
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Preferred Tutoring Courses/Classes</strong>
+                    <p class="text-muted">
+                        @foreach($tutor->tutor_course ?? [] as $course)
+                        <span class="badge badge-success">{{ $course->name }}</span>
+                        @endforeach
+                    </p>
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Preferred Tutoring Subjects</strong>
+                    <br>
+                    @if ($tutor->course_subjects != null)
+                    @foreach ($tutor->course_subjects as $otcs)
+                    <span class="badge badge-success">
+                        {{ $otcs->subject->title ?? 'N/A' }}
+                        @if (@$otcs->subject->tutor_course != null)
+                        @foreach ($otcs->subject->tutor_course as $course)
+                        ({{ $course->name ?? 'N/A' }})
+                        @endforeach
+                        @endif
+                    </span>
+                    @endforeach
+                    @endif
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Tutoring Experience</strong>
+                    <br>
+                    <h6 class="mt-1 ml-4">
+                        @if ($tutor->tutor_personal_info)
+                        {{$tutor->tutor_personal_info->tutoring_experience ?? ''}}
+                        @if ($tutor->tutor_personal_info->tutoring_experience != null)
+                        Years
+                        @endif
+                        @endif
+                    </h6>
+
+                    <hr>
+
+                    <strong><i class="far fa-file-alt mr-1"></i> Available Day</strong>
+                    <br>
+                    @foreach($tutor->tutor_days ?? [] as $day)
+                    <span class="badge badge-success">{{$day->title}}</span>
+                    @endforeach
+                    <hr>
+
+                    <strong><i class="far fa-file-alt mr-1"></i> Available Time</strong>
+                    <br>
+                    <h6 class="mt-1 ml-4">
+                        @if (isset($tutor->tutor_personal_info->available_from) &&
+                        isset($tutor->tutor_personal_info->available_to))
+                        @if (\Carbon\Carbon::hasFormat($tutor->tutor_personal_info->available_from, 'Y-m-d\TH:i:s.u\Z')
+                        && \Carbon\Carbon::hasFormat($tutor->tutor_personal_info->available_to, 'Y-m-d\TH:i:s.u\Z'))
+                        {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_from)->format('g:i A') }} to
+                        {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_to)->format('g:i A') }}
+                        @elseif (!empty($tutor->tutor_personal_info->available_from) &&
+                        !empty($tutor->tutor_personal_info->available_to) && preg_match('/^\d{1,2}:\d{2}$/',
+                        $tutor->tutor_personal_info->available_from) && preg_match('/^\d{1,2}:\d{2}$/',
+                        $tutor->tutor_personal_info->available_to))
+                        {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_from)->format('g A') }} to
+                        {{ \Carbon\Carbon::parse($tutor->tutor_personal_info->available_to)->format('g A') }}
+                        @else
+                        N/A
+                        @endif
+                        @else
+                        N/A
+                        @endif
+                    </h6>
+
+
+
+
+
+
+
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Tutoring Methods</strong>
+                    <br>
+                    @foreach($tutor->teaching_method ?? [] as $teaching_method)
+                    <span class="badge badge-success">{{$teaching_method->name}}</span>
+                    @endforeach
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Expected Salary</strong>
+                    <br>
+                    <p class="text-muted">{{$tutor->tutor_personal_info->expected_salary ?? 'N/A'}}</p>
+
+                </div>
+            </div>
+
+
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Tutor Profile</h3>
+                </div>
+
+                <div class="card-body">
+                    <a href="https://tuitionterminal.com.bd/hub/tutor-details/{{$tutor->unique_id}}" target="_blank"
+                        class="btn btn-success btn-block">Visit Profile</a>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
+                        data-bs-target="#premiumModal_{{$tutor->id}}">
+                        Make Premium
+                    </button>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
+                        data-bs-target="#verifyModal_{{$tutor->id}}">
+                        Make Verify
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if ($tutor->is_internal_verify == 0)
+                    <form id="verifyTutor{{ $tutor->id }}"
+                        action="{{ route('admin.tutor.verify', ['tutor' => $tutor->id]) }}" method="POST">
+                        @csrf
+                        <button id="{{ $tutor->id }}" type="button" class="btn btn-block btn-success"
+                            onclick="verifyTutor(this, this.id)">Internal Verify</button>
+                    </form>
+                    @elseif($tutor->is_internal_verify == 1)
+                    <button type="button" class="btn btn-block btn-danger">Internal Verify complete</button>
+
+                    @endif
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
+                        data-bs-target="#boostModal_{{$tutor->id}}">
+                        Make Boost
+                    </button>
+                </div>
+
+                <div class="card-body text-center">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                        Make a Review
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Review Modal -->
+            <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <form id="reviewForm" class="w-100">
+                        @csrf
+                        <input type="hidden" id="tutor_id" name="tutor_id" value="{{$tutor->id}}">
+                        <div class="modal-content p-4">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="reviewModalLabel">Rate Your Experience</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body py-0">
+                                <div class="text-center mb-3">
+                                    <span class="rating">
+                                        <i class="fas fa-star" data-value="1"></i>
+                                        <i class="fas fa-star" data-value="2"></i>
+                                        <i class="fas fa-star" data-value="3"></i>
+                                        <i class="fas fa-star" data-value="4"></i>
+                                        <i class="fas fa-star" data-value="5"></i>
+                                    </span>
+                                    <input type="hidden" id="ratingValue" name="rating" value="0">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="reviewText" class="form-label fs-5 text-dark" style="font-weight: 500;">
+                                        Describe Your Review in Detail
+                                    </label>
+                                    <textarea class="form-control rounded-3 shadow-none" id="reviewText"
+                                        name="description" rows="4" required minlength="20"
+                                        placeholder="Write your review here..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            {{-- Fnf Card --}}
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">FnF Referral</h3>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
+                        data-bs-target="#refferModal_{{ $tutor->id }}">
+                        Make Referral
+                    </button>
+
+                    <table class="table table-responsive table-hover bg-white shadow-none"
+                        style="border-collapse: collapse">
+                        <thead class="text-dark" style="border-bottom: 1px solid #c8ced3">
+                            <tr>
+
+                                <th scope="col" style="width: 10px" class="text-nowrap">Tutor ID</th>
+
+                                <th scope="col" class="text-nowrap">Job Id</th>
+                                <th scope="col" class="text-nowrap">Added By</th>
+                                <th scope="col" class="text-nowrap">Date</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (@$reffers)
+                            @foreach ($reffers as $item)
+                            <tr class="" style="vertical-align: middle">
+                                <td class="text-nowrap">
+                                    <a target="_blank"
+                                        href="{{route('admin.tutor.tutorshow' , ['tutor' => $item->reffer->id])}}"
+                                        class="p-1 rounded text-info text-decoration-none"
+                                        style="background-color: #e6eef7">{{$item->reffer->unique_id ?? ''}}</a>
+
+                                </td>
+                                <td class="text-nowrap">
+                                    @if (!empty($item->job_id))
+                                    <a target="_blank" href="{{ route('admin.job-details', ['job' => $item->job_id]) }}"
+                                        class="p-1 rounded text-info text-decoration-none"
+                                        style="background-color: #e6eef7;">
+                                        {{ $item->job_id }}
+                                    </a>
+                                    @else
+                                    <span class="text-muted">N/A</span>
+                                    @endif
+                                </td>
+                                <td>{{$item->user->name ?? ''}}</td>
+                                <td class="text-nowrap">
+                                    {{$item->created_at}}
+                                </td>
+                            </tr>
+                            @endforeach
+
+                            @endif
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#">
+                        Reffered By
+                    </button>
+
+                    <table class="table table-responsive table-hover bg-white shadow-none"
+                        style="border-collapse: collapse">
+                        <thead class="text-dark" style="border-bottom: 1px solid #c8ced3">
+                            <tr>
+
+                                <th scope="col" style="width: 10px" class="text-nowrap">Tutor ID</th>
+
+                                <th scope="col" class="text-nowrap">Job Id</th>
+                                <th scope="col" class="text-nowrap">Added By</th>
+                                <th scope="col" class="text-nowrap">Date</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (@$refferedBy)
+                            @foreach ($refferedBy as $item)
+                            <tr class="" style="vertical-align: middle">
+                                <td class="text-nowrap">
+                                    <a target="_blank"
+                                        href="{{route('admin.tutor.tutorshow' , ['tutor' => $item->tutor_id])}}"
+                                        class="p-1 rounded text-info text-decoration-none"
+                                        style="background-color: #e6eef7">{{$item->tutor->unique_id ?? $item->tutor}}</a>
+
+                                </td>
+                                <td class="text-nowrap">
+                                    @if (!empty($item->job_id))
+                                    <a target="_blank" href="{{ route('admin.job-details', ['job' => $item->job_id]) }}"
+                                        class="p-1 rounded text-info text-decoration-none"
+                                        style="background-color: #e6eef7;">
+                                        {{ $item->job_id }}
+                                    </a>
+                                    @else
+                                    <span class="text-muted">N/A</span>
+                                    @endif
+
+
+
+                                </td>
+                                <td>{{$item->user->name ?? ''}}</td>
+                                <td class="text-nowrap">
+                                    {{$item->created_at}}
+                                </td>
+                            </tr>
+                            @endforeach
+
+                            @endif
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Referral Modal -->
+            <div class="modal fade" id="refferModal_{{ $tutor->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Grant Referral</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="refferForm_{{ $tutor->id }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="transaction_id_{{ $tutor->id }}" class="form-label required">Reffer
+                                        Tutor Phone</label>
+                                    <input required name="tutor_id" type="text"
+                                        class="form-control rounded-3 shadow-none" id="transaction_id_{{ $tutor->id }}"
+                                        placeholder="Enter tutor id" style="padding: 14px 18px">
+                                    <span class="text-danger error-text tutor_id_error"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="amount_{{ $tutor->id }}" class="form-label ">Job Id</label>
+                                    <input name="job_id" type="text" class="form-control rounded-3 shadow-none"
+                                        id="amount_{{ $tutor->id }}" placeholder="Enter Amount"
+                                        style="padding: 14px 18px">
+                                    <span class="text-danger error-text job_id_error"></span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </form>
-
+                </div>
             </div>
-        </div>
-        {{-- Fnf Card --}}
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">FnF Referral</h3>
-            </div>
-            <div class="card-body">
-                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
-                    data-bs-target="#refferModal_{{ $tutor->id }}">
-                    Make Referral
-                </button>
+            <script>
+                $(document).ready(function () {
 
-                <table class="table table-responsive table-hover bg-white shadow-none"
-                    style="border-collapse: collapse">
-                    <thead class="text-dark" style="border-bottom: 1px solid #c8ced3">
-                        <tr>
+                    $('form[id^="refferForm_"]').on('submit', function (e) {
+                        e.preventDefault();
 
-                            <th scope="col" style="width: 10px" class="text-nowrap">Tutor ID</th>
+                        let form = $(this);
+                        let tutorId = form.attr('id').split('_')[1];
+                        let formData = form.serialize();
 
-                            <th scope="col" class="text-nowrap">Job Id</th>
-                            <th scope="col" class="text-nowrap">Added By</th>
-                            <th scope="col" class="text-nowrap">Date</th>
+                        $.ajax({
+                            url: `/admin/tutor/reffer-add/${tutorId}`,
+                            type: 'POST',
+                            data: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Referral added successfully!',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                $('#refferModal_' + tutorId).modal('hide');
+                                location.reload();
+                            },
+                            error: function (xhr) {
+                                console.error(xhr.responseText);
+                                alert('An error occurred. Please try again.');
+                            }
+                        });
+                    });
+                });
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (@$reffers)
-                        @foreach ($reffers as $item)
-                        <tr class="" style="vertical-align: middle">
-                            <td class="text-nowrap">
-                                <a target="_blank"
-                                    href="{{route('admin.tutor.tutorshow' , ['tutor' => $item->reffer->id])}}"
-                                    class="p-1 rounded text-info text-decoration-none"
-                                    style="background-color: #e6eef7">{{$item->reffer->unique_id ?? ''}}</a>
-
-                            </td>
-                            <td class="text-nowrap">
-                                @if (!empty($item->job_id))
-                                <a target="_blank" href="{{ route('admin.job-details', ['job' => $item->job_id]) }}"
-                                    class="p-1 rounded text-info text-decoration-none"
-                                    style="background-color: #e6eef7;">
-                                    {{ $item->job_id }}
-                                </a>
-                                @else
-                                <span class="text-muted">N/A</span>
-                                @endif
-                            </td>
-                            <td>{{$item->user->name ?? ''}}</td>
-                            <td class="text-nowrap">
-                                {{$item->created_at}}
-                            </td>
-                        </tr>
-                        @endforeach
-
-                        @endif
+            </script>
 
 
+            <!-- Modal -->
+            <div class="modal fade" id="premiumModal_{{$tutor->id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Grant Modal</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{route('tutor.make.premium')}}" method="post">
+                            <div class="modal-body">
+                                @csrf
+                                <input type="hidden" name="grant_id" value="{{$tutor->id}}">
 
+                                <div class="mb-3">
+                                    <label for="transction_id" class="form-label required">Transction
+                                        ID</label>
+                                    <input required name="transction_id" type="text"
+                                        class="form-control rounded-3 shadow-none" id="transction_id" value=""
+                                        placeholder="" style="padding: 14px 18px" />
+                                    <span class="text-danger error-text transction_id_error"></span>
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-body">
-                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#">
-                    Reffered By
-                </button>
+                                </div>
+                                <div class="pb-3">
+                                    <label for="crby" class="form-label">Package Name</label>
+                                    <select name="package_name" class="form-select rounded-3 shadow-none select2"
+                                        aria-label="Default select" id="package_name">
+                                        <option value="">Select Package Name</option>
+                                        <option @if ($tutor->is_premium == 1) selected @endif value="regular">Regular
+                                        </option>
+                                        <option @if ($tutor->is_premium_pro == 1) selected @endif value="pro">Pro
+                                        </option>
+                                        <option @if ($tutor->is_premium_advance == 1) selected @endif
+                                            value="advance">Advance</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="taka" class="form-label required">Taka</label>
+                                    <input required name="taka" type="text" class="form-control rounded-3 shadow-none"
+                                        id="taka" placeholder="" value="" style="padding: 14px 18px" />
+                                    <span class="text-danger error-text taka_error"></span>
+                                </div>
 
-                <table class="table table-responsive table-hover bg-white shadow-none"
-                    style="border-collapse: collapse">
-                    <thead class="text-dark" style="border-bottom: 1px solid #c8ced3">
-                        <tr>
-
-                            <th scope="col" style="width: 10px" class="text-nowrap">Tutor ID</th>
-
-                            <th scope="col" class="text-nowrap">Job Id</th>
-                            <th scope="col" class="text-nowrap">Added By</th>
-                            <th scope="col" class="text-nowrap">Date</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (@$refferedBy)
-                        @foreach ($refferedBy as $item)
-                        <tr class="" style="vertical-align: middle">
-                            <td class="text-nowrap">
-                                <a target="_blank"
-                                    href="{{route('admin.tutor.tutorshow' , ['tutor' => $item->tutor_id])}}"
-                                    class="p-1 rounded text-info text-decoration-none"
-                                    style="background-color: #e6eef7">{{$item->tutor->unique_id ?? $item->tutor}}</a>
-
-                            </td>
-                            <td class="text-nowrap">
-                                @if (!empty($item->job_id))
-                                <a target="_blank" href="{{ route('admin.job-details', ['job' => $item->job_id]) }}"
-                                    class="p-1 rounded text-info text-decoration-none"
-                                    style="background-color: #e6eef7;">
-                                    {{ $item->job_id }}
-                                </a>
-                                @else
-                                <span class="text-muted">N/A</span>
-                                @endif
-
-
-
-                            </td>
-                            <td>{{$item->user->name ?? ''}}</td>
-                            <td class="text-nowrap">
-                                {{$item->created_at}}
-                            </td>
-                        </tr>
-                        @endforeach
-
-                        @endif
-
-
-
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Referral Modal -->
-        <div class="modal fade" id="refferModal_{{ $tutor->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Grant Referral</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="refferForm_{{ $tutor->id }}" method="POST">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="transaction_id_{{ $tutor->id }}" class="form-label required">Reffer
-                                    Tutor Phone</label>
-                                <input required name="tutor_id" type="text" class="form-control rounded-3 shadow-none"
-                                    id="transaction_id_{{ $tutor->id }}" placeholder="Enter tutor id"
-                                    style="padding: 14px 18px">
-                                <span class="text-danger error-text tutor_id_error"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="amount_{{ $tutor->id }}" class="form-label ">Job Id</label>
-                                <input name="job_id" type="text" class="form-control rounded-3 shadow-none"
-                                    id="amount_{{ $tutor->id }}" placeholder="Enter Amount" style="padding: 14px 18px">
-                                <span class="text-danger error-text job_id_error"></span>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -643,209 +836,116 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <script>
-            $(document).ready(function () {
+            <!-- Modal -->
+            <div class="modal fade" id="verifyModal_{{$tutor->id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Grant Modal</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{route('admin.tutor.verify',$tutor->id)}}" method="post">
+                            <div class="modal-body">
+                                @csrf
+                                <input type="hidden" name="grant_id" value="{{$tutor->id}}">
 
-                $('form[id^="refferForm_"]').on('submit', function (e) {
-                    e.preventDefault();
+                                <div class="mb-3">
+                                    <label for="transction_id" class="form-label required">Transction
+                                        ID</label>
+                                    <input required name="transction_id" type="text"
+                                        class="form-control rounded-3 shadow-none" id="transction_id" value=""
+                                        placeholder="" style="padding: 14px 18px" />
+                                    <span class="text-danger error-text transction_id_error"></span>
 
-                    let form = $(this);
-                    let tutorId = form.attr('id').split('_')[1];
-                    let formData = form.serialize();
+                                </div>
 
-                    $.ajax({
-                        url: `/admin/tutor/reffer-add/${tutorId}`,
-                        type: 'POST',
-                        data: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Referral added successfully!',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            $('#refferModal_' + tutorId).modal('hide');
-                            location.reload();
-                        },
-                        error: function (xhr) {
-                            console.error(xhr.responseText);
-                            alert('An error occurred. Please try again.');
-                        }
-                    });
-                });
-            });
+                                <div class="mb-3">
+                                    <label for="taka" class="form-label required">Taka</label>
+                                    <input required name="taka" type="text" class="form-control rounded-3 shadow-none"
+                                        id="taka" placeholder="" value="" style="padding: 14px 18px" />
+                                    <span class="text-danger error-text taka_error"></span>
+                                </div>
 
-        </script>
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="premiumModal_{{$tutor->id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Grant Modal</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
                     </div>
-                    <form action="{{route('tutor.make.premium')}}" method="post">
-                        <div class="modal-body">
-                            @csrf
-                            <input type="hidden" name="grant_id" value="{{$tutor->id}}">
-
-                            <div class="mb-3">
-                                <label for="transction_id" class="form-label required">Transction
-                                    ID</label>
-                                <input required name="transction_id" type="text"
-                                    class="form-control rounded-3 shadow-none" id="transction_id" value=""
-                                    placeholder="" style="padding: 14px 18px" />
-                                <span class="text-danger error-text transction_id_error"></span>
-
-                            </div>
-                            <div class="pb-3">
-                                <label for="crby" class="form-label">Package Name</label>
-                                <select name="package_name" class="form-select rounded-3 shadow-none select2"
-                                    aria-label="Default select" id="package_name">
-                                    <option value="">Select Package Name</option>
-                                    <option @if ($tutor->is_premium == 1) selected @endif value="regular">Regular
-                                    </option>
-                                    <option @if ($tutor->is_premium_pro == 1) selected @endif value="pro">Pro
-                                    </option>
-                                    <option @if ($tutor->is_premium_advance == 1) selected @endif
-                                        value="advance">Advance</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="taka" class="form-label required">Taka</label>
-                                <input required name="taka" type="text" class="form-control rounded-3 shadow-none"
-                                    id="taka" placeholder="" value="" style="padding: 14px 18px" />
-                                <span class="text-danger error-text taka_error"></span>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
                 </div>
             </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="verifyModal_{{$tutor->id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Grant Modal</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            {{-- Boost Modal --}}
+            <div class="modal fade" id="boostModal_{{$tutor->id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Grant Modal</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{route('admin.tutor.boost',$tutor->id)}}" method="post">
+                            <div class="modal-body">
+                                @csrf
+                                <input type="hidden" name="grant_id" value="{{$tutor->id}}">
+
+                                <div class="mb-3">
+                                    <label for="transction_id" class="form-label required">Transction
+                                        ID</label>
+                                    <input required name="transction_id" type="text"
+                                        class="form-control rounded-3 shadow-none" id="transction_id" value=""
+                                        placeholder="" style="padding: 14px 18px" />
+                                    <span class="text-danger error-text transction_id_error"></span>
+
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="taka" class="form-label required">Taka</label>
+                                    <input required name="taka" type="text" class="form-control rounded-3 shadow-none"
+                                        id="taka" placeholder="" value="" style="padding: 14px 18px" />
+                                    <span class="text-danger error-text taka_error"></span>
+                                </div>
+
+                                <div class="pb-3">
+                                    <label for="crby" class="form-label">Package Name</label>
+                                    <select name="boost_package" class="form-select rounded-3 shadow-none select2"
+                                        aria-label="Default select" id="boost_package">
+                                        <option value="">Select Package Name</option>
+                                        <option value="1">1 Month
+                                        </option>
+                                        <option value="3">3 Months
+                                        </option>
+                                        <option value="6">6 Months</option>
+                                        <option value="12">12 Months</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
                     </div>
-                    <form action="{{route('admin.tutor.verify',$tutor->id)}}" method="post">
-                        <div class="modal-body">
-                            @csrf
-                            <input type="hidden" name="grant_id" value="{{$tutor->id}}">
-
-                            <div class="mb-3">
-                                <label for="transction_id" class="form-label required">Transction
-                                    ID</label>
-                                <input required name="transction_id" type="text"
-                                    class="form-control rounded-3 shadow-none" id="transction_id" value=""
-                                    placeholder="" style="padding: 14px 18px" />
-                                <span class="text-danger error-text transction_id_error"></span>
-
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="taka" class="form-label required">Taka</label>
-                                <input required name="taka" type="text" class="form-control rounded-3 shadow-none"
-                                    id="taka" placeholder="" value="" style="padding: 14px 18px" />
-                                <span class="text-danger error-text taka_error"></span>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
                 </div>
             </div>
-        </div>
-        {{-- Boost Modal --}}
-        <div class="modal fade" id="boostModal_{{$tutor->id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Grant Modal</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form action="{{route('admin.tutor.boost',$tutor->id)}}" method="post">
-                        <div class="modal-body">
-                            @csrf
-                            <input type="hidden" name="grant_id" value="{{$tutor->id}}">
 
-                            <div class="mb-3">
-                                <label for="transction_id" class="form-label required">Transction
-                                    ID</label>
-                                <input required name="transction_id" type="text"
-                                    class="form-control rounded-3 shadow-none" id="transction_id" value=""
-                                    placeholder="" style="padding: 14px 18px" />
-                                <span class="text-danger error-text transction_id_error"></span>
-
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="taka" class="form-label required">Taka</label>
-                                <input required name="taka" type="text" class="form-control rounded-3 shadow-none"
-                                    id="taka" placeholder="" value="" style="padding: 14px 18px" />
-                                <span class="text-danger error-text taka_error"></span>
-                            </div>
-
-                            <div class="pb-3">
-                                <label for="crby" class="form-label">Package Name</label>
-                                <select name="boost_package" class="form-select rounded-3 shadow-none select2"
-                                    aria-label="Default select" id="boost_package">
-                                    <option value="">Select Package Name</option>
-                                    <option  value="1">1 Month
-                                    </option>
-                                    <option value="3">3 Months
-                                    </option>
-                                    <option
-                                        value="6">6 Months</option>
-                                    <option
-                                        value="12">12 Months</option>
-                                </select>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        {{-- <div class="card card-primary">
+            {{-- <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Cv here</h3>
                 </div>
 
                 <div class="card-body">
                     <a href="{{route('admin.tutor.cv-pdf', ['tutor' => $tutor->id ?? 0])}}" target="_blank"
-        class="btn btn-success btn-block">Download CV</a>
-    </div>
+            class="btn btn-success btn-block">Download CV</a>
+        </div>
 
-</div> --}}
+    </div> --}}
 
 
 
-{{-- <div class="card card-primary">
+    {{-- <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Invoice here</h3>
                 </div>
@@ -1016,178 +1116,170 @@
                 <div class="card-body">
 
 
-                <div class="row">
+                    <div class="row">
 
-                    {{-- SSC Certificate --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">SSC/O Level / Dakhil / Certificate</strong>
+                        {{-- SSC Certificate --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">SSC/O Level / Dakhil / Certificate</strong>
 
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->ssc_c)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->ssc_c)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_c) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_c) }}"
                                             alt="SSC Certificate">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 
-                    {{-- SSC Marksheet --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">SSC/O Level / Dakhil / Marksheet</strong>
+                        {{-- SSC Marksheet --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">SSC/O Level / Dakhil / Marksheet</strong>
 
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->ssc_m)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->ssc_m)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_m) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->ssc_m) }}"
                                             alt="SSC Marksheet">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 
-                    {{-- HSC Certificate --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">HSC/A Level / Alim / Certificate</strong>
+                        {{-- HSC Certificate --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">HSC/A Level / Alim / Certificate</strong>
 
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->hsc_c)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->hsc_c)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_c) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_c) }}"
                                             alt="HSC Certificate">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
-                </div>
 
+                    <div class="row">
 
-                <div class="row">
+                        {{-- HSC Marksheet --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">HSC/A Level / Alim / Marksheet</strong>
 
-                    {{-- HSC Marksheet --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">HSC/A Level / Alim / Marksheet</strong>
-
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->hsc_m)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->hsc_m)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_m) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->hsc_m) }}"
                                             alt="HSC Marksheet">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 
-                    {{-- NID --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">NID / Passport / Birth Certificate</strong>
+                        {{-- NID --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">NID / Passport / Birth Certificate</strong>
 
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->nid)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->nid)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->nid) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->nid) }}"
                                             alt="NID / Passport / Birth Certificate">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 
-                    {{-- CV --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">CV</strong>
+                        {{-- CV --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">CV</strong>
 
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->cv)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->cv)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->cv) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->cv) }}"
                                             alt="CV">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
-                </div>
 
+                    <div class="row">
 
-                <div class="row">
+                        {{-- University Certificate --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">
+                                    Admission Slip / University ID Certificate
+                                </strong>
 
-                    {{-- University Certificate --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">
-                                Admission Slip / University ID Certificate
-                            </strong>
-
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->university_c)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->university_c)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->university_c) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->university_c) }}"
                                             alt="University Certificate">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 
-                    {{-- Others --}}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <strong style="text-align: center;">Others</strong>
+                        {{-- Others --}}
+                        <div class="col-md-4">
+                            <div class="card">
+                                <strong style="text-align: center;">Others</strong>
 
-                            <div class="card-body">
-                                @if($tutor->TutorCertificate && $tutor->TutorCertificate->others)
+                                <div class="card-body">
+                                    @if($tutor->TutorCertificate && $tutor->TutorCertificate->others)
                                     <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->others) }}"
-                                    target="_blank">
-                                        <img width="320"
-                                            height="150"
+                                        target="_blank">
+                                        <img width="320" height="150"
                                             src="{{ Storage::disk('r2')->url('tutor-certificate/' . $tutor->TutorCertificate->others) }}"
                                             alt="Other Document">
                                     </a>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1709,117 +1801,103 @@ $tutor_note_desc = App\Models\TutorNote::where('tutor_id',$tutor->id)->latest('c
                                                                 {{-- SSC Certificate --}}
                                                                 <td>
                                                                     @if($item->ssc_c)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_c) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_c) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_c) }}"
-                                                                                alt="SSC Certificate"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_c) }}"
+                                                                            alt="SSC Certificate" width="250"
+                                                                            height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- SSC Marksheet --}}
                                                                 <td>
                                                                     @if($item->ssc_m)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_m) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_m) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_m) }}"
-                                                                                alt="SSC Marksheet"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->ssc_m) }}"
+                                                                            alt="SSC Marksheet" width="250" height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- HSC Certificate --}}
                                                                 <td>
                                                                     @if($item->hsc_c)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_c) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_c) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_c) }}"
-                                                                                alt="HSC Certificate"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_c) }}"
+                                                                            alt="HSC Certificate" width="250"
+                                                                            height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- HSC Marksheet --}}
                                                                 <td>
                                                                     @if($item->hsc_m)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_m) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_m) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_m) }}"
-                                                                                alt="HSC Marksheet"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->hsc_m) }}"
+                                                                            alt="HSC Marksheet" width="250" height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- University Certificate --}}
                                                                 <td>
                                                                     @if($item->university_c)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->university_c) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->university_c) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->university_c) }}"
-                                                                                alt="University Certificate"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->university_c) }}"
+                                                                            alt="University Certificate" width="250"
+                                                                            height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- NID --}}
                                                                 <td>
                                                                     @if($item->nid)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->nid) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->nid) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->nid) }}"
-                                                                                alt="NID"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->nid) }}"
+                                                                            alt="NID" width="250" height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- CV --}}
                                                                 <td>
                                                                     @if($item->cv)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->cv) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->cv) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->cv) }}"
-                                                                                alt="CV"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->cv) }}"
+                                                                            alt="CV" width="250" height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- Others --}}
                                                                 <td>
                                                                     @if($item->others)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->others) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->others) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->others) }}"
-                                                                                alt="Other Document"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-certificate/' . $item->others) }}"
+                                                                            alt="Other Document" width="250"
+                                                                            height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
                                                                 {{-- Profile Image --}}
                                                                 <td>
                                                                     @if($item->profile_image)
-                                                                        <a href="{{ Storage::disk('r2')->url('tutor-log-images/' . $item->profile_image) }}"
+                                                                    <a href="{{ Storage::disk('r2')->url('tutor-log-images/' . $item->profile_image) }}"
                                                                         target="_blank">
-                                                                            <img src="{{ Storage::disk('r2')->url('tutor-log-images/' . $item->profile_image) }}"
-                                                                                alt="Profile Image"
-                                                                                width="250"
-                                                                                height="80">
-                                                                        </a>
+                                                                        <img src="{{ Storage::disk('r2')->url('tutor-log-images/' . $item->profile_image) }}"
+                                                                            alt="Profile Image" width="250" height="80">
+                                                                    </a>
                                                                     @endif
                                                                 </td>
 
@@ -2361,40 +2439,41 @@ $tutor_note_desc = App\Models\TutorNote::where('tutor_id',$tutor->id)->latest('c
             }
 
             $.ajax({
-            url: "/admin/send-tutor-reviews",
-            type: "POST",
-            data: formData,
-            success: function (response) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Success!",
-                    text: response.message,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
+                url: "/admin/send-tutor-reviews",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
 
-                location.reload();
+                    location.reload();
 
-                $("#reviewModal").modal("hide");
-                $("#reviewForm")[0].reset();
-                highlightStars(0);
-            },
-            error: function (xhr) {
-                let errorMessage = "Something went wrong!";
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
+                    $("#reviewModal").modal("hide");
+                    $("#reviewForm")[0].reset();
+                    highlightStars(0);
+                },
+                error: function (xhr) {
+                    let errorMessage = "Something went wrong!";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: errorMessage
+                    });
                 }
-
-                Swal.fire({
-                    icon: "error",
-                    title: "Error!",
-                    text: errorMessage
-                });
-            }
-        });
+            });
 
         });
     });
+
 </script>
 
 @include('data_tables.data_table_js')
@@ -2614,6 +2693,383 @@ $tutor_note_desc = App\Models\TutorNote::where('tutor_id',$tutor->id)->latest('c
             });
         });
     });
+
+</script>
+<script>
+
+$(document).ready(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | CSRF
+    |--------------------------------------------------------------------------
+    */
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Load Notes When Modal Opens
+    |--------------------------------------------------------------------------
+    */
+
+    $(document).on('click', '.btn-note', function () {
+
+        let tutorId = $(this).data('tutor-id');
+        let modalId = '#tutorNoteModal_' + tutorId;
+
+        let $modal = $(modalId);
+        let $allNote = $modal.find('.all-note');
+
+        console.log('Selected Tutor ID:', tutorId);
+
+
+        // Set tutor ID
+        $modal.find('.note-tutor-id').val(tutorId);
+
+
+        // Loading
+        $allNote.html(`
+            <div class="text-center text-muted py-3">
+                Loading...
+            </div>
+        `);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Get Tutor Notes
+        |--------------------------------------------------------------------------
+        */
+
+        $.ajax({
+
+            url: "{{ route('admin.tutor.getnote') }}",
+
+            type: "GET",
+
+            data: {
+                id: tutorId
+            },
+
+            success: function (response) {
+
+                console.log('Notes Response:', response);
+
+
+                let html = '';
+
+
+                if (response.notes && response.notes.length > 0) {
+
+                    $.each(response.notes, function (index, note) {
+
+                        html += `
+                            <div class="border rounded p-3 mb-2">
+
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+
+                                    <strong>
+                                        ${note.created_by ?? 'Admin'}
+                                    </strong>
+
+                                    <small class="text-muted">
+                                        ${note.created_at
+                                            ? new Date(note.created_at).toLocaleString()
+                                            : ''
+                                        }
+                                    </small>
+
+                                </div>
+
+                                <div>
+                                    ${escapeHtml(note.body)}
+                                </div>
+
+                            </div>
+                        `;
+
+                    });
+
+                } else {
+
+                    html = `
+                        <div class="text-center text-muted py-3">
+                            No notes found for this tutor.
+                        </div>
+                    `;
+
+                }
+
+
+                $allNote.html(html);
+
+            },
+
+            error: function (xhr) {
+
+                console.error('Get Notes Error:', xhr);
+
+                $allNote.html(`
+                    <div class="alert alert-danger">
+                        Failed to load notes.
+                    </div>
+                `);
+
+            }
+
+        });
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Save Note AJAX
+    |--------------------------------------------------------------------------
+    */
+
+    $(document).on('submit', '.tutor-note-form', function (e) {
+
+        e.preventDefault();
+
+
+        let $form = $(this);
+        let $modal = $form.closest('.tutor-note-modal');
+
+        let tutorId = $form.find('.note-tutor-id').val();
+        let note = $form.find('.tutor-note-text').val();
+        let $button = $form.find('.save-note-btn');
+
+
+        console.log('Saving Note For Tutor ID:', tutorId);
+
+
+        if (!note.trim()) {
+            return;
+        }
+
+
+        // Disable button
+        $button.prop('disabled', true);
+
+        $button.html('Saving...');
+
+
+        $.ajax({
+
+            url: $form.attr('action'),
+
+            type: "POST",
+
+            data: {
+                tutor_id: tutorId,
+                note: note
+            },
+
+            success: function (response) {
+
+                console.log('Save Note Response:', response);
+
+
+                if (response.status === true) {
+
+                    // Clear textarea
+                    $form.find('.tutor-note-text').val('');
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Reload Notes
+                    |--------------------------------------------------------------------------
+                    */
+
+                    loadTutorNotes(tutorId, $modal);
+
+
+                    // Success message
+                    if (typeof toastr !== 'undefined') {
+                        toastr.success(response.message);
+                    } else {
+                        alert(response.message);
+                    }
+
+                } else {
+
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error('Something went wrong.');
+                    } else {
+                        alert('Something went wrong.');
+                    }
+
+                }
+
+            },
+
+            error: function (xhr) {
+
+                console.error('Save Note Error:', xhr);
+
+
+                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+
+                    let errors = xhr.responseJSON.errors;
+
+                    $.each(errors, function (field, messages) {
+
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(messages[0]);
+                        }
+
+                    });
+
+                } else {
+
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error('Failed to save note.');
+                    } else {
+                        alert('Failed to save note.');
+                    }
+
+                }
+
+            },
+
+            complete: function () {
+
+                // Enable button again
+                $button.prop('disabled', false);
+
+                $button.html('Save');
+
+            }
+
+        });
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Load Notes Function
+    |--------------------------------------------------------------------------
+    */
+
+    function loadTutorNotes(tutorId, $modal) {
+
+        let $allNote = $modal.find('.all-note');
+
+
+        $allNote.html(`
+            <div class="text-center text-muted py-3">
+                Loading...
+            </div>
+        `);
+
+
+        $.ajax({
+
+            url: "{{ route('admin.tutor.getnote') }}",
+
+            type: "GET",
+
+            data: {
+                id: tutorId
+            },
+
+            success: function (response) {
+
+                let html = '';
+
+
+                if (response.notes && response.notes.length > 0) {
+
+                    $.each(response.notes, function (index, note) {
+
+                        html += `
+                            <div class="border rounded p-3 mb-2">
+
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+
+                                    <strong>
+                                        ${note.created_by ?? 'Admin'}
+                                    </strong>
+
+                                    <small class="text-muted">
+                                        ${note.created_at
+                                            ? new Date(note.created_at).toLocaleString()
+                                            : ''
+                                        }
+                                    </small>
+
+                                </div>
+
+                                <div>
+                                    ${escapeHtml(note.body)}
+                                </div>
+
+                            </div>
+                        `;
+
+                    });
+
+                } else {
+
+                    html = `
+                        <div class="text-center text-muted py-3">
+                            No notes found for this tutor.
+                        </div>
+                    `;
+
+                }
+
+
+                $allNote.html(html);
+
+            },
+
+            error: function (xhr) {
+
+                console.error('Load Notes Error:', xhr);
+
+                $allNote.html(`
+                    <div class="alert alert-danger">
+                        Failed to load notes.
+                    </div>
+                `);
+
+            }
+
+        });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Escape HTML
+    |--------------------------------------------------------------------------
+    | Prevents note text from injecting HTML/JS
+    |--------------------------------------------------------------------------
+    */
+
+    function escapeHtml(text) {
+
+        if (!text) {
+            return '';
+        }
+
+        return $('<div>').text(text).html();
+
+    }
+
+});
+
 
 </script>
 @endpush
