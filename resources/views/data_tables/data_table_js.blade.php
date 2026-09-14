@@ -17,26 +17,46 @@
 
 <script>
     $(function () {
+
         var paginationLimit = $('#paginationLimit').val();
 
+        // Tutor DataTable
+        @if(auth()->check() && in_array(auth()->user()->role_id, [1, 6]))
+
+            $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                "pageLength": paginationLimit
+            }).buttons().container()
+              .appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        @else
+
+            $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": [],
+                "pageLength": paginationLimit
+            });
+
+        @endif
 
 
-        $("#example1").DataTable({
-            "responsive": true,
-            "lengthChange": false,
-            "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-            "pageLength": paginationLimit
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        // Other DataTable - NO ROLE RESTRICTION
         $("#example3").DataTable({
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             "pageLength": paginationLimit
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        }).buttons().container()
+          .appendTo('#example3_wrapper .col-md-6:eq(0)');
 
-        $('#example2').DataTable({
+
+        $("#example2").DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,
@@ -46,7 +66,7 @@
             "responsive": true,
             "pageLength": paginationLimit
         });
-    });
 
+    });
 </script>
 @endpush

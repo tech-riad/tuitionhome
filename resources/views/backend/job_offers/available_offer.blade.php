@@ -443,7 +443,7 @@
     <div class="bg-white shadow-lg rounded-3 p-2 my-4">
         <div class="bg-white pb-4 mb-b">
             <div class="table-responsive">
-                <table id="example1" class="table table-hover bg-white shadow-none" style="border-collapse: collapse">
+                <table id="example3" class="table table-hover bg-white shadow-none" style="border-collapse: collapse">
                     <thead class="text-dark" style="border-bottom: 1px solid #c8ced3">
                         <tr>
                             <th scope="col" class="text-nowrap" width="5%">Sl</th>
