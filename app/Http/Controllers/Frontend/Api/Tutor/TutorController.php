@@ -58,6 +58,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Models\CorporatePartnerRequest;
+use App\Models\SmsBalance;
+use App\Models\UnverifiedTutor;
+use App\Models\Counting;
+use Illuminate\Support\Facades\DB;
 
 class TutorController extends Controller
 {
@@ -93,7 +97,7 @@ class TutorController extends Controller
             $request->save();
             return response()->json([
                 'message' => 'Request sent successfully',
-                
+
 
                 ]);
 
@@ -2760,7 +2764,298 @@ class TutorController extends Controller
         }
         return response()->json(['status' => true, 'message' => 'Popup images retrieved successfully.', 'data' => $popupImages]);
     }
+    private function createCustomToken($user, $scope)
+{
+    $tokenResult = $user->createToken($user->name, [$scope]);
 
+    $tokenResult->token->expires_at = now()->addDays(7);
+    $tokenResult->token->save();
+
+    return $tokenResult->accessToken;
+}
+
+public function tutorLeadRegistration(Request $request)
+{
+    try {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
+
+        $validator = Validator::make($request->all(), [
+            'phone'                 => 'required|string|max:20',
+            'name'                  => 'required|string|max:255',
+            'gender'                => 'required',
+            'city_id'               => 'required|integer',
+            'location_id'           => 'required|integer',
+
+            'preferred_location'    => 'required',
+
+             
+
+            'hns_institute_id'      => 'required|integer',
+            'department_id'         => 'required|integer',
+            'university_type'       => 'required',
+            'ssc_curriculamn_id'    => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'error'  => $validator->errors(),
+            ], 422);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Normalize Phone
+        |--------------------------------------------------------------------------
+        */
+
+        $phone = trim($request->phone);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Check Existing Tutor
+        |--------------------------------------------------------------------------
+        */
+
+        $existingTutor = Tutor::where('phone', $phone)->first();
+
+        if ($existingTutor) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'This phone number is already registered.',
+            ], 409);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Generate OTP
+        |--------------------------------------------------------------------------
+        */
+
+        $otp = random_int(1234, 9999);
+
+        $otpExpiry = now()->addMinutes(10);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Database Transaction
+        |--------------------------------------------------------------------------
+        */
+
+        $data = DB::transaction(function () use (
+            $request,
+            $phone,
+            $otp,
+            $otpExpiry
+        ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create Tutor
+            |--------------------------------------------------------------------------
+            */
+
+            $tutor = new Tutor();
+
+            $tutor->otp                 = $otp;
+            $tutor->otp_expiry          = $otpExpiry;
+            $tutor->name                = trim($request->name);
+            $tutor->phone               = $phone;
+            $tutor->gender              = $request->gender;
+            $tutor->ip_address          = $request->ip();
+            $tutor->role_id             = 3;
+            $tutor->password            = Hash::make('12345678');
+            $tutor->user_agent          = $request->header('User-Agent');
+            $tutor->login_at            = now();
+            $tutor->phone_varified_at   = now();
+
+            $tutor->save();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Generate Tutor Unique ID
+            |--------------------------------------------------------------------------
+            */
+
+            $tutor->get_tutor_unique_id();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create Access Token
+            |--------------------------------------------------------------------------
+            */
+
+            $token = $this->createCustomToken(
+                $tutor,
+                'tutors'
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SMS Balance
+            |--------------------------------------------------------------------------
+            */
+
+            $smsBalance = new SmsBalance();
+            $smsBalance->tutor_id = $tutor->id;
+            $smsBalance->save();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Tutor Log
+            |--------------------------------------------------------------------------
+            */
+
+            $tutorLog = new TutorLog();
+
+            $tutorLog->tutor_id = $tutor->id;
+            $tutorLog->name     = $tutor->name;
+            $tutorLog->email    = $tutor->email ?? null;
+            $tutorLog->phone    = $tutor->phone;
+
+            $tutorLog->save();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Counting
+            |--------------------------------------------------------------------------
+            */
+
+            $counting = new Counting();
+
+            $counting->tutor_id         = $tutor->id;
+            $counting->applied_job      = 0;
+            $counting->shortlisted_job  = 0;
+            $counting->appointed_job    = 0;
+            $counting->confirmed_job    = 0;
+            $counting->cancel_job       = 0;
+            $counting->payment_job      = 0;
+
+            $counting->save();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Tutor Personal Information
+            |--------------------------------------------------------------------------
+            */
+
+            TutorPersonalInfo::updateOrCreate(
+                [
+                    'tutor_id' => $tutor->id,
+                ],
+                [
+                    'country_id'  => 1,
+                    'city_id'     => $request->city_id,
+                    'location_id' => $request->location_id,
+                ]
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Preferred Locations
+            |--------------------------------------------------------------------------
+            */
+
+            
+
+            $tutor->tutor_prefered_locations()
+                ->sync($request->preferred_location);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Honours / University Education
+            |--------------------------------------------------------------------------
+            */
+
+            TutorEducation::updateOrCreate(
+                [
+                    'tutor_id' => $tutor->id,
+                    'degree_name' => 'honours',
+                ],
+                [
+                    'institute_id'    => $request->hns_institute_id,
+                    'department_id'   => $request->department_id,
+                    'university_type' => $request->university_type,
+                ]
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SSC Education
+            |--------------------------------------------------------------------------
+            */
+
+            TutorEducation::updateOrCreate(
+                [
+                    'tutor_id'    => $tutor->id,
+                    'degree_name' => 'ssc',
+                ],
+                [
+                    'curriculum_id' => $request->ssc_curriculamn_id,
+                ]
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Response Data
+            |--------------------------------------------------------------------------
+            */
+
+            return [
+                'id'    => $tutor->id,
+                'token' => $token,
+            ];
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Success Response
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Your profile registration has been completed successfully.',
+            'data'    => $data,
+        ], 201);
+
+
+    } catch (\Throwable $e) {
+
+      
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Error Response
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+            'status'  => false,
+            'message' => 'Unable to complete registration. Please try again.',
+        ], 500);
+    }
+}
 
 
 

@@ -32,6 +32,7 @@ Route::post('/tutor/update-password-email',[TutorController::class,'updatePasswo
 Route::any('/tutor/email-verify',[TutorController::class,'verifyOtp']);
 Route::get('/reset-password', [TutorController::class, 'verifyResetLink'])->name('password.reset');
 
+Route::post('/tutor/lead-registration',[TutorController::class,'tutorLeadRegistration']);
 
 
 Route::get('/tutor/get-video-tutorial',[TutorController::class,'getTutorial']);
