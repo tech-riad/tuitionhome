@@ -671,7 +671,7 @@
                             $('#assign_tutor_new').modal('hide');
                             location.reload();
                         }
-                        if (response.status == 'error') {
+                        if (response.status == 'tutor') {
                             toastr.warning(response.message);
                         }
                     },
