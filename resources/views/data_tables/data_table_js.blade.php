@@ -28,7 +28,8 @@
                 "lengthChange": false,
                 "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                "pageLength": paginationLimit
+                "pageLength": paginationLimit,
+                "order": []
             }).buttons().container()
               .appendTo('#example1_wrapper .col-md-6:eq(0)');
 
@@ -39,7 +40,8 @@
                 "lengthChange": false,
                 "autoWidth": false,
                 "buttons": [],
-                "pageLength": paginationLimit
+                "pageLength": paginationLimit,
+                "order": []
             });
 
         @endif
@@ -51,7 +53,8 @@
             "lengthChange": false,
             "autoWidth": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-            "pageLength": paginationLimit
+            "pageLength": paginationLimit,
+            "order": []
         }).buttons().container()
           .appendTo('#example3_wrapper .col-md-6:eq(0)');
 
