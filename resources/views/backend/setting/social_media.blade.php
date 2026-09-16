@@ -134,15 +134,21 @@
                                         style="padding:40px;">
                                         <div class="overlay">
 
+                                            @if(in_array(auth()->user()->role_id, [1, 6]))
                                             <a href="javascript:void(0);" class="editSocialMediaBtn" data-id="{{ $item->id }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-
-
-
                                             <a href="javascript:void(0);" onclick="deleteItem({{ $item->id }})">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
+
+                                            @endif
+
+
+
+
+
+
                                         </div>
                                     </div>
                                     <div class="card-body text-center">
