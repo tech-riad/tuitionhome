@@ -28,7 +28,7 @@
     <p class="alert alert-success">{{ session('message') }}</p>
     @endif
 
-    
+
     <!-- mini nav ends here -->
     <!-- main content section starts here -->
     <div class="ps-3" style="padding-right: 13px">
