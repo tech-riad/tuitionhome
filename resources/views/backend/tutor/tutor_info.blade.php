@@ -511,10 +511,14 @@
                     </button>
                 </div>
                 <div class="card-body">
+                    @if($tutor->is_verified == 0)
                     <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal"
                         data-bs-target="#verifyModal_{{$tutor->id}}">
                         Make Verify
                     </button>
+                    @elseif($tutor->is_verified == 1)
+                    <button type="button" class="btn btn-block btn-danger">Verify complete</button>
+                    @endif
                 </div>
                 <div class="card-body">
                     @if ($tutor->is_internal_verify == 0)
