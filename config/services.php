@@ -36,5 +36,14 @@ return [
         'endpoint' => env('R2_ENDPOINT'),
         'public_url' => env('R2_PUBLIC_URL'),
     ],
+    'eps' => [
+        'base_url'      => env('EPS_BASE_URL', env('EPSBaseURL')),
+        'hash_key'      => env('EPS_HASH_KEY', env('EPSHashkey')),
+        'username'      => env('EPS_USERNAME', env('EPSUserName')),
+        'password'      => env('EPS_PASSWORD', env('EPSPassword')),
+        'store_id'      => env('EPS_STORE_ID', env('EPSStoreID')),
+        'merchant_id'   => env('EPS_MERCHANT_ID', env('EPSMerchentID')),
+        'device_type'   => env('EPS_DEVICE_TYPE_ID', env('EPSDeviceTypeID')),
+    ],
 
 ];

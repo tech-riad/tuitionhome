@@ -60,6 +60,8 @@ use App\Models\CourseBlogPost;
 use App\Models\Tutor;
 use App\Services\CloudflareR2Service;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Frontend\Api\Tutor\EPSPaymentController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -760,3 +762,18 @@ include("cprequesthandle.php");
 include("corporatepartner.php");
 
 require __DIR__.'/notice.php';
+
+Route::get(
+    '/payment/eps/success',
+    [EPSPaymentController::class, 'success']
+)->name('eps.payment.success');
+
+Route::get(
+    '/payment/eps/fail',
+    [EPSPaymentController::class, 'fail']
+)->name('eps.payment.fail');
+
+Route::get(
+    '/payment/eps/cancel',
+    [EPSPaymentController::class, 'cancel']
+)->name('eps.payment.cancel');
