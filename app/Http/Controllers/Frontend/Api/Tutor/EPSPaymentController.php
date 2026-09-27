@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Frontend\Api\Tutor;
 
 use App\Http\Controllers\Controller;
+use App\Models\Counting;
+use App\Models\Invoice;
+use App\Models\JobApplication;
 use App\Models\Payment;
 use App\Services\EPSPaymentService;
 use Illuminate\Http\Request;
@@ -28,19 +31,9 @@ class EPSPaymentController extends Controller
     public function createPayment(Request $request)
     {
         $request->validate([
-            'amount' => 'required|numeric|min:1',
+            'invoice_id' => 'required|string|max:255',
 
-            // 'customer_name' => 'required|string|max:255',
-            // 'customer_email' => 'required|email|max:255',
-            // 'customer_phone' => 'required|string|max:30',
 
-            // 'customer_address' => 'required|string|max:500',
-            // 'customer_city' => 'required|string|max:100',
-            // 'customer_state' => 'required|string|max:100',
-            // 'customer_postcode' => 'required|string|max:20',
-            // 'customer_country' => 'required|string|max:10',
-
-            // 'product_name' => 'required|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -61,16 +54,18 @@ class EPSPaymentController extends Controller
             /*
              * Create local payment first
              */
+            $invoice = Invoice::where('id', $request->invoice_id)->first();
             $payment = Payment::create([
                 'user_id' => auth()->check()
                     ? auth()->id()
                     : null,
 
                 'invoice_id' => $invoiceId,
+                'invoice_check' => $invoice->id,
 
                 'transaction_id' => $merchantTransactionId,
 
-                'amount' => $request->amount,
+                'amount' => $invoice->amount,
 
                 'currency' => 'BDT',
 
@@ -93,7 +88,7 @@ class EPSPaymentController extends Controller
 
                 'totalAmount' =>
                     number_format(
-                        (float) $request->amount,
+                        (float) $invoice->amount,
                         2,
                         '.',
                         ''
@@ -190,6 +185,7 @@ class EPSPaymentController extends Controller
                 'productCategory' =>
                     'General',
             ]);
+            // dd($epsResponse);
 
             /*
              * Save EPS response
@@ -371,18 +367,61 @@ class EPSPaymentController extends Controller
                 abs($epsAmount - $localAmount) < 0.01
             ) {
 
-                $payment->update([
-                    'status' => 'success',
+                /*
+                * Prevent duplicate callback processing
+                */
+                if ($payment->status !== 'success') {
 
-                    'paid_at' => now(),
+                    $payment->update([
+                        'status' => 'success',
+                        'paid_at' => now(),
+                        'response_data' => $verification,
+                        'eps_transaction_id' =>
+                            $payment->eps_transaction_id
+                            ?? ($verification['TransactionId'] ?? null),
+                    ]);
 
-                    'response_data' =>
-                        $verification,
+                    $invoice_id = $payment->invoice_check;
 
-                    'eps_transaction_id' =>
-                        $payment->eps_transaction_id
-                        ?? ($verification['TransactionId'] ?? null),
-                ]);
+                    $invoice = Invoice::where('id', $invoice_id)->first();
+
+                    if (!$invoice) {
+                        throw new Exception('Invoice not found.');
+                    }
+
+                    if ($invoice->job_id != null) {
+
+                        $application = JobApplication::where(
+                            'id',
+                            $invoice->job_id
+                        )->first();
+
+                        if ($application) {
+                            $application->update([
+                                'paid_date' => now(),
+                                'payment_status' => 'paid',
+                                'received_amount' => $invoice->amount,
+                            ]);
+                        }
+
+                        $counting = Counting::where(
+                            'tutor_id',
+                            $invoice->tutor_id
+                        )->first();
+
+                        if ($counting) {
+                            $counting->payment_job =
+                                ($counting->payment_job ?? 0) + 1;
+
+                            $counting->save();
+                        }
+                    }
+
+                    $invoice->update([
+                        'status' => 'paid',
+                        'paid_at' => now(),
+                    ]);
+                }
 
                 return $this->redirectToFrontend(
                     'success',

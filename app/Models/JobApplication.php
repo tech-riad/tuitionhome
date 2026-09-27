@@ -10,6 +10,22 @@ use Illuminate\Database\Eloquent\Model;
 class JobApplication extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'job_offer_id',
+        'tutor_id',
+        'status',
+        'taken_by_id',
+        'seen_by',
+        'shortlisted_by',
+        'application_date',
+        'paid_date',
+        'payment_status',
+        'payment_method',
+        'transaction_id',
+        'eps_transaction_id',
+        'received_amount',
+
+    ];
 
     public function applicationPayment(){
         return $this->belongsTo(ApplicationPayment::class, 'application_id');

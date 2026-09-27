@@ -496,7 +496,7 @@ class TakenOfferController extends Controller
         $invoice->tutor_name = $stage->tutor->name;
         $invoice->tutor_phone = $stage->tutor->phone;
         $invoice->unique_id = $stage->tutor->unique_id;
-        $invoice->job_id = $stage->job_offer_id;
+        $invoice->job_id = $stage->id;
         $invoice->payment_date = $stage->payment_date;
         $invoice->issued_by = Auth::user()->id;
         $invoice->save();

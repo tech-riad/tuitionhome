@@ -18,6 +18,7 @@ class Payment extends Model
         'request_data',
         'response_data',
         'paid_at',
+        'invoice_check'
     ];
 
     protected $casts = [
