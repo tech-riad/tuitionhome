@@ -17,6 +17,7 @@ use App\Models\SmsRecharge;
 use App\Models\Tutor;
 use App\Models\TutorAccount;
 use App\Models\TutorLog;
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -483,7 +484,25 @@ class TakenOfferController extends Controller
         $counting->confirm_job = $counting->confirm_job + 1;
         $counting->save();
 
-      return response()->json(['status'=>true]);
+        // dd($stage->toArray());
+        $invoice = new Invoice();
+        $invoice->tutor_id = $stage->tutor_id;
+        $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        $invoice->amount = $stage->charge;
+        $invoice->currency = 'BDT';
+        $invoice->status = 'pending';
+        $invoice->issued_at = Carbon::now();
+        $invoice->tutor_email = $stage->tutor->email;
+        $invoice->tutor_name = $stage->tutor->name;
+        $invoice->tutor_phone = $stage->tutor->phone;
+        $invoice->unique_id = $stage->tutor->unique_id;
+        $invoice->job_id = $stage->job_offer_id;
+        $invoice->payment_date = $stage->payment_date;
+        $invoice->issued_by = Auth::user()->id;
+        $invoice->save();
+
+
+      return response()->json(['status'=>true, 'data' => $stage, 'invoice' => $invoice]);
 
 
     }

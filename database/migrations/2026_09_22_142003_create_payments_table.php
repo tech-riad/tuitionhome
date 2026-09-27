@@ -39,6 +39,7 @@ class CreatePaymentsTable extends Migration
             $table->timestamps();
 
             $table->index(['user_id', 'status']);
+            
         });
     }
 
