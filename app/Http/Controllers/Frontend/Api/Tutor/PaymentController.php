@@ -46,6 +46,7 @@ class PaymentController extends Controller
                 'job_number',
                 'payment_date',
                 'paid_at',
+                'invoice_type',
             )
             ->orderBy('id', 'desc')
             ->paginate($request->per_page ?? 10);
