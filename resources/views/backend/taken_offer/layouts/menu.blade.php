@@ -189,6 +189,29 @@
             {{ $confirmCount }}
         </span>
     </a>
+    <a style="border: 1px solid #c5bfbf" class="text-decoration-none btn  text-white-600 {{ Request::is('admin/taken-offer/invoices') ? 'btn-primary active-border' : '' }}"
+        href="{{ route('admin.taken_offer.invoices') }}">Invoices
+        {{-- <span class="badge rounded-pill text-gray-600 bg-light fw-normal">
+            @php
+            $cacheKey = $user_id == 2
+            ? 'confirm_count_taken_by_' . Auth::id()
+            : 'confirm_count_all';
+
+            $confirmCount = Cache::remember($cacheKey, now()->addHours(24), function () use ($user_id) {
+            $query = App\Models\JobApplication::where('current_stage', 'confirm')
+            ->where('payment_status', null);
+
+            if ($user_id == 2) {
+            $query->where('taken_by_id', Auth::id());
+            }
+
+            return $query->count();
+            });
+            @endphp
+
+            {{ $confirmCount }}
+        </span> --}}
+    </a>
 
     <a style="border: 1px solid #c5bfbf" class="text-decoration-none btn  text-white-600 {{ Request::is('admin/taken-offer/payment-offer') ? 'btn-primary active-border' : '' }}"
         href="{{ route('admin.taken_offer.payment.offer') }}">Payment
