@@ -499,10 +499,13 @@ class TakenOfferController extends Controller
         $invoice->job_id = $stage->id;
         $invoice->payment_date = $stage->payment_date;
         $invoice->issued_by = Auth::user()->id;
+        $invoice->job_number = $stage->job_offer_id;
+        $invoice->invoice_type = "Tuition Fee";
+        $invoice->owned_by = $stage->taken_by_id;
         $invoice->save();
 
 
-      return response()->json(['status'=>true, 'data' => $stage, 'invoice' => $invoice]);
+      return response()->json(['status'=>true]);
 
 
     }
