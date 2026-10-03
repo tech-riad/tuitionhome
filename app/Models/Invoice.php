@@ -23,9 +23,26 @@ class Invoice extends Model
         'unique_id',
         'job_id'
     ];
+    protected $casts = [
+    'issued_at' => 'datetime',
+    'paid_at' => 'datetime',
+    'payment_date' => 'datetime',
+    ];
 
     public function tutor()
     {
         return $this->belongsTo(Tutor::class, 'tutor_id');
+    }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owned_by');
+    }
+    public function render()
+    {
+        return $this->belongsTo(User::class, 'issued_by');
+    }
+    public function verifyBy()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 }

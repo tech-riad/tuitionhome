@@ -174,9 +174,9 @@
                                     <td class="">
                                         <a type="button" class="text-decoration-none text-gray-800 text-nowrap"
                                             data-bs-toggle="modal" data-bs-target="#showDateTimeModal_{{$item->id}}">
-                                            {{ isset($item->created_at) ? $item->created_at->format('Y-m-d') : '' }}
+                                            {{ isset($item->issued_at) ? $item->issued_at->format('Y-m-d') : '' }}
                                             <br>
-                                            {{ isset($item->created_at) ? $item->created_at->format('g:i A') : '' }}
+                                            {{ isset($item->issued_at) ? $item->issued_at->format('g:i A') : '' }}
 
                                         </a>
                                     </td>
@@ -188,10 +188,10 @@
                                             <div class="modal-content">
                                                 <div class="modal-body pt-5 pb-4">
                                                     <p class="text-center text-info fs-3">
-                                                        {{ isset($item->created_at) ? $item->created_at->format('Y-m-d') : '' }}
+                                                        {{ isset($item->issued_at) ? $item->issued_at->format('Y-m-d') : '' }}
                                                     </p>
                                                     <p class="text-center text-gray-700 border-top fs-1 pt-1">
-                                                        {{ isset($item->created_at) ? $item->created_at->format('g:i A') : '' }}
+                                                        {{ isset($item->issued_at) ? $item->issued_at->format('g:i A') : '' }}
                                                     </p>
                                                 </div>
                                             </div>
@@ -219,7 +219,7 @@
                                                     </div>
                                                     <div class="row row-cols-2">
                                                         <p class="fw-semibold">Service ID</p>
-                                                        <p class="text-info">{{$item->job_offer_id ?? ''}}</p>
+                                                        <p class="text-info">{{$item->job_number ?? ''}}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,12 +230,12 @@
                                         <a
                                             href="{{ route('admin.tutor.tutorshow', ['tutor' => $item->tutor_id]) }}">{{$item->tutor->name ?? ''}}</a>
                                     </td>
-                                    <td>{{$item->service_category}}</td>
+                                    <td>{{$item->invoice_type ?? ''}}</td>
                                     <td class="text-info">
                                         <a type="button" class="p-1 rounded text-info text-decoration-none"
                                             style="background-color: #e6eef7" data-bs-toggle="modal"
                                             data-bs-target="#showAmountModal_{{$item->id}}">
-                                            {{$item->received_amount + $item->refund_coin ?? ''}}
+                                            {{$item->amount + $item->refund_coin ?? ''}}
                                         </a>
                                     </td>
                                     <!-- Show editable Date time model ends here-->
@@ -248,7 +248,7 @@
                                                 <div class="modal-body px-5 py-5">
                                                     <div class="row row-cols-2 bg-white mb-4 p-3 rounded-3">
                                                         <p class="fw-semibold mb-0">Payment :</p>
-                                                        <p class="mb-0">{{$item->received_amount ?? ''}} tk</p>
+                                                        <p class="mb-0">{{$item->amount ?? ''}} tk</p>
                                                     </div>
                                                     <div class="row row-cols-2 bg-white p-3 rounded-3">
                                                         <p class="fw-semibold mb-0">Refund :</p>
@@ -304,7 +304,7 @@
                                         <div class="d-flex gap-2">
 
                                             @if(in_array(Auth::user()->role_id, [1, 6]))
-                                            @if ($item->is_verified == 0)
+                                            @if ($item->verified_by == null)
                                             <button class="btn btn-warning py-1 service-verify-button"
                                                 data-id="{{ $item->id }}">
                                                 Verify

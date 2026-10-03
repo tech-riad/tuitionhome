@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Payment;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationPayment;
 use App\Models\DuePayments;
+use App\Models\Invoice;
 use App\Models\JobApplication;
 use App\Models\PaymentNote;
 use App\Models\SmsBalance;
@@ -515,12 +516,12 @@ class PaymentController extends Controller
         $currentRoute = \Route::currentRouteName();
         $paginationLimit = $request->get('pagination_limit', 10);
 
-        $payments = ApplicationPayment::orderBy('id','DESC')->paginate($paginationLimit);
+        $payments = Invoice::where('status', 'paid')->orderBy('id','DESC')->paginate($paginationLimit);
 
-        $servicePaymentSum  = ApplicationPayment::where('service_category','service charge')->sum('received_amount');
-        $serviceMemberSum  = ApplicationPayment::where('service_category','membership payment')->sum('received_amount');
-        $serviceverifySum  = ApplicationPayment::where('service_category','verification payment')->sum('received_amount');
-        $serviceboostSum  = ApplicationPayment::where('service_category','profile boost')->sum('received_amount');
+        $servicePaymentSum  = Invoice::where('invoice_type','Tuition Fee')->sum('amount');
+        $serviceMemberSum  = Invoice::where('invoice_type','membership payment')->sum('amount');
+        $serviceverifySum  = Invoice::where('invoice_type','verification payment')->sum('amount');
+        $serviceboostSum  = Invoice::where('invoice_type','profile boost')->sum('amount');
 
 
         $smsRechargeSum     = SmsRecharge::sum('amount');
@@ -711,16 +712,18 @@ class PaymentController extends Controller
         $dateto = Carbon::now();
 
 
-        $servicePaymentSum  = ApplicationPayment::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','service charge')->sum('received_amount');
-        $serviceMemberSum  = ApplicationPayment::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','membership payment')->sum('received_amount');
-        $serviceverifySum  = ApplicationPayment::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','verification payment')->sum('received_amount');
-        $serviceboostSum  = ApplicationPayment::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','profile boost')->sum('received_amount');
+        $servicePaymentSum  = Invoice::where('invoice_type','Tuition Fee')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $serviceMemberSum  = Invoice::where('invoice_type','membership payment')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $serviceverifySum  = Invoice::where('invoice_type','verification payment')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $serviceboostSum  = Invoice::where('invoice_type','profile boost')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
 
 
         $smsRechargeSum     = SmsRecharge::whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
 
 
-        $payments = ApplicationPayment::whereBetween('created_at', [$datefrom, $dateto])->orderBy('id', 'desc')->paginate($paginationLimit);
+        $payments = Invoice::where('status', 'paid')
+                            ->whereBetween('created_at', [$datefrom, $dateto])
+                            ->orderBy('id', 'desc')->paginate($paginationLimit);
         return view('backend.payment.revenue.index',compact('serviceboostSum','serviceverifySum','serviceMemberSum','currentRoute','paginationLimit','datefrom','payments','servicePaymentSum','smsRechargeSum','employees','admin'));
 
     }

@@ -140,201 +140,222 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($payments as $item)
-                                    <tr class="" style="vertical-align: middle">
-                                        <td scope="row " class="text-center text-nowrap" style="padding: 30px 18px">
-                                            <input class="checkboxx" type="checkbox" name="ids" id="{{ $item->tutor_id }}"
-                                                value="{{ $item->tutor_id }}" />
+                                @foreach ($payments as $item)
+                                <tr class="" style="vertical-align: middle">
+                                    <td scope="row " class="text-center text-nowrap" style="padding: 30px 18px">
+                                        <input class="checkboxx" type="checkbox" name="ids" id="{{ $item->tutor_id }}"
+                                            value="{{ $item->tutor_id }}" />
 
-                                            {{$loop->iteration}}
-                                        </td>
-                                        <td class="">
-                                            <a type="button" class="text-decoration-none text-gray-800 text-nowrap"
-                                                data-bs-toggle="modal" data-bs-target="#showDateTimeModal_{{$item->id}}">
-                                                {{ isset($item->created_at) ? $item->created_at->format('Y-m-d') : '' }}
-                                                    <br>
-                                                {{ isset($item->created_at) ? $item->created_at->format('g:i A') : '' }}
+                                        {{$loop->iteration}}
+                                    </td>
+                                    <td class="">
+                                        <a type="button" class="text-decoration-none text-gray-800 text-nowrap"
+                                            data-bs-toggle="modal" data-bs-target="#showDateTimeModal_{{$item->id}}">
+                                            {{ isset($item->issued_at) ? $item->issued_at->format('Y-m-d') : '' }}
+                                            <br>
+                                            {{ isset($item->issued_at) ? $item->issued_at->format('g:i A') : '' }}
 
-                                            </a>
-                                        </td>
-                                        <!-- Show Date time model starts here-->
-                                        <div class="modal fade" id="showDateTimeModal_{{$item->id}}" tabindex="-1" aria-labelledby="showDateTimeModalLabel_{{$item->id}}"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog model-sm modal-dialog-slide-top" style="max-width: 400px">
-                                                <div class="modal-content">
-                                                    <div class="modal-body pt-5 pb-4">
-                                                        <p class="text-center text-info fs-3">{{ isset($item->created_at) ? $item->created_at->format('Y-m-d') : '' }}</p>
-                                                        <p class="text-center text-gray-700 border-top fs-1 pt-1">
-                                                            {{ isset($item->created_at) ? $item->created_at->format('g:i A') : '' }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Show Date time model ends here-->
-                                        <td class="text-info">
-                                            <a type="button" class="text-decoration-none text-info"
-                                                data-bs-toggle="modal" data-bs-target="#idInfoModal_{{$item->id}}">ID Info :</a>
-                                        </td>
-
-                                        <div class="modal fade" id="idInfoModal_{{$item->id}}" tabindex="-1" aria-labelledby="idInfoModalLabel_{{$item->id}}"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog model-sm modal-dialog-slide-left" style="max-width: 400px">
-                                                <div class="modal-content">
-                                                    <div class="modal-body pt-4 pb-4 px-5">
-                                                        <div class="row row-cols-2 mt-3 border-bottom border-2 mb-4">
-                                                            <p class="fw-semibold">Tranaction ID</p>
-                                                            <p class="text-info">{{$item->trx_id ?? ''}}</p>
-                                                        </div>
-                                                        <div class="row row-cols-2 border-bottom border-2 mb-4">
-                                                            <p class="fw-semibold">Unique ID</p>
-                                                            <p class="text-info">{{$item->tutor->unique_id ?? ''}}</p>
-                                                        </div>
-                                                        <div class="row row-cols-2">
-                                                            <p class="fw-semibold">Service ID</p>
-                                                            <p class="text-info">{{$item->job_offer_id ?? ''}}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <td class="">Tutor</td>
-                                        <td class="text-nowrap">
-                                            <a href="{{ route('admin.tutor.tutorshow', ['tutor' => $item->tutor_id]) }}">{{$item->tutor->name ?? ''}}</a>
-                                        </td>
-                                        <td>{{$item->service_category}}</td>
-                                        <td class="text-info">
-                                            <a type="button" class="p-1 rounded text-info text-decoration-none"
-                                                style="background-color: #e6eef7" data-bs-toggle="modal"
-                                                data-bs-target="#showAmountModal_{{$item->id}}">
-                                                {{$item->received_amount + $item->refund_coin ?? ''}}
-                                            </a>
-                                        </td>
-                                        <!-- Show editable Date time model ends here-->
-                                        <!-- Show amount model starts here-->
-                                        <div class="modal fade" id="showAmountModal_{{$item->id}}" tabindex="-1" aria-labelledby="showAmountModalLabel_{{$item->id}}"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog model-sm modal-dialog-slide-right" style="max-width: 400px">
-                                                <div class="modal-content" style="background-color: #c4e3ff">
-                                                    <div class="modal-body px-5 py-5">
-                                                        <div class="row row-cols-2 bg-white mb-4 p-3 rounded-3">
-                                                            <p class="fw-semibold mb-0">Payment :</p>
-                                                            <p class="mb-0">{{$item->received_amount ?? ''}} tk</p>
-                                                        </div>
-                                                        <div class="row row-cols-2 bg-white p-3 rounded-3">
-                                                            <p class="fw-semibold mb-0">Refund :</p>
-                                                            <p class="mb-0">@if ($item->refund_coin != null)
-                                                                {{$item->refund_coin ?? ''}} tk
-                                                            @endif</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Show amount model ends here-->
-                                        <!-- Id Info model starts here-->
-                                        <td class="text-nowrap">No</td>
-                                        <td class="">
-                                            <a type="button" class="text-decoration-none text-info text-nowrap"
-                                                data-bs-toggle="modal" data-bs-target="#proofModal_{{$item->id}}">
-                                                Proof
-                                            </a>
-                                        </td>
-
-                                        <!-- Proof model starts here-->
-                                        <div class="modal fade" id="proofModal_{{$item->id}}" tabindex="-1" aria-labelledby="proofModalLabel_{{$item->id}}" aria-hidden="true">
-                                            <div class="modal-dialog model-sm modal-dialog-slide-top" style="max-width: 400px">
-                                                <div class="modal-content">
-                                                    <div class="modal-body pt-4 pb-4 px-5">
-                                                        <div class="row row-cols-2 mt-3 border-bottom border-2 mb-4">
-                                                            <p class="fw-semibold">Render By</p>
-                                                            <p class="">{{$item->render->name ?? 'By Payment Gateway'}}</p>
-                                                        </div>
-                                                        <div class="row row-cols-2 border-bottom border-2 mb-4">
-                                                            <p class="fw-semibold">Ownership By</p>
-                                                            <p class="">{{$item->owner->name ?? ''}}</p>
-                                                        </div>
-                                                        <div class="row row-cols-2">
-                                                            <p class="fw-semibold">Verifyed By</p>
-                                                            <p class="">{{$item->verifyBy->name ?? ''}} <br>{{$item->verify_date ?? ''}}</p>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Proof model ends here-->
-
-                                        <td class="">
-                                            <div class="d-flex gap-2">
-
-                                                @if(in_array(Auth::user()->role_id, [1, 6]))
-                                                    @if ($item->is_verified == 0)
-                                                    <button class="btn btn-warning py-1 service-verify-button"
-                                                        data-id="{{ $item->id }}">
-                                                        Verify
-                                                    </button>
-                                                    @else
-                                                    <button class="btn btn-primary py-1">
-                                                        Verified
-                                                    </button>
-                                                    @endif
-
-                                                @endif
-
-                                                <div class="dropdown">
-                                                    <button class="btn btn-gdark py-1 px-2" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" style="
-                                                    background-color: #6b7280;
-                                                    color: white;
-                                                ">
-                                                        <i class="bi bi-three-dots-vertical"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu" style="border: 1px solid #d7dfe9">
-                                                        <li>
-                                                            <a class="dropdown-item" href="#" onclick="loadNoteDetails({{ $item->id }})">
-                                                                Note
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" class="dropdown-item btn-note" id="{{ $item->id }}" data-bs-toggle="modal" data-bs-target="#createNoteModal">
-                                                               Create Note
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" data-bs-toggle="modal"
-                                                                data-bs-target="#logModal" href="#">Log</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- Note model starts here-->
-                                    <div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        </a>
+                                    </td>
+                                    <!-- Show Date time model starts here-->
+                                    <div class="modal fade" id="showDateTimeModal_{{$item->id}}" tabindex="-1"
+                                        aria-labelledby="showDateTimeModalLabel_{{$item->id}}" aria-hidden="true">
+                                        <div class="modal-dialog model-sm modal-dialog-slide-top"
+                                            style="max-width: 400px">
                                             <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel5">
-                                                        Note Details
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body" id="noteModalBody">
-                                                    <!-- Content will be loaded dynamically -->
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-gdark shadow-lg" data-bs-dismiss="modal">Close</button>
+                                                <div class="modal-body pt-5 pb-4">
+                                                    <p class="text-center text-info fs-3">
+                                                        {{ isset($item->issued_at) ? $item->issued_at->format('Y-m-d') : '' }}
+                                                    </p>
+                                                    <p class="text-center text-gray-700 border-top fs-1 pt-1">
+                                                        {{ isset($item->issued_at) ? $item->issued_at->format('g:i A') : '' }}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Show Date time model ends here-->
+                                    <td class="text-info">
+                                        <a type="button" class="text-decoration-none text-info" data-bs-toggle="modal"
+                                            data-bs-target="#idInfoModal_{{$item->id}}">ID Info :</a>
+                                    </td>
+
+                                    <div class="modal fade" id="idInfoModal_{{$item->id}}" tabindex="-1"
+                                        aria-labelledby="idInfoModalLabel_{{$item->id}}" aria-hidden="true">
+                                        <div class="modal-dialog model-sm modal-dialog-slide-left"
+                                            style="max-width: 400px">
+                                            <div class="modal-content">
+                                                <div class="modal-body pt-4 pb-4 px-5">
+                                                    <div class="row row-cols-2 mt-3 border-bottom border-2 mb-4">
+                                                        <p class="fw-semibold">Tranaction ID</p>
+                                                        <p class="text-info">{{$item->trx_id ?? ''}}</p>
+                                                    </div>
+                                                    <div class="row row-cols-2 border-bottom border-2 mb-4">
+                                                        <p class="fw-semibold">Unique ID</p>
+                                                        <p class="text-info">{{$item->tutor->unique_id ?? ''}}</p>
+                                                    </div>
+                                                    <div class="row row-cols-2">
+                                                        <p class="fw-semibold">Service ID</p>
+                                                        <p class="text-info">{{$item->job_number ?? ''}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <td class="">Tutor</td>
+                                    <td class="text-nowrap">
+                                        <a
+                                            href="{{ route('admin.tutor.tutorshow', ['tutor' => $item->tutor_id]) }}">{{$item->tutor->name ?? ''}}</a>
+                                    </td>
+                                    <td>{{$item->invoice_type ?? ''}}</td>
+                                    <td class="text-info">
+                                        <a type="button" class="p-1 rounded text-info text-decoration-none"
+                                            style="background-color: #e6eef7" data-bs-toggle="modal"
+                                            data-bs-target="#showAmountModal_{{$item->id}}">
+                                            {{$item->amount + $item->refund_coin ?? ''}}
+                                        </a>
+                                    </td>
+                                    <!-- Show editable Date time model ends here-->
+                                    <!-- Show amount model starts here-->
+                                    <div class="modal fade" id="showAmountModal_{{$item->id}}" tabindex="-1"
+                                        aria-labelledby="showAmountModalLabel_{{$item->id}}" aria-hidden="true">
+                                        <div class="modal-dialog model-sm modal-dialog-slide-right"
+                                            style="max-width: 400px">
+                                            <div class="modal-content" style="background-color: #c4e3ff">
+                                                <div class="modal-body px-5 py-5">
+                                                    <div class="row row-cols-2 bg-white mb-4 p-3 rounded-3">
+                                                        <p class="fw-semibold mb-0">Payment :</p>
+                                                        <p class="mb-0">{{$item->amount ?? ''}} tk</p>
+                                                    </div>
+                                                    <div class="row row-cols-2 bg-white p-3 rounded-3">
+                                                        <p class="fw-semibold mb-0">Refund :</p>
+                                                        <p class="mb-0">@if ($item->refund_coin != null)
+                                                            {{$item->refund_coin ?? ''}} tk
+                                                            @endif</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Show amount model ends here-->
+                                    <!-- Id Info model starts here-->
+                                    <td class="text-nowrap">No</td>
+                                    <td class="">
+                                        <a type="button" class="text-decoration-none text-info text-nowrap"
+                                            data-bs-toggle="modal" data-bs-target="#proofModal_{{$item->id}}">
+                                            Proof
+                                        </a>
+                                    </td>
 
 
-                                    <!-- Note model ends here-->
-                                    @endforeach
 
-                                </tbody>
+                                    <!-- Proof model starts here-->
+                                    <div class="modal fade" id="proofModal_{{$item->id}}" tabindex="-1"
+                                        aria-labelledby="proofModalLabel_{{$item->id}}" aria-hidden="true">
+                                        <div class="modal-dialog model-sm modal-dialog-slide-top"
+                                            style="max-width: 400px">
+                                            <div class="modal-content">
+                                                <div class="modal-body pt-4 pb-4 px-5">
+                                                    <div class="row row-cols-2 mt-3 border-bottom border-2 mb-4">
+                                                        <p class="fw-semibold">Render By</p>
+                                                        <p class="">{{$item->render->name ?? 'By Payment Gateway'}}</p>
+                                                    </div>
+                                                    <div class="row row-cols-2 border-bottom border-2 mb-4">
+                                                        <p class="fw-semibold">Ownership By</p>
+                                                        <p class="">{{$item->owner->name ?? $item->render->name ?? ''}}
+                                                        </p>
+                                                    </div>
+                                                    <div class="row row-cols-2">
+                                                        <p class="fw-semibold">Verifyed By</p>
+                                                        <p class="">{{$item->verifyBy->name ?? ''}}
+                                                            <br>{{$item->verify_date ?? ''}}</p>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Proof model ends here-->
+
+                                    <td class="">
+                                        <div class="d-flex gap-2">
+
+                                            @if(in_array(Auth::user()->role_id, [1, 6]))
+                                            @if ($item->verified_by == null)
+                                            <button class="btn btn-warning py-1 service-verify-button"
+                                                data-id="{{ $item->id }}">
+                                                Verify
+                                            </button>
+                                            @else
+                                            <button class="btn btn-primary py-1">
+                                                Verified
+                                            </button>
+                                            @endif
+
+                                            @endif
+
+
+                                            <div class="dropdown">
+                                                <button class="btn btn-gdark py-1 px-2" type="button"
+                                                    data-bs-toggle="dropdown" aria-expanded="false" style="
+                                                    background-color: #6b7280;
+                                                    color: white;
+                                                ">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" style="border: 1px solid #d7dfe9">
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                            onclick="loadNoteDetails({{ $item->id }})">
+                                                            Note
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="dropdown-item btn-note"
+                                                            id="{{ $item->id }}" data-bs-toggle="modal"
+                                                            data-bs-target="#createNoteModal">
+                                                            Create Note
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" data-bs-toggle="modal"
+                                                            data-bs-target="#logModal" href="#">Log</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Note model starts here-->
+                                <div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel5">
+                                                    Note Details
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body" id="noteModalBody">
+                                                <!-- Content will be loaded dynamically -->
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-gdark shadow-lg"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <!-- Note model ends here-->
+                                @endforeach
+
+                            </tbody>
                             </table>
                         </div>
                         <!-- pagination starts here -->
