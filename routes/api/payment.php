@@ -24,8 +24,16 @@ Route::group( ['middleware' => ['auth:t-api','scopes:tutors'] ],function(){
     Route::get('/tutor/tutor-account-info',[PaymentController::class,'tutorAccountInfo'])->name('tutor.account.info');
 
 
+    // Invoice
+
+
 });
 
 Route::post('/tutor/payment/grant-token',[PaymentController::class,'grantToken'])->name('grantToken');
 Route::post('/tutor/payment/create-payment',[PaymentController::class,'createPayment'])->name('createPayment');
 Route::post('/tutor/payment/execute-payment',[PaymentController::class,'executePayment'])->name('executePayment');
+
+
+
+// Public Invoices
+    Route::post('/tutor/invoice-list',[PaymentController::class,'invoiceList'])->name('invoiceList');

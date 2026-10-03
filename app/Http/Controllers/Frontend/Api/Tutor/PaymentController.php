@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Api\Tutor;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationPayment;
 use App\Models\DuePayments;
+use App\Models\Invoice;
 use App\Models\JobApplication;
 use App\Models\PremiumMembership;
 use App\Models\Tutor;
@@ -30,6 +31,36 @@ class PaymentController extends Controller
         $baseUrl = config('applicationpayment.base_url');
         $username = config('applicationpayment.username');
         $password = config('applicationpayment.password');
+    }
+
+    public function invoiceList(Request $request)
+    {
+        $invoices = Invoice::where('tutor_id', $request->tutor_id)
+            ->select(
+                'id',
+                'tutor_id',
+                'invoice_number',
+                'amount',
+                'status',
+                'issued_at',
+                'job_number',
+                'payment_date',
+                'paid_at',
+            )
+            ->orderBy('id', 'desc')
+            ->paginate($request->per_page ?? 10);
+
+        return response()->json([
+            'data' => $invoices->items(),
+            'meta' => [
+                'current_page' => $invoices->currentPage(),
+                'per_page' => $invoices->perPage(),
+                'total' => $invoices->total(),
+                'last_page' => $invoices->lastPage(),
+                'from' => $invoices->firstItem(),
+                'to' => $invoices->lastItem(),
+            ],
+        ]);
     }
 
     public function refundApply(Request $request)
