@@ -39,6 +39,7 @@ class PaymentController extends Controller
             ->select(
                 'id',
                 'tutor_id',
+                'unique_id',
                 'invoice_number',
                 'amount',
                 'status',
