@@ -24,6 +24,16 @@ class JobApplication extends Model
         'transaction_id',
         'eps_transaction_id',
         'received_amount',
+        'due_amount',
+        'due_payment_date',
+        'charge',
+        'application_note',
+        'application_note_by',
+        'application_note_date',
+        'application_note_status',
+        'application_note_seen_by',
+        'application_note_seen_date',
+        'payment_method',
 
     ];
 

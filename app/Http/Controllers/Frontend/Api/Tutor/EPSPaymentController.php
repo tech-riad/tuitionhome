@@ -401,6 +401,7 @@ class EPSPaymentController extends Controller
                                 'paid_date' => now(),
                                 'payment_status' => 'paid',
                                 'received_amount' => $invoice->amount,
+                                'payment_method' =>($verification['FinancialEntity'] ?? null)
                             ]);
                         }elseif ($application && $application->payment_status == 'due' && $invoice->amount == $application->due_amount && $application->received_amount == $application->charge - $application->due_amount) {
                             $application->update([
@@ -410,12 +411,14 @@ class EPSPaymentController extends Controller
                                 'paid_date' => now(),
                                 'payment_status' => 'paid',
                                 'received_amount' => $invoice->amount + ($application->received_amount ?? 0),
+                                'payment_method' =>($verification['FinancialEntity'] ?? null)
                             ]);
                         }elseif ($application && $application->payment_status == 'due' && $invoice->amount !== $application->due_amount && $application->received_amount == null) {
                             $application->update([
                                 'paid_date' => now(),
                                 'payment_status' => 'due',
                                 'received_amount' => $invoice->amount ,
+                                'payment_method' =>($verification['FinancialEntity'] ?? null)
                             ]);
                         }
 
@@ -437,6 +440,7 @@ class EPSPaymentController extends Controller
                         'paid_at' => now(),
                         'trx_id' =>($verification['EPSTransactionId'] ?? null),
                         'merchanttrx_id' =>($verification['MerchantTransactionId'] ?? null),
+                        'payment_method' =>($verification['FinancialEntity'] ?? null),
                     ]);
                 }
 
