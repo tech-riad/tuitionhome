@@ -21,7 +21,15 @@ class Invoice extends Model
         'tutor_name',
         'tutor_phone',
         'unique_id',
-        'job_id'
+        'job_id',
+        'trx_id',
+        'payment_date',
+        'owned_by',
+        'issued_by',
+        'verified_by',
+        'due_amount',
+        'due_payment_date',
+        'merchanttrx_id',
     ];
     protected $casts = [
     'issued_at' => 'datetime',

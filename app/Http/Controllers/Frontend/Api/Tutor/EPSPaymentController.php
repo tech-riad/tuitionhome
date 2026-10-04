@@ -282,10 +282,10 @@ class EPSPaymentController extends Controller
     ) {
         try {
 
-            Log::info('EPS Callback', [
-                'type' => $callbackType,
-                'data' => $request->all(),
-            ]);
+            // Log::info('EPS Callback', [
+            //     'type' => $callbackType,
+            //     'data' => $request->all(),
+            // ]);
 
             /*
              * EPS documentation says callback data
@@ -378,7 +378,7 @@ class EPSPaymentController extends Controller
                         'response_data' => $verification,
                         'eps_transaction_id' =>
                             $payment->eps_transaction_id
-                            ?? ($verification['TransactionId'] ?? null),
+                            ?? ($verification['EPSTransactionId'] ?? null),
                     ]);
 
                     $invoice_id = $payment->invoice_check;
@@ -396,11 +396,26 @@ class EPSPaymentController extends Controller
                             $invoice->job_id
                         )->first();
 
-                        if ($application) {
+                        if ($application && $application->payment_status !== 'due' && $invoice->amount == $application->charge) {
                             $application->update([
                                 'paid_date' => now(),
                                 'payment_status' => 'paid',
                                 'received_amount' => $invoice->amount,
+                            ]);
+                        }elseif ($application && $application->payment_status == 'due' && $invoice->amount == $application->due_amount && $application->received_amount == $application->charge - $application->due_amount) {
+                            $application->update([
+                                'due_complete' => 1,
+                                'due_complete_date' => now(),
+                                'due_amount' => 0,
+                                'paid_date' => now(),
+                                'payment_status' => 'paid',
+                                'received_amount' => $invoice->amount + ($application->received_amount ?? 0),
+                            ]);
+                        }elseif ($application && $application->payment_status == 'due' && $invoice->amount !== $application->due_amount && $application->received_amount == null) {
+                            $application->update([
+                                'paid_date' => now(),
+                                'payment_status' => 'due',
+                                'received_amount' => $invoice->amount ,
                             ]);
                         }
 
@@ -420,6 +435,8 @@ class EPSPaymentController extends Controller
                     $invoice->update([
                         'status' => 'paid',
                         'paid_at' => now(),
+                        'trx_id' =>($verification['EPSTransactionId'] ?? null),
+                        'merchanttrx_id' =>($verification['MerchantTransactionId'] ?? null),
                     ]);
                 }
 
