@@ -16,5 +16,7 @@ Route::get('/admin/taken-offer/refund-offer',[TakenOfferController::class,'refun
 Route::get('/admin/taken-offer/problem-offer',[TakenOfferController::class,'problemOffer'])->name('admin.taken_offer.problem.offer')->middleware('auth');
 Route::get('/admin/taken-offer/confirm-offer',[TakenOfferController::class,'confirmOffer'])->name('admin.taken_offer.confirm.offer')->middleware('auth');
 Route::get('/admin/taken-offer/payment-offer',[TakenOfferController::class,'paymentOffer'])->name('admin.taken_offer.payment.offer')->middleware('auth');
+// Invoices
 Route::get('/admin/taken-offer/invoices',[InvoiceController::class,'index'])->name('admin.taken_offer.invoices')->middleware('auth');
+Route::post('/admin/taken-offer/invoice/duplicate/{id}',[InvoiceController::class,'duplicate'])->name('admin.taken_offer.invoice.duplicate')->middleware('auth');
 
