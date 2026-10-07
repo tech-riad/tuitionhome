@@ -35,7 +35,8 @@ class PaymentController extends Controller
 
     public function invoiceList(Request $request)
     {
-        $invoices = Invoice::where('tutor_id', $request->tutor_id)
+        $invoices = Invoice::all()
+        // where('tutor_id', $request->tutor_id)
             ->select(
                 'id',
                 'tutor_id',
