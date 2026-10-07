@@ -51,6 +51,7 @@
                     </th>
 
                     <td> {{$invoice->unique_id ?? 'n/a'}}</td>
+                    <td> {{$invoice->payment_date ?? $invoice->new_payment_date ?? 'n/a'}}</td>
                     <td> {{$invoice->invoice_number ?? 'n/a'}}</td>
                     <td> {{$invoice->render->name ?? 'n/a'}}</td>
                     <td> {{$invoice->owner->name ?? 'n/a'}}</td>
