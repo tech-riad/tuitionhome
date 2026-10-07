@@ -14,7 +14,7 @@ class InvoiceController extends Controller
     {
         $invoices = Invoice::
         // where('owned_by', auth()->id())->
-        orderBy('issued_at', 'desc')->paginate(2);
+        orderBy('issued_at', 'desc')->paginate(10);
         return view('backend.taken_offer.invoices', compact('invoices'));
     }
 

@@ -52,8 +52,8 @@
 
                     <td> {{$invoice->unique_id ?? 'n/a'}}</td>
                     <td> {{$invoice->invoice_number ?? 'n/a'}}</td>
-                    <td> {{$invoice->issued_by ?? 'n/a'}}</td>
-                    <td> {{$invoice->owned_by ?? 'n/a'}}</td>
+                    <td> {{$invoice->render->name ?? 'n/a'}}</td>
+                    <td> {{$invoice->owner->name ?? 'n/a'}}</td>
                     <td> {{$invoice->job_number ?? 'n/a'}}</td>
                     <td> {{$invoice->status ?? 'n/a'}}</td>
                     <td> {{$invoice->amount ?? 'n/a'}}</td>
