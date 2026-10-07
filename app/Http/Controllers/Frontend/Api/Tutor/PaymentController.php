@@ -35,9 +35,8 @@ class PaymentController extends Controller
 
     public function invoiceList(Request $request)
     {
-        $invoices = Invoice::all()
         // where('tutor_id', $request->tutor_id)
-            ->select(
+        $invoices = Invoice::select(
                 'id',
                 'tutor_id',
                 'unique_id',
@@ -49,6 +48,7 @@ class PaymentController extends Controller
                 'payment_date',
                 'paid_at',
                 'invoice_type',
+                'due_invoice',
             )
             ->orderBy('id', 'desc')
             ->paginate($request->per_page ?? 10);
