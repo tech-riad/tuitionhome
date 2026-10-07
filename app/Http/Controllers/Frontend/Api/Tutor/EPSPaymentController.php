@@ -486,10 +486,11 @@ class EPSPaymentController extends Controller
             /*
              * Failed / Cancelled
              */
-            $status =
-                $callbackType === 'cancel'
-                    ? 'cancelled'
-                    : 'failed';
+            $status = 'failed';
+
+            if ($callbackType === 'cancel') {
+                $status = 'failed';
+            }
 
             $payment->update([
                 'status' => $status,
@@ -532,8 +533,14 @@ class EPSPaymentController extends Controller
         $message = null
     ) {
 
-        $frontendUrl =
-            config('app.frontend_url');
+        $frontendUrl = rtrim(
+            (string) (
+                config('app.frontend_url')
+                ?? env('FRONTEND_URL')
+                ?? config('app.url', 'https://tuitionhome.xyz')
+            ),
+            '/'
+        );
 
         $params = [
             'status' => $status,

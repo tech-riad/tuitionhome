@@ -30,6 +30,7 @@
                         Issue Date
                     </th>
                     <th scope="col">Tutor Id</th>
+                    <th scope="col">Payment Date</th>
                     <th scope="col">Invoice Number</th>
                     <th scope="col">Issued By </th>
                     <th scope="col">Owned By</th>
