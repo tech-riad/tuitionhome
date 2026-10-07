@@ -30,6 +30,7 @@ class Invoice extends Model
         'due_amount',
         'due_payment_date',
         'merchanttrx_id',
+        'payment_method',
     ];
     protected $casts = [
     'issued_at' => 'datetime',

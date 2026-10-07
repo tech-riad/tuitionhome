@@ -81,7 +81,7 @@ class EPSPaymentController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Please pay the previous invoice first.',
-                    'previous_invoice_id' => $unpaidPreviousInvoice->id,
+                    'previous_invoice_id' => $unpaidPreviousInvoice->invoice_number,
                 ], 400);
             }
             }
