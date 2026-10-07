@@ -39,6 +39,7 @@ class InvoiceController extends Controller
 
         // New values from modal
         $newInvoice->amount = $request->new_amount;
+        $newInvoice->due_invoice = 1;
         $newInvoice->payment_date = $request->new_payment_date;
 
         // dd($newInvoice->job_id, $newInvoice->payment_date);

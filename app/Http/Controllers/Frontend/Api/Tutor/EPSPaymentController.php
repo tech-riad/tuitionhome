@@ -55,6 +55,38 @@ class EPSPaymentController extends Controller
              * Create local payment first
              */
             $invoice = Invoice::where('id', $request->invoice_id)->first();
+
+            if (!$invoice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invoice not found.',
+                ], 404);
+            }
+            if($invoice->job_id !== null){
+
+            // Same job_id এর সব invoice serial/order অনুযায়ী নিন
+            $invoices = Invoice::where('job_id', $invoice->job_id)
+                ->orderBy('id', 'asc')
+                ->get();
+
+            // যেই invoice payment করতে চাচ্ছে তার আগে যেগুলো আছে
+            $previousInvoices = $invoices->where('id', '<', $invoice->id);
+
+            // আগের কোনো invoice unpaid কিনা
+            $unpaidPreviousInvoice = $previousInvoices->first(function ($item) {
+                return $item->status != 'paid';
+            });
+
+            if ($unpaidPreviousInvoice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please pay the previous invoice first.',
+                    'previous_invoice_id' => $unpaidPreviousInvoice->id,
+                ], 400);
+            }
+            }
+
+            // এখানে payment process চলবে
             $payment = Payment::create([
                 'user_id' => auth()->check()
                     ? auth()->id()
@@ -396,32 +428,31 @@ class EPSPaymentController extends Controller
                             $invoice->job_id
                         )->first();
 
-                        if ($application && $application->payment_status !== 'due' && $invoice->amount == $application->charge) {
+                        // if()
+
+                        if ($application && $application->payment_status == null && $invoice->amount == $application->charge) {
                             $application->update([
                                 'paid_date' => now(),
                                 'payment_status' => 'paid',
                                 'received_amount' => $invoice->amount,
                                 'payment_method' =>($verification['FinancialEntity'] ?? null)
                             ]);
-                        }elseif ($application && $application->payment_status == 'due' && $invoice->amount == $application->due_amount && $application->received_amount == $application->charge - $application->due_amount) {
+                        }elseif ($application && $application->payment_status == 'due' && $invoice->amount == $application->due_amount && $application->received_amount !== null) {
                             $application->update([
-                                'due_complete' => 1,
-                                'due_complete_date' => now(),
                                 'due_amount' => 0,
+                                'due_complete' => 1,
                                 'paid_date' => now(),
                                 'payment_status' => 'paid',
-                                'received_amount' => $invoice->amount + ($application->received_amount ?? 0),
+                                'received_amount' =>$application->received_amount + $invoice->amount,
                                 'payment_method' =>($verification['FinancialEntity'] ?? null)
                             ]);
                         }elseif ($application && $application->payment_status == 'due' && $invoice->amount !== $application->due_amount && $application->received_amount == null) {
                             $application->update([
                                 'paid_date' => now(),
-                                'payment_status' => 'due',
-                                'received_amount' => $invoice->amount ,
+                                'received_amount' =>$invoice->amount,
                                 'payment_method' =>($verification['FinancialEntity'] ?? null)
                             ]);
                         }
-
                         $counting = Counting::where(
                             'tutor_id',
                             $invoice->tutor_id
