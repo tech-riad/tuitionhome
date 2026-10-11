@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationPayment;
+use App\Models\Invoice;
 use App\Models\PremiumMembership;
 use App\Models\Tutor;
 use App\Models\VerificationRequest;
@@ -134,100 +135,140 @@ class MembershipController extends Controller
     public function createMembershipInvoice(Request $request)
     {
 
+            $tutor = Tutor::where('id',Auth::user()->id)->first();
 
 
+            $packageMap = [
+                'premium'         => 'regular',
+                'premium_pro'     => 'pro',
+                'premium_advance' => 'advance',
+            ];
 
-            $tutor = Tutor::where('id',$request->tutor_id)->first();
+            if (!isset($packageMap[$request->request_type])) {
+                return response()->json([
+                    'message' => 'Invalid membership request type.'
+                ], 422);
+            }
 
+            $packageName = $packageMap[$request->request_type];
+
+            $latestMembership = PremiumMembership::where('tutor_id', $tutor->id)
+                ->where('package_name', $packageName)
+                ->latest('id')
+                ->first();
+
+            if ($latestMembership && $latestMembership->payment_status === 'unpaid') {
+                return response()->json([
+                    'message' => 'You already have an unpaid request for this membership package.'
+                ], 409);
+            }
+
+
+            // dd($request->all());-*
             if($request->request_type == 'premium')
             {
                 $sendMembershipRequest = new PremiumMembership ();
                 $sendMembershipRequest->tutor_id        = $tutor->id;
                 $sendMembershipRequest->name            = $tutor->name;
                 $sendMembershipRequest->request_status  = 'pending';
-                $sendMembershipRequest->payment_status  = 'paid';
-                $sendMembershipRequest->transction_id   = $response['trxID'];
-                $sendMembershipRequest->taka            = $response['amount'];
-                $sendMembershipRequest->received_from   = $response['customerMsisdn'];
-                $sendMembershipRequest->payment_method  = 'Bkash';
+                $sendMembershipRequest->payment_status  = 'unpaid';
+                $sendMembershipRequest->taka            = $request->amount;
                 $sendMembershipRequest->package_name    = 'regular';
                 $sendMembershipRequest->channel_name    = 'Website';
 
                 $sendMembershipRequest->save();
+                // dd($sendMembershipRequest->id);
 
-                $transction = new ApplicationPayment();
-                $transction->tutor_id            = $request->tutor_id ;
-                $transction->received_amount     = $response['amount'];
-                $transction->trx_id              = $response['trxID'];
-                $transction->payment_phone       = $response['customerMsisdn'];
-                $transction->received_number     = $request->received_number ?? 5;
-                $transction->payment_method      = $request->payment_method ?? "Bkash";
-                $transction->service_category    = "membership payment";
-                $transction->save();
+                $invoice = new Invoice();
+                $invoice->tutor_id = $tutor->id;
+                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+                $invoice->amount = $request->amount;
+                $invoice->currency = 'BDT';
+                $invoice->status = 'pending';
+                $invoice->issued_at = Carbon::now();
+                $invoice->tutor_name = $tutor->name;
+                $invoice->tutor_phone = $tutor->phone;
+                $invoice->unique_id = $tutor->unique_id;
+                $invoice->payment_date = now()->addDays(7);
 
-                return response()->json(['message' => 'Request Sent.']);
+                $invoice->invoice_type = "membership payment";
+                $invoice->package_name = 'regular';
+                $invoice->membership_id = $sendMembershipRequest->id;
+                $invoice->save();
+
+
+
+                return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
+
             }elseif($request->request_type == 'premium_pro' ){
                 $sendMembershipRequest = new PremiumMembership ();
                 $sendMembershipRequest->tutor_id        = $tutor->id;
                 $sendMembershipRequest->name            = $tutor->name;
                 $sendMembershipRequest->request_status  = 'pending';
-                $sendMembershipRequest->payment_status  = 'paid';
-                $sendMembershipRequest->transction_id   = $response['trxID'];
-                $sendMembershipRequest->taka            = $response['amount'];
-                $sendMembershipRequest->received_from   = $response['customerMsisdn'];
-                $sendMembershipRequest->payment_method  = 'Bkash';
+                $sendMembershipRequest->payment_status  = 'unpaid';
+                $sendMembershipRequest->taka            = $request->amount;
                 $sendMembershipRequest->package_name    = 'pro';
                 $sendMembershipRequest->channel_name    = 'Website';
 
                 $sendMembershipRequest->save();
 
-                $transction = new ApplicationPayment();
-                $transction->tutor_id            = $request->tutor_id ;
-                $transction->received_amount     = $response['amount'];
-                $transction->trx_id              = $response['trxID'];
-                $transction->payment_phone       = $response['customerMsisdn'];
-                $transction->received_number     = $request->received_number ?? 5;
-                $transction->payment_method      = $request->payment_method ?? "Bkash";
-                $transction->service_category    = "membership payment";
-                $transction->save();
 
-                return response()->json(['message' => 'Request Sent.']);
+                $invoice = new Invoice();
+                $invoice->tutor_id = $tutor->id;
+                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+                $invoice->amount = $request->amount;
+                $invoice->currency = 'BDT';
+                $invoice->status = 'pending';
+                $invoice->issued_at = Carbon::now();
+                $invoice->tutor_name = $tutor->name;
+                $invoice->tutor_phone = $tutor->phone;
+                $invoice->unique_id = $tutor->unique_id;
+                $invoice->payment_date = now()->addDays(7);
+
+                $invoice->invoice_type = "membership payment";
+                $invoice->package_name = 'pro';
+                $invoice->membership_id = $sendMembershipRequest->id;
+                $invoice->save();
+
+
+
+                return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
             }elseif($request->request_type == 'premium_advance'){
                 $sendMembershipRequest = new PremiumMembership ();
                 $sendMembershipRequest->tutor_id        = $tutor->id;
                 $sendMembershipRequest->name            = $tutor->name;
                 $sendMembershipRequest->request_status  = 'pending';
-                $sendMembershipRequest->payment_status  = 'paid';
-                $sendMembershipRequest->transction_id   = $response['trxID'];
-                $sendMembershipRequest->taka            = $response['amount'];
-                $sendMembershipRequest->received_from   = $response['customerMsisdn'];
-                $sendMembershipRequest->payment_method  = 'Bkash';
+                $sendMembershipRequest->payment_status  = 'unpaid';
+                $sendMembershipRequest->taka            = $request->amount;
                 $sendMembershipRequest->package_name    = 'advance';
                 $sendMembershipRequest->channel_name    = 'Website';
-
                 $sendMembershipRequest->save();
 
-                $transction = new ApplicationPayment();
-                $transction->tutor_id            = $request->tutor_id ;
-                $transction->received_amount     = $response['amount'];
-                $transction->trx_id              = $response['trxID'];
-                $transction->payment_phone       = $response['customerMsisdn'];
-                $transction->received_number     = $request->received_number ?? 5;
-                $transction->payment_method      = $request->payment_method ?? "Bkash";
-                $transction->service_category    = "membership payment";
-                $transction->save();
+                $invoice = new Invoice();
+                $invoice->tutor_id = $tutor->id;
+                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+                $invoice->amount = $request->amount;
+                $invoice->currency = 'BDT';
+                $invoice->status = 'pending';
+                $invoice->issued_at = Carbon::now();
+                $invoice->tutor_name = $tutor->name;
+                $invoice->tutor_phone = $tutor->phone;
+                $invoice->unique_id = $tutor->unique_id;
+                $invoice->payment_date = now()->addDays(7);
+                $invoice->invoice_type = "membership payment";
+                $invoice->package_name = 'advance';
+                $invoice->membership_id = $sendMembershipRequest->id;
+                $invoice->save();
 
-                return response()->json(['message' => 'Request Sent.']);
+
+                return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
             }
 
 
 
 
 
-        
 
-
-        return response()->json($response);
     }
 
 }
