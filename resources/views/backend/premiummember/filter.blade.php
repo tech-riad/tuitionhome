@@ -220,26 +220,30 @@
                                                 <div class="mb-3">
                                                     <label for="transction_id" class="form-label required">Transction
                                                         ID</label>
-                                                    <input required name="transction_id" type="text"
-                                                        class="form-control rounded-3 shadow-none" id="transction_id" value="{{$item->transction_id}}"
-                                                        placeholder="" style="padding: 14px 18px" />
+
                                                     <span class="text-danger error-text transction_id_error"></span>
 
                                                 </div>
                                                 <div class="pb-3">
                                                     <label for="crby" class="form-label">Package Name</label>
-                                                    <select name="package_name" class="form-select rounded-3 shadow-none select2" aria-label="Default select" id="package_name">
+                                                    <select name="package_name"
+                                                        class="form-select rounded-3 shadow-none select2"
+                                                        aria-label="Default select" id="package_name">
                                                         <option value="">Select Package Name</option>
-                                                            <option @if ($item->package_name == 'regular') selected  @endif value="regular">Regular</option>
-                                                            <option @if ($item->package_name == 'pro') selected  @endif value="pro">Pro</option>
-                                                            <option @if ($item->package_name == 'advance') selected  @endif value="advance">Advance</option>
+                                                        <option @if ($item->package_name == 'regular') selected @endif
+                                                            value="regular">Regular</option>
+                                                        <option @if ($item->package_name == 'pro') selected @endif
+                                                            value="pro">Pro</option>
+                                                        <option @if ($item->package_name == 'advance') selected @endif
+                                                            value="advance">Advance</option>
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="taka" class="form-label required">Taka</label>
                                                     <input required name="taka" type="text"
                                                         class="form-control rounded-3 shadow-none" id="taka"
-                                                        placeholder="" value="{{$item->taka}}" style="padding: 14px 18px" />
+                                                        placeholder="" value="{{$item->taka}}"
+                                                        style="padding: 14px 18px" />
                                                     <span class="text-danger error-text taka_error"></span>
                                                 </div>
 

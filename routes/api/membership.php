@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route ;
 Route::group( ['middleware' => ['auth:t-api','scopes:tutors'] ],function(){
 
     Route::get('/tutor/get-membership',[MembershipController::class,'getMembership'])->name('tutor.get.membership');
-    Route::get('/tutor/get-membership-invoice',[MembershipController::class,'getMembershipInvoice'])->name('tutor.get.membership.invoice');
+    Route::post('/tutor/make-membership-invoice',[MembershipController::class,'createMembershipInvoice'])->name('tutor.create.membership.invoice');
 
 });
 

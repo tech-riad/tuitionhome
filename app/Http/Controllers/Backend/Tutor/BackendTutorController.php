@@ -2642,6 +2642,9 @@ public function updateStatus(Request $request, $id)
         $memberships->action_at        = now();
         $memberships->update();
 
+        return redirect()->back()->withMessage('Granted Application!');
+
+
 
 
     }

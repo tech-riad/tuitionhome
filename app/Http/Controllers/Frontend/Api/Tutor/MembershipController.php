@@ -131,48 +131,11 @@ class MembershipController extends Controller
 
     }
 
-    public function executePayment(Request $request)
+    public function createMembershipInvoice(Request $request)
     {
-        $appKey          = config('premium.app_key');
-        $baseUrl         = config('premium.base_url');
-        $token           = $request->token;
-        if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        $paymentID       = $request->paymentID;
-
-        $url             = curl_init("$baseUrl/v1.2.0-beta/tokenized/checkout/execute");
-        $header          = array(
-            'Content-Type:application/json',
-            "authorization:$token",
-            "x-app-key:$appKey"
-        );
-        $request_data_json = json_encode(['paymentID' => $paymentID]);
-
-        curl_setopt($url, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($url, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($url, CURLOPT_POSTFIELDS, $request_data_json);
-        curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
-
-        $resultdata = curl_exec($url);
-        $httpStatus = curl_getinfo($url, CURLINFO_HTTP_CODE);
-        curl_close($url);
-
-        if ($httpStatus === 401) {
-            return response()->json(['error' => 'Unauthorized'], $httpStatus);
-        }
-
-        $response = json_decode($resultdata, true);
 
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            \Log::error('Error decoding JSON response: ' . json_last_error_msg());
-            return response()->json(['error' => 'Error decoding JSON response'], 500);
-        }
 
-        if (isset($response['statusCode']) && $response['statusCode'] == "0000" && isset($response['transactionStatus']) && $response['transactionStatus'] == "Completed") {
 
             $tutor = Tutor::where('id',$request->tutor_id)->first();
 
@@ -261,7 +224,7 @@ class MembershipController extends Controller
 
 
 
-        }
+        
 
 
         return response()->json($response);
