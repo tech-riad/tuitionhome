@@ -2620,7 +2620,7 @@ public function updateStatus(Request $request, $id)
         $invoice = new Invoice();
         $invoice->tutor_id = $tutor->id;
         $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
-        $invoice->amount = $memberships->package_price;
+        $invoice->amount = $request->taka;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';
         $invoice->issued_at = Carbon::now();
@@ -2628,12 +2628,12 @@ public function updateStatus(Request $request, $id)
         $invoice->tutor_name = $tutor->name;
         $invoice->tutor_phone = $tutor->phone;
         $invoice->unique_id = $tutor->unique_id;
-        $invoice->job_id = $memberships->id;
         $invoice->payment_date = now()->addDays(7);
         $invoice->issued_by = Auth::user()->id;
         $invoice->invoice_type = "membership payment";
         $invoice->owned_by = Auth::user()->id;
-        $invoice->package_name = $memberships->package_name;
+        $invoice->package_name = $request->package_name;
+        $invoice->membership_id = $memberships->id;
         $invoice->save();
 
         $memberships->action_by        = auth::user()->id;
@@ -2642,7 +2642,7 @@ public function updateStatus(Request $request, $id)
         $memberships->action_at        = now();
         $memberships->update();
 
- 
+
 
     }
 
