@@ -63,6 +63,7 @@ use Illuminate\Support\Facades\Mail;
 use Image;
 use PDF;
 use Illuminate\Support\Facades\Queue;
+use App\Models\Invoice;
 
 use Illuminate\Support\Facades\Cache;
 
@@ -2616,77 +2617,32 @@ public function updateStatus(Request $request, $id)
         $memberships = PremiumMembership::where('id',$request->grant_id)->first();
         $tutor = Tutor::where('id',$memberships->tutor_id)->first();
 
-        if($memberships->payment_status == 'paid')
-        {
-            $memberships->channel_name = 'Website';
-        }else{
-            $memberships->channel_name = 'Admin';
+        $invoice = new Invoice();
+        $invoice->tutor_id = $tutor->id;
+        $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        $invoice->amount = $memberships->package_price;
+        $invoice->currency = 'BDT';
+        $invoice->status = 'pending';
+        $invoice->issued_at = Carbon::now();
+        $invoice->tutor_email = $tutor->email;
+        $invoice->tutor_name = $tutor->name;
+        $invoice->tutor_phone = $tutor->phone;
+        $invoice->unique_id = $tutor->unique_id;
+        $invoice->job_id = $memberships->id;
+        $invoice->payment_date = now()->addDays(7);
+        $invoice->issued_by = Auth::user()->id;
+        $invoice->invoice_type = "membership payment";
+        $invoice->owned_by = Auth::user()->id;
+        $invoice->package_name = $memberships->package_name;
+        $invoice->save();
 
+        $memberships->action_by        = auth::user()->id;
+        $memberships->payment_status   = 'unpaid';
+        $memberships->request_status   = 'accepted';
+        $memberships->action_at        = now();
+        $memberships->update();
 
-            $transction = new ApplicationPayment();
-            $transction->tutor_id            = $memberships->tutor_id ;
-            $transction->received_amount     = $request->taka;
-            $transction->trx_id              = $request->transction_id;
-            $transction->payment_method      = $request->payment_method ?? "Bkash";
-            $transction->render_by           = Auth::user()->id;
-            $transction->service_category    = "membership payment";
-            $transction->save();
-        }
-        if($memberships->package_name == 'regular'){
-            $tutor->is_premium = 1;
-            $tutor->premium_by = Auth::user()->id;
-            $tutor->premium_date = now();
-            $tutor->premium_expire = now()->addYear();
-            $tutor->is_premium_advance = 0;
-            $tutor->is_premium_pro = 0;
-            $tutor->update();
-
-            $memberships->action_by        = auth::user()->id;
-            $memberships->payment_status   = 'paid';
-            $memberships->request_status   = 'accepted';
-            $memberships->action_at        = now();
-            $memberships->update();
-
-            return redirect()->back()->withMessage('Successfully Granted Application!');
-
-        }elseif($memberships->package_name == 'pro'){
-            $tutor->is_premium_pro = 1;
-            $tutor->premium_by = Auth::user()->id;
-            $tutor->premium_date = now();
-            $tutor->premium_expire = now()->addYears(2);
-            $tutor->is_premium = 0;
-            $tutor->is_premium_advance = 0;
-            $tutor->update();
-
-            $memberships->action_by        = auth::user()->id;
-            $memberships->payment_status   = 'paid';
-            $memberships->request_status   = 'accepted';
-            $memberships->action_at        = now();
-            $memberships->update();
-
-            return redirect()->back()->withMessage('Successfully Granted Application!');
-
-
-        }elseif($memberships->package_name == 'advance'){
-            $tutor->is_premium_advance = 1;
-            $tutor->premium_by = Auth::user()->id;
-            $tutor->premium_date = now();
-            $tutor->premium_expire = now()->addYears(5);
-            $tutor->is_premium_pro = 0;
-            $tutor->is_premium = 0;
-            $tutor->update();
-
-            $memberships->action_by        = auth::user()->id;
-            $memberships->payment_status   = 'paid';
-            $memberships->request_status   = 'accepted';
-            $memberships->action_at        = now();
-            $memberships->update();
-
-            return redirect()->back()->withMessage('Successfully Granted Application!');
-
-
-        }
-
+ 
 
     }
 
