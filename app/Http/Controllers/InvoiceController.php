@@ -10,13 +10,21 @@ use Illuminate\Support\Str;
 
 class InvoiceController extends Controller
 {
+
     public function index()
     {
-        $invoices = Invoice::
-        where('owned_by', auth()->id())
-        ->orderBy('issued_at', 'desc')->paginate(10);
+        $query = Invoice::query();
+
+        if (auth()->user()->role_id != 1) {
+            $query->where('owned_by', auth()->id());
+        }
+
+        $invoices = $query->orderBy('issued_at', 'desc')
+                        ->paginate(10);
+
         return view('backend.taken_offer.invoices', compact('invoices'));
     }
+
 
 
     public function duplicate(Request $request, $id)
