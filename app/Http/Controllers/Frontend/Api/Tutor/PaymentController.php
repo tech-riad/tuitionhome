@@ -50,7 +50,7 @@ class PaymentController extends Controller
                 'invoice_type',
                 'due_invoice',
             )
-            ->where('tutor_id', Auth::user()->id)
+            // ->where('tutor_id', Auth::user()->id)
             ->orderBy('id', 'desc')
             ->paginate($request->per_page ?? 10);
 
