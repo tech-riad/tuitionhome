@@ -7,6 +7,7 @@ use App\Models\Counting;
 use App\Models\Invoice;
 use App\Models\JobApplication;
 use App\Models\Payment;
+use App\Models\PremiumMembership;
 use App\Services\EPSPaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -464,6 +465,21 @@ class EPSPaymentController extends Controller
 
                             $counting->save();
                         }
+                    }
+                    if($invoice->invoice_type == 'membership payment' && $invoice->job_id == null)
+                    {
+                        $membership = PremiumMembership::where('id',$invoice->membership_id)->first();
+
+                        $membership->update([
+                        'status' => 'paid',
+                        'paid_at' => now(),
+                        'trx_id' =>($verification['EPSTransactionId'] ?? null),
+                        'merchanttrx_id' =>($verification['MerchantTransactionId'] ?? null),
+                        'payment_method' =>($verification['FinancialEntity'] ?? null),
+                        ]);
+
+
+
                     }
 
                     $invoice->update([

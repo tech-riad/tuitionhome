@@ -36,7 +36,7 @@ class PaymentController extends Controller
     public function invoiceList(Request $request)
     {
         $request->validate([
-            'tutor_id' => 'required|integer|exists:tutors,id',
+            'user_id'=> 'required|integer|exists:tutors,id',
             'per_page' => 'nullable|integer|min:1',
         ]);
         // where('tutor_id', $request->tutor_id)
@@ -54,7 +54,7 @@ class PaymentController extends Controller
                 'invoice_type',
                 'due_invoice',
             )
-            ->where('tutor_id', $request->tutor_id)
+            ->where('tutor_id', $request->user_id)
             ->orderBy('id', 'desc')
             ->paginate($request->per_page ?? 10);
 
