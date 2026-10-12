@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\JobApplication;
 use App\Models\Payment;
 use App\Models\PremiumMembership;
+use App\Models\Tutor;
 use App\Services\EPSPaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -471,11 +472,32 @@ class EPSPaymentController extends Controller
                         $membership = PremiumMembership::where('id',$invoice->membership_id)->first();
 
                         $membership->update([
-                        'status' => 'paid',
-                        'paid_at' => now(),
-                        'trx_id' =>($verification['EPSTransactionId'] ?? null),
-                        'merchanttrx_id' =>($verification['MerchantTransactionId'] ?? null),
-                        'payment_method' =>($verification['FinancialEntity'] ?? null),
+                        'request_status' => 'accepted',
+                        'payment_status' => 'paid',
+
+                        ]);
+
+                        $tutor = Tutor::where('id',$invoice->tutor_id)->first();
+
+                        if( $invoice->paickage_name == 'regular')
+                        {
+                            $tutor->update([
+                                'premium_date' => now(),
+                                'premium_expire' => now()->addYear(1),
+                                'is_premium' =>1,
+                            ]);
+                        }elseif( $invoice->paickage_name == 'pro')
+                        {
+                            $tutor->update([
+                                'premium_date' => now(),
+                                'premium_expire' => now()->addYear(2),
+                                'is_premium_pro' =>1,
+                            ]);
+                        }
+                        $tutor->update([
+                            'premium_date' => now(),
+                            'premium_expire' => now()->addYear(5),
+                            'is_premium_advance' =>1,
                         ]);
 
 
