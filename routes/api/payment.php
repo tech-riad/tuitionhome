@@ -36,4 +36,4 @@ Route::post('/tutor/payment/execute-payment',[PaymentController::class,'executeP
 
 
 // Public Invoices
-    Route::post('/tutor/invoice-list',[PaymentController::class,'invoiceList'])->name('invoiceList');
+    Route::post('/invoice-list',[PaymentController::class,'invoiceList'])->name('invoiceList');
