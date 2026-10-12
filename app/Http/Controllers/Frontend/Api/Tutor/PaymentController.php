@@ -53,6 +53,9 @@ class PaymentController extends Controller
                 'paid_at',
                 'invoice_type',
                 'due_invoice',
+                'tutor_name as customer_name',
+                'tutor_email as customer_email',
+                'tutor_phone as customer_phone',
             )
             ->where('tutor_id', $request->user_id)
             ->orderBy('id', 'desc')
