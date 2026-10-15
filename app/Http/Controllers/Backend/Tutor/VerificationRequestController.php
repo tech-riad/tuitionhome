@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Tutor;
 
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationPayment;
+use App\Models\Invoice;
 use App\Models\Tutor;
 use App\Models\User;
 use App\Models\VerificationRequest;
@@ -75,10 +76,10 @@ class VerificationRequestController extends Controller
         // dd($request->all());
         $verify = VerificationRequest::where('id',$request->grant_id)->first();
         $tutor = Tutor::where('id',$verify->tutor_id)->first();
-        $tutor->is_verified = 1;
-        $tutor->verify_date = now();
-        $tutor->verified_by = Auth::user()->id;
-        $tutor->update();
+        // $tutor->is_verified = 1;
+        // $tutor->verify_date = now();
+        // $tutor->verified_by = Auth::user()->id;
+        // $tutor->update();
 
         if($verify->payment_status == 'paid')
         {
@@ -87,26 +88,27 @@ class VerificationRequestController extends Controller
             $verify->channel_name = 'Admin';
         }
         $verify->action_by        = auth::user()->id;
-        $verify->payment_status   = 'paid';
+        $verify->payment_status   = 'unpaid';
         $verify->request_status   = 'accepted';
         $verify->action_at        = now();
         $verify->update();
 
 
-        if($request->online_payment == 0)
-        {
 
-            $transction = new ApplicationPayment();
-            $transction->tutor_id            = $tutor->id ;
-            $transction->received_amount     = $request->taka;
-            $transction->trx_id              = $request->transction_id;
-            $transction->ownership_by        = Auth::user()->id;
-            $transction->render_by           = Auth::user()->id;
-            $transction->service_category    = "verification payment";
-            $transction->save();
-
-        }
-
+        $invoice = new Invoice();
+        $invoice->tutor_id = $verify->tutor_id;
+        $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        $invoice->amount = $request->taka;
+        $invoice->currency = 'BDT';
+        $invoice->status = 'pending';
+        $invoice->issued_at = now();
+        $invoice->tutor_name = $verify->name;
+        $invoice->tutor_phone = $tutor->phone;
+        $invoice->unique_id = $tutor->unique_id;
+        $invoice->payment_date = now()->addDays(7);
+        $invoice->invoice_type = "verification payment";
+        $invoice->owned_by = Auth::user()->id;
+        $invoice->save();
 
 
 

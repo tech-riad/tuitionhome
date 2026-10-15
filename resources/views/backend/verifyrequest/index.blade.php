@@ -209,15 +209,7 @@
                                             <div class="modal-body">
                                                 @csrf
                                                 <input type="hidden" name="grant_id" value="{{$item->id}}">
-                                                <div class="mb-3">
-                                                    <label for="transction_id" class="form-label required">Transction
-                                                        ID</label>
-                                                    <input required name="transction_id" type="text"
-                                                        class="form-control rounded-3 shadow-none" id="transction_id" value="{{$item->transction_id}}"
-                                                        placeholder="" style="padding: 14px 18px" />
-                                                    <span class="text-danger error-text transction_id_error"></span>
 
-                                                </div>
                                                 <div class="mb-3">
                                                     <label for="taka" class="form-label required">Taka</label>
                                                     <input required name="taka" type="text"
@@ -225,19 +217,7 @@
                                                         placeholder="" value="{{$item->taka}}" style="padding: 14px 18px" />
                                                     <span class="text-danger error-text taka_error"></span>
                                                 </div>
-                                                <div class="gap-2">
-                                                    <p class="mb-0 fs-5 text-dark">Online Payment</p>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio"
-                                                            name="online_payment" id="inlineRadio1" value="1" required>
-                                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio"
-                                                            name="online_payment" id="inlineRadio2" value="0" required>
-                                                        <label class="form-check-label" for="inlineRadio2">No</label>
-                                                    </div>
-                                                </div>
+
 
                                             </div>
                                             <div class="modal-footer">
