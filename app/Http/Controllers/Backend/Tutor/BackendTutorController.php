@@ -2747,21 +2747,30 @@ public function updateStatus(Request $request, $id)
 
         $tutor= Tutor::where('id',$tutor)->firstOrFail();
 
-        $tutor->is_boost = 1;
-        $tutor->boost_date = now();
-        $tutor->boost_package = $request->boost_package;
-        $tutor->boost_expire = now()->addMonths($request->boost_package);
-        $tutor->save();
+        // $tutor->is_boost = 1;
+        // $tutor->boost_date = now();
+        // $tutor->boost_package = $request->boost_package;
+        // $tutor->boost_expire = now()->addMonths($request->boost_package);
+        // $tutor->save();
 
 
-        $transction = new ApplicationPayment();
-        $transction->tutor_id            = $tutor->id ;
-        $transction->received_amount     = $request->taka;
-        $transction->trx_id              = $request->transction_id;
-        $transction->render_by           = Auth::user()->id;
-        $transction->payment_method      = $request->payment_method ?? "Bkash";
-        $transction->service_category    = "profile boost";
-        $transction->save();
+        $invoice = new Invoice();
+        $invoice->tutor_id = $tutor->id;
+        $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        $invoice->amount = $request->taka;
+        $invoice->currency = 'BDT';
+        $invoice->status = 'pending';
+        $invoice->issued_at = Carbon::now();
+        $invoice->tutor_email = $tutor->email;
+        $invoice->tutor_name = $tutor->name;
+        $invoice->tutor_phone = $tutor->phone;
+        $invoice->unique_id = $tutor->unique_id;
+        $invoice->payment_date = now()->addDays(7);
+        $invoice->issued_by = Auth::user()->id;
+        $invoice->invoice_type = "boost payment";
+        $invoice->owned_by = Auth::user()->id;
+        $invoice->package_duration = $request->boost_package;
+        $invoice->save();
         return redirect()->back()->withMessage('Success! tutor marked as boost tutor successfully');
 
     }

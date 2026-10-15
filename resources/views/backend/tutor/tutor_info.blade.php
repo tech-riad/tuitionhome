@@ -894,15 +894,7 @@
                                 @csrf
                                 <input type="hidden" name="grant_id" value="{{$tutor->id}}">
 
-                                <div class="mb-3">
-                                    <label for="transction_id" class="form-label required">Transction
-                                        ID</label>
-                                    <input required name="transction_id" type="text"
-                                        class="form-control rounded-3 shadow-none" id="transction_id" value=""
-                                        placeholder="" style="padding: 14px 18px" />
-                                    <span class="text-danger error-text transction_id_error"></span>
-
-                                </div>
+                               
 
                                 <div class="mb-3">
                                     <label for="taka" class="form-label required">Taka</label>
