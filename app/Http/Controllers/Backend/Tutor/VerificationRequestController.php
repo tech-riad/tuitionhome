@@ -99,6 +99,7 @@ class VerificationRequestController extends Controller
         $invoice->tutor_id = $verify->tutor_id;
         $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
         $invoice->amount = $request->taka;
+        $invoice->verification_id = $verify->id;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';
         $invoice->issued_at = now();

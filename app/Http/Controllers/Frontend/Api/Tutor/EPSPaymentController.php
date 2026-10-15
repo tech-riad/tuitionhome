@@ -9,6 +9,7 @@ use App\Models\JobApplication;
 use App\Models\Payment;
 use App\Models\PremiumMembership;
 use App\Models\Tutor;
+use App\Models\VerificationRequest;
 use App\Services\EPSPaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -529,6 +530,26 @@ class EPSPaymentController extends Controller
 
                     }
 
+
+                    if ($invoice->invoice_type == 'verification payment') {
+                        $verifyRequest = VerificationRequest::find($invoice->verification_id);
+
+                        $tutor = Tutor::find($invoice->tutor_id);
+
+                        if (!$verifyRequest) {
+                            throw new Exception('Verification request not found.');
+                        }
+
+                        $verifyRequest->update([
+                            'payment_status' => 'paid',
+                        ]);
+                        $tutor->update([
+                            'is_verified' => 1,
+                            'verify_date' => now(),
+                            'verified_by' => $invoice->owned_by,
+                        ]);
+
+                    }
 
 
                     $invoice->update([
