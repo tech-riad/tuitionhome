@@ -34,6 +34,7 @@ class Tutor extends Authenticatable
     }
 
 
+
     protected $fillable = [
         'id',
         'unique_id',
@@ -54,6 +55,7 @@ class Tutor extends Authenticatable
         'email_otp',
         'status',
         'is_verified',
+        'is_internal_verify',
         'is_featured',
         'is_active',
         'is_sms',
@@ -63,8 +65,12 @@ class Tutor extends Authenticatable
         'verified_by',
         'featured_by',
         'condition_note',
+        'created_at',
+        'updated_at',
         'deleted_at',
         'is_premium',
+        'is_premium_pro',
+        'is_premium_advance',
         'deleted_by',
         'otp_resend_count',
         'last_otp_resend',
@@ -74,14 +80,25 @@ class Tutor extends Authenticatable
         'delete_note',
         'profile_views',
         'premium_date',
+        'premium_expire',
         'featured_date',
         'verify_date',
         'is_alerted',
         'alerted_date',
         'alerted_by',
+        'deactive_mail_send',
+        'balances',
+        'inactive_date',
+        'is_boost',
+        'boost_date',
+        'boost_package',
+        'boost_expire',
+        'reset_token',
+        'token_expires_at',
         'lat',
         'long',
     ];
+
     protected $guard = 'tutor';
     private static $tutor;
     private static $generate_otp;

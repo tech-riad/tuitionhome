@@ -469,42 +469,67 @@ class EPSPaymentController extends Controller
                             $counting->save();
                         }
                     }
-                    if($invoice->invoice_type == 'membership payment' && $invoice->job_id == null)
-                    {
-                        $membership = PremiumMembership::where('id',$invoice->membership_id)->first();
+
+                    if ($invoice->invoice_type == 'membership payment' && $invoice->job_id == null) {
+
+                        $membership = PremiumMembership::find($invoice->membership_id);
+
+                        if (!$membership) {
+                            throw new Exception('Premium membership not found.');
+                        }
 
                         $membership->update([
-                        'request_status' => 'accepted',
-                        'payment_status' => 'paid',
-
+                            'request_status' => 'accepted',
+                            'payment_status' => 'paid',
                         ]);
 
-                        $tutor = Tutor::where('id',$invoice->tutor_id)->first();
+                        $tutor = Tutor::find($invoice->tutor_id);
 
-                        if( $invoice->paickage_name == 'regular')
-                        {
-                            $tutor->update([
-                                'premium_date' => now(),
-                                'premium_expire' => now()->addYear(1),
-                                'is_premium' =>1,
-                            ]);
-                        }elseif( $invoice->paickage_name == 'pro')
-                        {
-                            $tutor->update([
-                                'premium_date' => now(),
-                                'premium_expire' => now()->addYear(2),
-                                'is_premium_pro' =>1,
-                            ]);
+                        if (!$tutor) {
+                            throw new Exception('Tutor not found.');
                         }
-                        $tutor->update([
-                            'premium_date' => now(),
-                            'premium_expire' => now()->addYear(5),
-                            'is_premium_advance' =>1,
-                        ]);
 
 
+                        if ($invoice->package_name == 'regular') {
+
+                            $tutor->update([
+                                'premium_date' => now(),
+                                'premium_expire' => now()->addYears(1),
+
+                                'is_premium' => 1,
+                                'is_premium_pro' => 0,
+                                'is_premium_advance' => 0,
+                            ]);
+
+                        } elseif ($invoice->package_name == 'pro') {
+
+                            $tutor->update([
+                                'premium_date' => now(),
+                                'premium_expire' => now()->addYears(2),
+
+                                'is_premium' => 0,
+                                'is_premium_pro' => 1,
+                                'is_premium_advance' => 0,
+                            ]);
+
+                        } elseif ($invoice->package_name == 'advance') {
+
+                            $tutor->update([
+                                'premium_date' => now(),
+                                'premium_expire' => now()->addYears(3),
+
+                                'is_premium' => 0,
+                                'is_premium_pro' => 0,
+                                'is_premium_advance' => 1,
+                            ]);
+
+                        } else {
+                            throw new Exception('Invalid membership package: ' . $invoice->package_name);
+                        }
 
                     }
+
+
 
                     $invoice->update([
                         'status' => 'paid',
