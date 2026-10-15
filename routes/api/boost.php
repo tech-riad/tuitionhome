@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route ;
 Route::group( ['middleware' => ['auth:t-api','scopes:tutors'] ],function(){
 
     Route::get('/tutor/get-boost-status',[BoostController::class,'getBoostStatus'])->name('tutor.get.boostStatus');
+    Route::post('/tutor/create-boost-invoice',[BoostController::class,'createBoostInvoice'])->name('tutor.create.boostInvoice');
 
 });
 

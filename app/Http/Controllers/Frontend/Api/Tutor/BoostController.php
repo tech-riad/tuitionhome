@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationPayment;
+use App\Models\Invoice;
 use App\Models\PremiumMembership;
 use App\Models\Tutor;
 use App\Services\BkashTokenService;
@@ -141,15 +142,7 @@ class BoostController extends Controller
                 $tutor->boost_expire = now()->addMonths(1);
                 $tutor->update();
 
-                $transction = new ApplicationPayment();
-                $transction->tutor_id            = $request->tutor_id ;
-                $transction->received_amount     = $response['amount'];
-                $transction->trx_id              = $response['trxID'];
-                $transction->payment_phone       = $response['customerMsisdn'];
-                $transction->received_number     = $request->received_number ?? 5;
-                $transction->payment_method      = $request->payment_method ?? "Bkash";
-                $transction->service_category    = "profile boost";
-                $transction->save();
+
 
                 return response()->json(['message' => 'Request Sent.']);
             }elseif($request->package_duration == '3'){
@@ -159,15 +152,7 @@ class BoostController extends Controller
                 $tutor->boost_expire = now()->addMonths(3);
                 $tutor->update();
 
-                $transction = new ApplicationPayment();
-                $transction->tutor_id            = $request->tutor_id ;
-                $transction->received_amount     = $response['amount'];
-                $transction->trx_id              = $response['trxID'];
-                $transction->payment_phone       = $response['customerMsisdn'];
-                $transction->received_number     = $request->received_number ?? 5;
-                $transction->payment_method      = $request->payment_method ?? "Bkash";
-                $transction->service_category    = "profile boost";
-                $transction->save();
+
             }elseif($request->package_duration == '6'){
                 $tutor->is_boost    = 1;
                 $tutor->boost_date  = today();
@@ -175,15 +160,7 @@ class BoostController extends Controller
                 $tutor->boost_expire = now()->addMonths(6);
                 $tutor->update();
 
-                $transction = new ApplicationPayment();
-                $transction->tutor_id            = $request->tutor_id ;
-                $transction->received_amount     = $response['amount'];
-                $transction->trx_id              = $response['trxID'];
-                $transction->payment_phone       = $response['customerMsisdn'];
-                $transction->received_number     = $request->received_number ?? 5;
-                $transction->payment_method      = $request->payment_method ?? "Bkash";
-                $transction->service_category    = "profile boost";
-                $transction->save();
+
             }elseif($request->package_duration == '12'){
                 $tutor->is_boost    = 1;
                 $tutor->boost_date  = today();
@@ -191,15 +168,7 @@ class BoostController extends Controller
                 $tutor->boost_expire = now()->addMonths(12);
                 $tutor->update();
 
-                $transction = new ApplicationPayment();
-                $transction->tutor_id            = $request->tutor_id ;
-                $transction->received_amount     = $response['amount'];
-                $transction->trx_id              = $response['trxID'];
-                $transction->payment_phone       = $response['customerMsisdn'];
-                $transction->received_number     = $request->received_number ?? 5;
-                $transction->payment_method      = $request->payment_method ?? "Bkash";
-                $transction->service_category    = "profile boost";
-                $transction->save();
+
             }
 
 
@@ -211,6 +180,42 @@ class BoostController extends Controller
 
 
         return response()->json($response);
+    }
+
+
+    public function createBoostInvoice(Request $request)
+    {
+        $tutor = Tutor::where('id',Auth::user()->id)->first();
+
+        $unpaidInvoice = Invoice::where('tutor_id', $tutor->id)
+            ->where('status', 'pending')
+            ->where('invoice_type', 'boost payment')
+            ->first();
+        if ($unpaidInvoice) {
+            return response()->json(['error' => 'You have an unpaid invoice. Please pay it before creating a new one.'], 400);
+        }
+
+
+
+
+        if($tutor){
+            $invoice = new Invoice();
+            $invoice->tutor_id = $tutor->id;
+            $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+            $invoice->amount = $request->amount;
+            $invoice->currency = 'BDT';
+            $invoice->status = 'pending';
+            $invoice->issued_at = now();
+            $invoice->tutor_name = $tutor->name;
+            $invoice->tutor_phone = $tutor->phone;
+            $invoice->unique_id = $tutor->unique_id;
+            $invoice->payment_date = now()->addDays(7);
+            $invoice->invoice_type = "boost payment";
+            $invoice->package_duration = $request->package_duration;
+            $invoice->save();
+        }
+
+        return response()->json(['message' => 'Invoice Created.','invoice_id' => $invoice->id ]);
     }
 
     public function getBoostStatus()
