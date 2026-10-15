@@ -550,6 +550,53 @@ class EPSPaymentController extends Controller
                         ]);
 
                     }
+                    if ($invoice->invoice_type == 'boost payment') {
+
+                        $tutor = Tutor::where('id',$invoice->tutor_id)->first();
+
+                        if($invoice->package_duration == '1')
+                        {
+                            $tutor->is_boost    = 1;
+                            $tutor->boost_date  = today();
+                            $tutor->boost_package  = $invoice->package_duration;
+                            $tutor->boost_expire = now()->addMonths(1);
+                            $tutor->update();
+
+
+
+                            return response()->json(['message' => 'Request Sent.']);
+                        }elseif($invoice->package_duration == '3'){
+                            $tutor->is_boost    = 1;
+                            $tutor->boost_date  = today();
+                            $tutor->boost_package  = $invoice->package_duration;
+                            $tutor->boost_expire = now()->addMonths(3);
+                            $tutor->update();
+
+
+                        }elseif($invoice->package_duration == '6'){
+                            $tutor->is_boost    = 1;
+                            $tutor->boost_date  = today();
+                            $tutor->boost_package  = $invoice->package_duration;
+                            $tutor->boost_expire = now()->addMonths(6);
+                            $tutor->update();
+
+
+                        }elseif($invoice->package_duration == '12'){
+                            $tutor->is_boost    = 1;
+                            $tutor->boost_date  = today();
+                            $tutor->boost_package  = $invoice->package_duration;
+                            $tutor->boost_expire = now()->addMonths(12);
+                            $tutor->update();
+
+
+                        }
+
+
+
+
+
+
+                    }
 
 
                     $invoice->update([
