@@ -3072,6 +3072,11 @@ class TutorController extends Controller
             }
 
 
+
+
+
+
+
             $validator = Validator::make($request->all(), [
                 'phone'              => 'required|string|max:20',
                 'name'               => 'required|string|max:255',
@@ -3237,18 +3242,109 @@ class TutorController extends Controller
 
                 $tutor = new Tutor();
 
-                $tutor->otp               = $otp;
-                $tutor->otp_expiry        = $otpExpiry;
-                $tutor->name              = trim($request->name);
-                $tutor->phone             = $phone;
-                $tutor->gender            = $request->gender;
-                $tutor->ip_address        = $request->ip();
-                $tutor->role_id            = 3;
-                $tutor->password           = Hash::make('12345678');
-                $tutor->user_agent         = $request->header('User-Agent');
-                $tutor->login_at           = now();
-                $tutor->phone_varified_at  = now();
+                $tutor->otp              = $otp;
+                $tutor->otp_expiry       = $otpExpiry;
+                $tutor->name             = trim($request->name);
+                $tutor->phone            = $phone;
+                $tutor->gender           = $request->gender;
+                $tutor->ip_address       = $request->ip();
+                $tutor->role_id          = 3;
+                $tutor->password         = Hash::make('12345678');
+                $tutor->user_agent       = $request->header('User-Agent');
+                $tutor->login_at         = now();
+                $tutor->phone_varified_at = now();
 
+                if ($request->hasFile('image')) {
+
+                    $request->validate([
+                        'image' => 'image|mimes:jpg,jpeg,png,bmp,webp|max:5120',
+                    ]);
+
+                    $image = $request->file('image');
+
+                    if (!$image->isValid()) {
+                        throw new \Exception('Image upload failed.');
+                    }
+
+                    $imageName = 3 . '_' . time() . '_' . uniqid() . '.jpg';
+
+                    $imgResource = null;
+
+                    switch (strtolower($image->getClientOriginalExtension())) {
+                        case 'jpg':
+                        case 'jpeg':
+                            $imgResource = @imagecreatefromjpeg($image->getPathname());
+                            break;
+
+                        case 'png':
+                            $imgResource = @imagecreatefrompng($image->getPathname());
+                            break;
+
+                        case 'bmp':
+                            $imgResource = @imagecreatefrombmp($image->getPathname());
+                            break;
+
+                        case 'webp':
+                            $imgResource = @imagecreatefromwebp($image->getPathname());
+                            break;
+
+                        default:
+                            throw new \Exception('Unsupported image format.');
+                    }
+
+                    if (!$imgResource) {
+                        throw new \Exception('Unable to read uploaded image.');
+                    }
+
+                    // Preserve transparency with a white background
+                    $width = imagesx($imgResource);
+                    $height = imagesy($imgResource);
+
+                    $jpgImage = imagecreatetruecolor($width, $height);
+
+                    $white = imagecolorallocate($jpgImage, 255, 255, 255);
+                    imagefill($jpgImage, 0, 0, $white);
+
+                    imagecopy(
+                        $jpgImage,
+                        $imgResource,
+                        0,
+                        0,
+                        0,
+                        0,
+                        $width,
+                        $height
+                    );
+
+                    // Convert to JPG in memory
+                    ob_start();
+
+                    $success = imagejpeg($jpgImage, null, 90);
+
+                    $imageContent = ob_get_clean();
+
+                    imagedestroy($imgResource);
+                    imagedestroy($jpgImage);
+
+                    if (!$success || empty($imageContent)) {
+                        throw new \Exception('Failed to convert image to JPG.');
+                    }
+
+                    // Upload to Cloudflare R2
+                    $path = 'tutor-images/' . $imageName;
+
+                    $uploaded = Storage::disk('r2')->put($path, $imageContent, [
+                        'ContentType' => 'image/jpeg',
+                    ]);
+
+                    if (!$uploaded) {
+                        throw new \Exception('Failed to upload image to R2.');
+                    }
+
+                    $tutor->image = $imageName;
+                }
+
+                // Save tutor only once
                 $tutor->save();
 
 
