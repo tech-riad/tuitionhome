@@ -143,6 +143,19 @@ class MembershipController extends Controller
             $cupon = $request->cupon_code;
             // dd($cupon);
 
+
+            $existingInvoice = Invoice::where('tutor_id', Auth::user()->id)
+                ->where('package_name', $package->package_name)
+                ->where('status', 'pending')
+                ->first();
+
+            if ($existingInvoice) {
+                return response()->json([
+                    'message' => 'You already have an unpaid invoice for this type.',
+                    'invoice_id' => $existingInvoice->id
+                ], 422);
+            }
+
             if ($cupon !== null ) {
 
                 if ($package->cupon != $cupon) {
@@ -152,22 +165,28 @@ class MembershipController extends Controller
                 }
 
                 $invoice_amount = $package->amount - $package->discount ;
+                $cuponCode = $package->cupon;
             } else {
                 $invoice_amount = $package->amount;
             }
 
+            if($package->type == 'premium'){
+                 $sendMembershipRequest = new PremiumMembership ();
 
-            $sendMembershipRequest = new PremiumMembership ();
+                $sendMembershipRequest->tutor_id        = $tutor->id;
+                $sendMembershipRequest->name            = $tutor->name;
+                $sendMembershipRequest->request_status  = 'pending';
+                $sendMembershipRequest->payment_status  = 'unpaid';
+                $sendMembershipRequest->taka            = $invoice_amount;
+                $sendMembershipRequest->package_name    = $package->package_name;
+                $sendMembershipRequest->channel_name    = 'Website';
 
-            $sendMembershipRequest->tutor_id        = $tutor->id;
-            $sendMembershipRequest->name            = $tutor->name;
-            $sendMembershipRequest->request_status  = 'pending';
-            $sendMembershipRequest->payment_status  = 'unpaid';
-            $sendMembershipRequest->taka            = $invoice_amount;
-            $sendMembershipRequest->package_name    = $package->package_name;
-            $sendMembershipRequest->channel_name    = 'Website';
+                $sendMembershipRequest->save();
 
-            $sendMembershipRequest->save();
+            }
+
+
+
             // dd($sendMembershipRequest->id);
 
             $invoice = new Invoice();
@@ -181,10 +200,11 @@ class MembershipController extends Controller
             $invoice->tutor_phone = $tutor->phone;
             $invoice->unique_id = $tutor->unique_id;
             $invoice->payment_date = now()->addDays(7);
+            $invoice->cupon = $cuponCode ?? null;
 
-            $invoice->invoice_type = $package->package_name;
-            $invoice->package_name = $package->type;
-            $invoice->membership_id = $sendMembershipRequest->id;
+            $invoice->invoice_type = $package->type;
+            $invoice->package_name = $package->package_name;
+            $invoice->membership_id = $sendMembershipRequest->id ?? null;
             $invoice->save();
             return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
 
