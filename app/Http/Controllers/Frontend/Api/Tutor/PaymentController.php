@@ -74,6 +74,33 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function invoiceDetails($id)
+    {
+        $invoice = Invoice::select(
+            'id',
+            'tutor_id',
+            'unique_id',
+            'invoice_number',
+            'amount',
+            'status',
+            'issued_at',
+            'job_number',
+            'payment_date',
+            'paid_at',
+            'invoice_type',
+            'due_invoice',
+            'tutor_name as customer_name',
+            'tutor_email as customer_email',
+            'tutor_phone as customer_phone'
+        )->where('id', $id)->first();
+
+        if (!$invoice) {
+            return response()->json(['error' => 'Invoice not found'], 404);
+        }
+
+        return response()->json($invoice);
+    }
+
     public function refundApply(Request $request)
     {
         $tutorId = Auth::user()->id;

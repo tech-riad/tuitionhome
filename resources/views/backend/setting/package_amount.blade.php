@@ -175,19 +175,15 @@
 
                                                     <div class="mb-3">
                                                         <label class="form-label">Package Name</label>
-                                                        <select class="form-control" name="package_name" required>
-                                                            <option value="Regular"
-                                                                {{ $packageAmount->package_name == 'Regular' ? 'selected' : '' }}>
-                                                                Regular
-                                                            </option>
-                                                            <option value="Pro"
-                                                                {{ $packageAmount->package_name == 'Pro' ? 'selected' : '' }}>
-                                                                Pro
-                                                            </option>
-                                                            <option value="Advance"
-                                                                {{ $packageAmount->package_name == 'Advance' ? 'selected' : '' }}>
-                                                                Advance
-                                                            </option>
+                                                        <select class="form-control" id="package_name" name="package_name">
+                                                            <option value="regular" {{ $packageAmount->package_name == 'regular' ? 'selected' : '' }}>Regular Premium</option>
+                                                            <option value="pro" {{ $packageAmount->package_name == 'pro' ? 'selected' : '' }}>Pro Premium</option>
+                                                            <option value="advance" {{ $packageAmount->package_name == 'advance' ? 'selected' : '' }}>Advance Premium</option>
+                                                            <option value="regular_boost" {{ $packageAmount->package_name == 'regular_boost' ? 'selected' : '' }}>Regular Boost</option>
+                                                            <option value="pro_boost" {{ $packageAmount->package_name == 'pro_boost' ? 'selected' : '' }}>Pro Boost</option>
+                                                            <option value="advance_boost" {{ $packageAmount->package_name == 'advance_boost' ? 'selected' : '' }}>Advance Boost</option>
+                                                            <option value="enterprise_boost" {{ $packageAmount->package_name == 'enterprise_boost' ? 'selected' : '' }}>Enterprise Boost</option>
+                                                            <option value="verify" {{ $packageAmount->package_name == 'verify' ? 'selected' : '' }}>Profile Verify</option>
                                                         </select>
                                                     </div>
 

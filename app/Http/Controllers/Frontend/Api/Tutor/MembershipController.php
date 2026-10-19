@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Api\Tutor;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationPayment;
 use App\Models\Invoice;
+use App\Models\PackageAmount;
 use App\Models\PremiumMembership;
 use App\Models\Tutor;
 use App\Models\VerificationRequest;
@@ -132,142 +133,60 @@ class MembershipController extends Controller
 
     }
 
-    public function createMembershipInvoice(Request $request)
+    public function createInvoice(Request $request)
     {
 
             $tutor = Tutor::where('id',Auth::user()->id)->first();
 
+            $package =  PackageAmount::where('id', $request->package_id)->first();
 
-            $packageMap = [
-                'premium'         => 'regular',
-                'premium_pro'     => 'pro',
-                'premium_advance' => 'advance',
-            ];
+            $cupon = $request->cupon_code;
+            // dd($cupon);
 
-            if (!isset($packageMap[$request->request_type])) {
-                return response()->json([
-                    'message' => 'Invalid membership request type.'
-                ], 422);
-            }
+            if ($cupon !== null ) {
 
-            $packageName = $packageMap[$request->request_type];
+                if ($package->cupon != $cupon) {
+                    return response()->json([
+                        'message' => 'Invalid coupon code.'
+                    ], 422);
+                }
 
-            $latestMembership = PremiumMembership::where('tutor_id', $tutor->id)
-                ->where('package_name', $packageName)
-                ->latest('id')
-                ->first();
-
-            if ($latestMembership && $latestMembership->payment_status === 'unpaid') {
-                return response()->json([
-                    'message' => 'You already have an unpaid request for this membership package.'
-                ], 409);
+                $invoice_amount = $package->amount - $package->discount ;
+            } else {
+                $invoice_amount = $package->amount;
             }
 
 
-            // dd($request->all());-*
-            if($request->request_type == 'premium')
-            {
-                $sendMembershipRequest = new PremiumMembership ();
-                $sendMembershipRequest->tutor_id        = $tutor->id;
-                $sendMembershipRequest->name            = $tutor->name;
-                $sendMembershipRequest->request_status  = 'pending';
-                $sendMembershipRequest->payment_status  = 'unpaid';
-                $sendMembershipRequest->taka            = $request->amount;
-                $sendMembershipRequest->package_name    = 'regular';
-                $sendMembershipRequest->channel_name    = 'Website';
+            $sendMembershipRequest = new PremiumMembership ();
 
-                $sendMembershipRequest->save();
-                // dd($sendMembershipRequest->id);
+            $sendMembershipRequest->tutor_id        = $tutor->id;
+            $sendMembershipRequest->name            = $tutor->name;
+            $sendMembershipRequest->request_status  = 'pending';
+            $sendMembershipRequest->payment_status  = 'unpaid';
+            $sendMembershipRequest->taka            = $invoice_amount;
+            $sendMembershipRequest->package_name    = $package->package_name;
+            $sendMembershipRequest->channel_name    = 'Website';
 
-                $invoice = new Invoice();
-                $invoice->tutor_id = $tutor->id;
-                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
-                $invoice->amount = $request->amount;
-                $invoice->currency = 'BDT';
-                $invoice->status = 'pending';
-                $invoice->issued_at = Carbon::now();
-                $invoice->tutor_name = $tutor->name;
-                $invoice->tutor_phone = $tutor->phone;
-                $invoice->unique_id = $tutor->unique_id;
-                $invoice->payment_date = now()->addDays(7);
+            $sendMembershipRequest->save();
+            // dd($sendMembershipRequest->id);
 
-                $invoice->invoice_type = "membership payment";
-                $invoice->package_name = 'regular';
-                $invoice->membership_id = $sendMembershipRequest->id;
-                $invoice->save();
+            $invoice = new Invoice();
+            $invoice->tutor_id = $tutor->id;
+            $invoice->invoice_number = 'INV-' . $tutor->unique_id . '-' . $package->type . '-' . time();
+            $invoice->amount = $invoice_amount;
+            $invoice->currency = 'BDT';
+            $invoice->status = 'pending';
+            $invoice->issued_at = Carbon::now();
+            $invoice->tutor_name = $tutor->name;
+            $invoice->tutor_phone = $tutor->phone;
+            $invoice->unique_id = $tutor->unique_id;
+            $invoice->payment_date = now()->addDays(7);
 
-
-
-                return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
-
-            }elseif($request->request_type == 'premium_pro' ){
-                $sendMembershipRequest = new PremiumMembership ();
-                $sendMembershipRequest->tutor_id        = $tutor->id;
-                $sendMembershipRequest->name            = $tutor->name;
-                $sendMembershipRequest->request_status  = 'pending';
-                $sendMembershipRequest->payment_status  = 'unpaid';
-                $sendMembershipRequest->taka            = $request->amount;
-                $sendMembershipRequest->package_name    = 'pro';
-                $sendMembershipRequest->channel_name    = 'Website';
-
-                $sendMembershipRequest->save();
-
-
-                $invoice = new Invoice();
-                $invoice->tutor_id = $tutor->id;
-                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
-                $invoice->amount = $request->amount;
-                $invoice->currency = 'BDT';
-                $invoice->status = 'pending';
-                $invoice->issued_at = Carbon::now();
-                $invoice->tutor_name = $tutor->name;
-                $invoice->tutor_phone = $tutor->phone;
-                $invoice->unique_id = $tutor->unique_id;
-                $invoice->payment_date = now()->addDays(7);
-
-                $invoice->invoice_type = "membership payment";
-                $invoice->package_name = 'pro';
-                $invoice->membership_id = $sendMembershipRequest->id;
-                $invoice->save();
-
-
-
-                return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
-            }elseif($request->request_type == 'premium_advance'){
-                $sendMembershipRequest = new PremiumMembership ();
-                $sendMembershipRequest->tutor_id        = $tutor->id;
-                $sendMembershipRequest->name            = $tutor->name;
-                $sendMembershipRequest->request_status  = 'pending';
-                $sendMembershipRequest->payment_status  = 'unpaid';
-                $sendMembershipRequest->taka            = $request->amount;
-                $sendMembershipRequest->package_name    = 'advance';
-                $sendMembershipRequest->channel_name    = 'Website';
-                $sendMembershipRequest->save();
-
-                $invoice = new Invoice();
-                $invoice->tutor_id = $tutor->id;
-                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
-                $invoice->amount = $request->amount;
-                $invoice->currency = 'BDT';
-                $invoice->status = 'pending';
-                $invoice->issued_at = Carbon::now();
-                $invoice->tutor_name = $tutor->name;
-                $invoice->tutor_phone = $tutor->phone;
-                $invoice->unique_id = $tutor->unique_id;
-                $invoice->payment_date = now()->addDays(7);
-                $invoice->invoice_type = "membership payment";
-                $invoice->package_name = 'advance';
-                $invoice->membership_id = $sendMembershipRequest->id;
-                $invoice->save();
-
-
-                return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
-            }
-
-
-
-
-
+            $invoice->invoice_type = $package->package_name;
+            $invoice->package_name = $package->type;
+            $invoice->membership_id = $sendMembershipRequest->id;
+            $invoice->save();
+            return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
 
     }
 
