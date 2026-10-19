@@ -38,6 +38,11 @@
                   <i class='fas fa-certificate'></i>
                   Convert Parent</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('admin.package.amount')}}">
+                  <i class='fas fa-certificate'></i>
+                  Package Amount</a>
+            </li>
           </ul>
 
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApplicationPayment;
 use App\Models\DeskNumber;
 use App\Models\DuePayments;
+use App\Models\PackageAmount;
 use App\Models\ParentPersonalInfo;
 use App\Models\Parents;
 use App\Models\SocialMedia;
@@ -33,6 +34,64 @@ use Spatie\Permission\Models\Role;
 
 class SettingController extends Controller
 {
+    public function addPackageAmount(Request $request)
+    {
+        $request->validate([
+            'package_name' => 'nullable|string|max:255',
+            'amount'       => 'required|numeric',
+            'currency'     => 'required|string|max:10',
+            'duration'     => 'nullable|string|max:50',
+            'type'         => 'required|string|max:50',
+            'cupon'        => 'nullable|string|max:50',
+            'discount'     => 'nullable|numeric',
+        ]);
+
+        $packageAmount = PackageAmount::create($request->only(
+            'package_name',
+            'amount',
+            'currency',
+            'duration',
+            'type',
+            'cupon',
+            'discount'
+        ));
+
+        return redirect()->back()->with('success', 'Package added successfully!');
+    }
+
+    public function packageAmount()
+    {
+        $packageAmounts = PackageAmount::all();
+        return view('backend.setting.package_amount', compact('packageAmounts'));
+    }
+
+    public function updatePackageAmount(Request $request, $id)
+    {
+        $request->validate([
+            'package_name' => 'required|string|max:255',
+            'amount'       => 'required|numeric',
+            'currency'     => 'required|string|max:10',
+            'duration'     => 'nullable|string|max:50',
+            'type'         => 'nullable|string|max:50',
+            'cupon'        => 'nullable|string|max:50',
+            'discount'     => 'nullable|numeric',
+        ]);
+
+        $packageAmount = PackageAmount::findOrFail($id);
+
+        $packageAmount->update($request->only(
+            'package_name',
+            'amount',
+            'currency',
+            'duration',
+            'type',
+            'cupon',
+            'discount'
+        ));
+
+        return redirect()->back()->with('success', 'Package updated successfully!');
+    }
+
     public function index(){
         // dd('hi');
         return view('backend.setting.setting_sidenav');

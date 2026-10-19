@@ -8,6 +8,7 @@ use App\Models\Curriculam;
 use App\Models\Day;
 use App\Models\Degree;
 use App\Models\Department;
+use App\Models\PackageAmount;
 use App\Models\PopupImage;
 use App\Models\PwaDownload;
 use App\Models\Study;
@@ -170,5 +171,11 @@ class ConfigController extends Controller
             'refund_job'      => optional($countings)->refund_job ?? 0,
         ]);
 
+    }
+
+    public function packageDataGet()
+    {
+        $packages = PackageAmount::orderBy('id', 'desc')->get();
+        return $this->resposeSuccess('Data get successfully', $packages);
     }
 }

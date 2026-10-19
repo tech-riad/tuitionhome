@@ -18,3 +18,4 @@ Route::post('/tutoring-history-counting', [ConfigController::class, 'jobCounting
 
 
 Route::get('/get-popup', [ConfigController::class, 'popupImageGet']);
+Route::get('/get-packages', [ConfigController::class, 'packageDataGet']);

@@ -19,4 +19,9 @@ Route::delete('admin/social-media/{id}', [SettingController::class, 'destroy'])-
 Route::get('/admin/get-social-media/{id}', [SettingController::class, 'getSocialMedia']);
 Route::post('/admin/update-social-media/{id}', [SettingController::class, 'updateSocialMedia']);
 
+
+Route::post('/admin/package-amount/{id}', [SettingController::class, 'updatePackageAmount'])->name('admin.package.amount.update');
+Route::get('/admin/package-amount', [SettingController::class, 'packageAmount'])->name('admin.package.amount');
+Route::post('/admin/package-add', [SettingController::class, 'addPackageAmount'])->name('admin.package.add');
+
 });
