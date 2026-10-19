@@ -552,7 +552,6 @@ class EPSPaymentController extends Controller
                         $tutor->update([
                             'is_verified' => 1,
                             'verify_date' => now(),
-                            'verified_by' => $invoice->owned_by ?? null,
                         ]);
 
                     }
