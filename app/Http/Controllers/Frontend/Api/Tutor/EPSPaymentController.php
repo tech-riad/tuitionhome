@@ -537,7 +537,7 @@ class EPSPaymentController extends Controller
                     }
 
 
-                    if ($package->type == 'verify') {
+                    if ($package->type == 'profile_verify') {
                         $verifyRequest = VerificationRequest::find($invoice->verification_id);
 
                         $tutor = Tutor::find($invoice->tutor_id);
@@ -552,7 +552,7 @@ class EPSPaymentController extends Controller
                         $tutor->update([
                             'is_verified' => 1,
                             'verify_date' => now(),
-                            'verified_by' => $invoice->owned_by,
+                            'verified_by' => $invoice->owned_by ?? null,
                         ]);
 
                     }
@@ -567,8 +567,6 @@ class EPSPaymentController extends Controller
                         $tutor->update();
 
 
-
-                        return response()->json(['message' => 'Request Sent.']);
 
 
                     }
