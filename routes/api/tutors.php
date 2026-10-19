@@ -10,8 +10,7 @@ use App\Http\Controllers\Frontend\Api\Tutor\TutorLoginRegisterController;
 use App\Http\Controllers\Frontend\Api\Tutor\TutorController;
 use App\Http\Controllers\Frontend\Tutor\TutorController as TutorTutorController;
 
-Route::post('/payment/eps/create',[EPSPaymentController::class, 'createPayment']
-);
+
 Route::get('/tutor/get-profile-picture/{id}',[TutorController::class,'getProfilePicture']);
 Route::post('/tutor/register',[TutorLoginRegisterController::class,'registerStore']);
 Route::post('/tutor/login',[TutorLoginRegisterController::class,'login']);

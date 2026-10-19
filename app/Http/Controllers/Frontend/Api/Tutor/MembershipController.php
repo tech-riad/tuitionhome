@@ -201,6 +201,7 @@ class MembershipController extends Controller
             $invoice->unique_id = $tutor->unique_id;
             $invoice->payment_date = now()->addDays(7);
             $invoice->cupon = $cuponCode ?? null;
+            $invoice->package_id = $package->id;
 
             $invoice->invoice_type = $package->type;
             $invoice->package_name = $package->package_name;

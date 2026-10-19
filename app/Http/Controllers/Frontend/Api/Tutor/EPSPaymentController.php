@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Counting;
 use App\Models\Invoice;
 use App\Models\JobApplication;
+use App\Models\PackageAmount;
 use App\Models\Payment;
 use App\Models\PremiumMembership;
 use App\Models\Tutor;
@@ -249,7 +250,7 @@ class EPSPaymentController extends Controller
                     $payment->id,
 
                 'invoice_id' =>
-                    $payment->invoice_id,
+                    $invoice->id,
 
                 'merchant_transaction_id' =>
                     $merchantTransactionId,
@@ -471,7 +472,9 @@ class EPSPaymentController extends Controller
                         }
                     }
 
-                    if ($invoice->invoice_type == 'membership payment' && $invoice->job_id == null) {
+                    $package = PackageAmount::find($invoice->package_id);
+
+                    if ($package->type == 'premium') {
 
                         $membership = PremiumMembership::find($invoice->membership_id);
 
@@ -491,11 +494,14 @@ class EPSPaymentController extends Controller
                         }
 
 
-                        if ($invoice->package_name == 'regular') {
+
+
+
+                        if ($package->package_name == 'regular') {
 
                             $tutor->update([
                                 'premium_date' => now(),
-                                'premium_expire' => now()->addYears(1),
+                                'premium_expire' => now()->addMonths($package->duration),
 
                                 'is_premium' => 1,
                                 'is_premium_pro' => 0,
@@ -506,7 +512,7 @@ class EPSPaymentController extends Controller
 
                             $tutor->update([
                                 'premium_date' => now(),
-                                'premium_expire' => now()->addYears(2),
+                                'premium_expire' => now()->addMonths($package->duration),
 
                                 'is_premium' => 0,
                                 'is_premium_pro' => 1,
@@ -517,7 +523,7 @@ class EPSPaymentController extends Controller
 
                             $tutor->update([
                                 'premium_date' => now(),
-                                'premium_expire' => now()->addYears(3),
+                                'premium_expire' => now()->addMonths($package->duration),
 
                                 'is_premium' => 0,
                                 'is_premium_pro' => 0,
@@ -531,7 +537,7 @@ class EPSPaymentController extends Controller
                     }
 
 
-                    if ($invoice->invoice_type == 'verification payment') {
+                    if ($package->type == 'verify') {
                         $verifyRequest = VerificationRequest::find($invoice->verification_id);
 
                         $tutor = Tutor::find($invoice->tutor_id);
@@ -550,50 +556,19 @@ class EPSPaymentController extends Controller
                         ]);
 
                     }
-                    if ($invoice->invoice_type == 'boost payment') {
+                    if ($package->type == 'boost') {
 
                         $tutor = Tutor::where('id',$invoice->tutor_id)->first();
 
-                        if($invoice->package_duration == '1')
-                        {
-                            $tutor->is_boost    = 1;
-                            $tutor->boost_date  = today();
-                            $tutor->boost_package  = $invoice->package_duration;
-                            $tutor->boost_expire = now()->addMonths(1);
-                            $tutor->update();
+                        $tutor->is_boost    = 1;
+                        $tutor->boost_date  = today();
+                        $tutor->boost_package  = $package->duration;
+                        $tutor->boost_expire = now()->addMonths($package->duration);
+                        $tutor->update();
 
 
 
-                            return response()->json(['message' => 'Request Sent.']);
-                        }elseif($invoice->package_duration == '3'){
-                            $tutor->is_boost    = 1;
-                            $tutor->boost_date  = today();
-                            $tutor->boost_package  = $invoice->package_duration;
-                            $tutor->boost_expire = now()->addMonths(3);
-                            $tutor->update();
-
-
-                        }elseif($invoice->package_duration == '6'){
-                            $tutor->is_boost    = 1;
-                            $tutor->boost_date  = today();
-                            $tutor->boost_package  = $invoice->package_duration;
-                            $tutor->boost_expire = now()->addMonths(6);
-                            $tutor->update();
-
-
-                        }elseif($invoice->package_duration == '12'){
-                            $tutor->is_boost    = 1;
-                            $tutor->boost_date  = today();
-                            $tutor->boost_package  = $invoice->package_duration;
-                            $tutor->boost_expire = now()->addMonths(12);
-                            $tutor->update();
-
-
-                        }
-
-
-
-
+                        return response()->json(['message' => 'Request Sent.']);
 
 
                     }
@@ -668,33 +643,15 @@ class EPSPaymentController extends Controller
 
         $frontendUrl = rtrim(
             (string) (
-                config('app.frontend_url')
-                ?? env('FRONTEND_URL')
-                ?? config('app.url', 'https://tuitionhome.xyz')
+                 'https://tuitionhome.xyz'
             ),
             '/'
         );
 
-        $params = [
-            'status' => $status,
-
-            'message' => $message,
-
-            'invoice_id' =>
-                $payment
-                    ? $payment->invoice_id
-                    : null,
-
-            'payment_id' =>
-                $payment
-                    ? $payment->id
-                    : null,
-        ];
 
         return redirect()->away(
             $frontendUrl .
-            '/payment/result?' .
-            http_build_query($params)
+            '/payment/success'
         );
     }
 }

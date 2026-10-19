@@ -89,6 +89,7 @@ class PaymentController extends Controller
             'paid_at',
             'invoice_type',
             'due_invoice',
+            'package_name',
             'tutor_name as customer_name',
             'tutor_email as customer_email',
             'tutor_phone as customer_phone'
