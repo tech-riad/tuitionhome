@@ -111,6 +111,7 @@
                             <th scope="col" class="text-nowrap">Completion</th>
 
                             <th scope="col" class="text-nowrap">SMS</th>
+                            <th scope="col" class="text-nowrap">Notes</th>
                             <th scope="col" class="text-nowrap">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Action
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</th>
                         </tr>
@@ -395,6 +396,17 @@
                                     </div>
                                 </div>
                             </td>
+                            <td>
+                                <button type="button"
+                                    class="btn btn-primary py-1 px-2"
+                                    onclick="btnTutorNote({{ $tutor->id }})"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#tutorNoteModalNew">
+                                    Note
+                                </button>
+                                
+                                <!--Note model ends here-->
+                            </td>
 
                             <td>
 
@@ -607,10 +619,10 @@
 
                                 @endif
 
-                                <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
+                                {{-- <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
                                     data-bs-toggle="modal" data-bs-target="#tutorNoteModal">
                                     Note
-                                </button>
+                                </button> --}}
                             </td>
                         </tr>
                         @endforeach
@@ -627,6 +639,43 @@
         </div>
         <!-- main content section ends here -->
 
+    </div>
+
+
+    <div class="modal fade" id="tutorNoteModalNew" tabindex="-1" aria-labelledby="tutorNoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 600px">
+            <div class="modal-content p-2">
+                <div class="modal-body py-0 mt-2">
+                    <div class="mb-4">
+
+                        <form action="{{ route('admin.tutor.note') }}" id="tutorNoteForm" method="post">
+                            @csrf
+
+                            <input type="hidden" name="note_tutor_id" id="note_tutor_id">
+                            <div class="mb-3">
+                                <label for="notet" class="form-label fw-500 fs-14">Note</label>
+                                <textarea name="note" placeholder="Write your note here..."
+                                    class="form-control shadow-none rounded-2" id="tutor_note"
+                                    rows="4"></textarea>
+
+                            </div>
+                            <span class="text-danger error-text tutor_note_error"></span>
+
+                            <div class="d-flex justify-content-end align-items-center">
+                                <button type="submit" class="btn btn-primary px-2 py-1">
+                                    Create
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="mb-4" id="allNote">
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -1513,11 +1562,6 @@
                         <textarea name="note" class="form-control" rows="8" id="tutor_note" required=""></textarea>
                     </div>
 
-                    {{--
-            <textarea name="long_description" class="form-control" rows="8" id="long_description" required>
-            </textarea> --}}
-
-                    {{-- <p>Some text in the modal.</p> --}}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

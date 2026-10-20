@@ -122,6 +122,7 @@
                             <th scope="col" class="text-nowrap">Completion</th>
 
                             <th scope="col" class="text-nowrap">SMS</th>
+                            <th scope="col" class="text-nowrap">Note</th>
                             <th scope="col" class="text-nowrap">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Action
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</th>
                         </tr>
@@ -412,6 +413,17 @@
                                     </div>
                                 </div>
                             </td>
+                            <td>
+                                <button type="button"
+                                    class="btn btn-primary py-1 px-2"
+                                    onclick="btnTutorNote({{ $tutor->id }})"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#tutorNoteModalNew">
+                                    Note
+                                </button>
+                                
+                                <!--Note model ends here-->
+                            </td>
 
                             <td>
 
@@ -624,10 +636,10 @@
 
                                 @endif
 
-                                <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
+                                {{-- <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
                                     data-bs-toggle="modal" data-bs-target="#tutorNoteModal">
                                     Note
-                                </button>
+                                </button> --}}
                             </td>
                         </tr>
                         @endforeach
@@ -1422,86 +1434,44 @@
 
 
 <!-- Note model -->
-<div class="modal fade" id="tutorNoteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
 
-                <h5 class="modal-title" id="exampleModalLabel">Note Details </h5>
+</div>
 
-            </div>
-            <div class="modal-body">
-                <div>
+<div class="modal fade" id="tutorNoteModalNew" tabindex="-1" aria-labelledby="tutorNoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 600px">
+            <div class="modal-content p-2">
+                <div class="modal-body py-0 mt-2">
+                    <div class="mb-4">
 
-
-                    <div id="allNote">
-                        <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
-                            <div class="d-flex justify-content-between align-items-center" id="singleNote">
-                                <div>
-                                    <p class="mb-0 text-dark fs-5">Sohag Sarkar</p>
-                                    <p class="text-info" style="font-size: 12px">ID-23456</p>
-                                </div>
-                                <div>
-                                    <p>June 17, 2023</p>
-                                </div>
-                            </div>
-                            <p>note body</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p>Read More</p>
-                                </div>
-                                <div>
-                                    <button class="btn btn-primary py-1">Edit</button>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-                    </div>
-
-
-
-
-                    <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-
-                        </div>
-
-                        <form action="{{route('admin.tutor.note')}}" method="POST" id="tutorNote">
-
+                        <form action="{{ route('admin.tutor.note') }}" id="tutorNoteForm" method="post">
                             @csrf
 
-                            <input type="hidden" name="tutor_id" id="note_tutor_id">
-                            <div class="form-group">
-                                <label>Add Note</label>
-                                <textarea name="note" class="form-control" rows="5" id="tutor_note"
-                                    required=""></textarea>
+                            <input type="hidden" name="note_tutor_id" id="note_tutor_id">
+                            <div class="mb-3">
+                                <label for="notet" class="form-label fw-500 fs-14">Note</label>
+                                <textarea name="note" placeholder="Write your note here..."
+                                    class="form-control shadow-none rounded-2" id="tutor_note"
+                                    rows="4"></textarea>
+
+                            </div>
+                            <span class="text-danger error-text tutor_note_error"></span>
+
+                            <div class="d-flex justify-content-end align-items-center">
+                                <button type="submit" class="btn btn-primary px-2 py-1">
+                                    Create
+                                </button>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center">
-
-                                <div>
-
-                                    {{-- <button class="btn btn-primary py-1">Save</button> --}}
-                                </div>
-                                <div>
-                                    <button class="btn btn-primary py-1">Save</button>
-                                </div>
                         </form>
                     </div>
+                    <div class="mb-4" id="allNote">
+
+                    </div>
+                    
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <div class="py-2"></div>
-        </div>
     </div>
-</div>
-</div>
-
-
 {{-- end note modal --}}
 
 

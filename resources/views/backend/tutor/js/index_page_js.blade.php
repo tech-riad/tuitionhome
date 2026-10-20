@@ -561,3 +561,95 @@ $(document).ready(function () {
 
 });
 </script>
+
+
+
+<script>
+  function btnTutorNote(tutorId) {
+    $('#note_tutor_id').val(tutorId);
+    $('#tutor_note').val('');
+    $('.tutor_note_error').text('');
+
+    loadTutorNotes(tutorId);
+}
+
+function loadTutorNotes(tutorId) {
+    $('#allNote').html('<p>Loading notes...</p>');
+
+    $.ajax({
+        url: "{{ route('admin.tutor.getnote') }}",
+        type: 'GET',
+        data: {
+            tutor_id: tutorId
+        },
+        success: function (response) {
+            $('#allNote').empty();
+
+            if (!response.status || !response.notes.length) {
+                $('#allNote').html('<p>No notes found.</p>');
+                return;
+            }
+
+            response.notes.forEach(function (note) {
+                const item = $('<div>', {
+                    class: 'border rounded p-2 mb-2'
+                });
+
+                $('<p>', {
+                    class: 'mb-1'
+                }).text(note.body || '').appendTo(item);
+
+                $('<small>', {
+                    class: 'text-muted'
+                }).text(
+                    'Created: ' + (note.created_at || '')
+                ).appendTo(item);
+
+                $('#allNote').append(item);
+            });
+        },
+        error: function () {
+            $('#allNote').html(
+                '<p class="text-danger">Unable to load notes.</p>'
+            );
+        }
+    });
+}
+
+$('#tutorNoteForm').on('submit', function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+    const tutorId = $('#note_tutor_id').val();
+
+    $('.tutor_note_error').text('');
+
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: form.serialize(),
+        success: function (response) {
+            if (response.status) {
+                $('#tutor_note').val('');
+                loadTutorNotes(tutorId);
+
+                if (typeof toastr !== 'undefined') {
+                    toastr.success(response.message);
+                }
+            }
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors || {};
+
+                $('.tutor_note_error').text(
+                    errors.note ? errors.note[0] :
+                    'Please check the submitted information.'
+                );
+            } else {
+                alert('Note save failed. Please try again.');
+            }
+        }
+    });
+});
+</script>

@@ -359,7 +359,7 @@ class BackendTutorController extends Controller
 //     return response()->json(['message' => 'Tutor status updated successfully']);
 // }
 
-public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $id)
     {
         $request->validate([
             'status' => 'required|in:0,1',
@@ -393,36 +393,55 @@ public function updateStatus(Request $request, $id)
 
     public function tutorNote(Request $request)
     {
-        $request->validate([
-            'tutor_id' => 'required|integer',
-            'note'     => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'note_tutor_id' => 'required|integer|exists:tutors,id',
+            'note' => 'required|string',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
         $note = new TutorNote();
-
-        $note->tutor_id   = $request->tutor_id;
-        $note->body       = $request->note;
+        $note->tutor_id = $request->note_tutor_id;
+        $note->body = $request->note;
         $note->created_by = Auth::user()->name;
-
+        $note->emp_id = (string) Auth::id();
         $note->save();
 
         return response()->json([
-            'status'  => true,
-            'message' => 'Note added successfully!',
-            'data'    => $note
+            'status' => true,
+            'message' => 'Tutor note created successfully.',
+            'note' => $note,
         ]);
     }
+
 
     public function getNote(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'tutor_id' => 'required|integer|exists:tutors,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $notes = TutorNote::where('tutor_id', $request->tutor_id)
+            ->latest()
+            ->get();
+
         return response()->json([
-            'request_id' => $request->id,
-            'notes' => TutorNote::where('tutor_id', $request->id)
-                ->orderBy('id', 'desc')
-                ->get(),
+            'status' => true,
+            'notes' => $notes,
         ]);
     }
-
 
 
     public function filter(Request $request)
