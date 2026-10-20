@@ -626,7 +626,7 @@
                                 @endif
 
 
-                                @if ($tutor->is_verified == 0)
+                                {{-- @if ($tutor->is_verified == 0)
                                 <form style="display:inline" id="verifyTutor{{ $tutor->id }}"
                                     action="{{ route('admin.tutor.verify', ['tutor' => $tutor->id]) }}" method="POST">
                                     @csrf
@@ -634,7 +634,7 @@
                                         onclick="verifyTutor(this, this.id)">Verify</button>
                                 </form>
 
-                                @endif
+                                @endif --}}
 
                                 {{-- <button class="btn btn-sm btn-primary" id="{{ $tutor->id }}" onclick="btnNote(this.id)"
                                     data-bs-toggle="modal" data-bs-target="#tutorNoteModal">

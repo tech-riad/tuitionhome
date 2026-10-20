@@ -233,13 +233,13 @@
             </div>
 
             <!-- Note Button -->
-            <button type="button"
+            {{-- <button type="button"
                     class="btn btn-md btn-danger btn-note mb-4"
                     data-tutor-id="{{ $tutor->id }}"
                     data-bs-toggle="modal"
                     data-bs-target="#tutorNoteModal_{{ $tutor->id }}">
                 Note Add
-            </button>
+            </button> --}}
 
 
             <br>

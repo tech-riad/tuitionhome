@@ -36,6 +36,7 @@ use Dotenv\Exception\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class ParentController extends Controller
 {
@@ -1357,107 +1358,170 @@ class ParentController extends Controller
     }
 
 
+    
+
+
     public function profileImageUpload(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
                 'parent_id' => 'required|exists:parents,id',
-                'image'    => 'required|mimes:jpg,jpeg,png,bmp|max:2000',
+                'image'     => 'required|mimes:jpg,jpeg,png,bmp|max:2000',
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['status' => false, 'error' => $validator->errors()], 400);
+                return response()->json([
+                    'status' => false,
+                    'error'  => $validator->errors(),
+                ], 400);
             }
 
             $parent_id = $request->input('parent_id');
             $parent = Parents::findOrFail($parent_id);
+            $image = $request->file('image');
 
-            if ($parent->image) {
-                $oldImagePath = public_path('storage/parent-images/' . $parent->image);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
+            if (!$image || !$image->isValid()) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Invalid image upload.',
+                ], 400);
             }
 
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = $parent_id . '_' . rand(1234, 9999) . time() . '.jpg';
-                $imagePath = public_path('storage/parent-images');
+            // Load original image
+            switch (strtolower($image->getClientOriginalExtension())) {
+                case 'jpg':
+                case 'jpeg':
+                    $imgResource = @imagecreatefromjpeg($image->getPathname());
+                    break;
 
-                if (!File::exists($imagePath)) {
-                    File::makeDirectory($imagePath, 0755, true);
-                }
+                case 'png':
+                    $imgResource = @imagecreatefrompng($image->getPathname());
+                    break;
 
-                $imageFullPath = $imagePath . '/' . $imageName;
+                case 'bmp':
+                    $imgResource = @imagecreatefrombmp($image->getPathname());
+                    break;
 
-                // Load the image
-                $imgResource = null;
-                switch (strtolower($image->getClientOriginalExtension())) {
-                    case 'jpg':
-                    case 'jpeg':
-                        $imgResource = imagecreatefromjpeg($image->getPathname());
-                        break;
-                    case 'bmp':
-                        $imgResource = imagecreatefrombmp($image->getPathname());
-                        break;
-                    case 'png':
-                        $imgResource = imagecreatefrompng($image->getPathname());
-                        break;
-                    default:
-                        throw new \Exception('Unsupported image format');
-                }
-
-                if ($imgResource) {
-                    imagejpeg($imgResource, $imageFullPath, 100);
-                    imagedestroy($imgResource);
-                    $parent->image = $imageName;
-                    $parent->save();
-                }
+                default:
+                    $imgResource = false;
             }
 
+            if (!$imgResource) {
+                throw new \Exception('Unable to read uploaded image.');
+            }
 
+            // Convert profile image to JPG in memory
+            $width = imagesx($imgResource);
+            $height = imagesy($imgResource);
+
+            $jpgResource = imagecreatetruecolor($width, $height);
+            $white = imagecolorallocate($jpgResource, 255, 255, 255);
+            imagefill($jpgResource, 0, 0, $white);
+
+            imagecopy(
+                $jpgResource,
+                $imgResource,
+                0, 0, 0, 0,
+                $width,
+                $height
+            );
+
+            ob_start();
+            $jpgSuccess = imagejpeg($jpgResource, null, 90);
+            $jpgContent = ob_get_clean();
+
+            imagedestroy($jpgResource);
+
+            if (!$jpgSuccess || empty($jpgContent)) {
+                imagedestroy($imgResource);
+                throw new \Exception('Failed to convert profile image.');
+            }
+
+            // Generate unique filenames
+            $imageName = $parent_id . '_' . time() . '_' . Str::random(8) . '.jpg';
+            $logImageName = $parent_id . '_' . time() . '_' . Str::random(8) . '.png';
+
+            $profilePath = 'parent-images/' . $imageName;
+            $logPath = 'parent-log-images/' . $logImageName;
+
+            // Upload profile JPG to R2
+            $profileUploaded = Storage::disk('r2')->put(
+                $profilePath,
+                $jpgContent,
+                ['ContentType' => 'image/jpeg']
+            );
+
+            if (!$profileUploaded) {
+                imagedestroy($imgResource);
+                throw new \Exception('Failed to upload profile image to R2.');
+            }
+
+            // Convert original image to PNG for ParentLog
+            imagealphablending($imgResource, false);
+            imagesavealpha($imgResource, true);
+
+            ob_start();
+            $pngSuccess = imagepng($imgResource);
+            $pngContent = ob_get_clean();
+
+            imagedestroy($imgResource);
+
+            if (!$pngSuccess || empty($pngContent)) {
+                Storage::disk('r2')->delete($profilePath);
+                throw new \Exception('Failed to convert log image.');
+            }
+
+            // Upload log PNG to R2
+            $logUploaded = Storage::disk('r2')->put(
+                $logPath,
+                $pngContent,
+                ['ContentType' => 'image/png']
+            );
+
+            if (!$logUploaded) {
+                Storage::disk('r2')->delete($profilePath);
+                throw new \Exception('Failed to upload log image to R2.');
+            }
+
+            // Save new profile image in database
+            $oldImageName = $parent->image;
+
+            $parent->image = $imageName;
+            $parent->save();
+
+            // Save ParentLog record
             $log_image = new ParentLog();
-            if ($request->hasFile('image')) {
-                $logImage = $request->file('image');
-                $logImageName = $parent_id . '_' . rand(1234, 9999) . time() . '.png';
-                $logImagePath = public_path('storage/parent-log-images');
+            $log_image->image = $logImageName;
+            $log_image->parents_id = $parent_id;
+            $log_image->save();
 
-                if (!File::exists($logImagePath)) {
-                    File::makeDirectory($logImagePath, 0755, true);
-                }
-
-                $logImageFullPath = $logImagePath . '/' . $logImageName;
-
-                $logImgResource = null;
-                switch ($logImage->getClientOriginalExtension()) {
-                    case 'jpg':
-                    case 'jpeg':
-                        $logImgResource = imagecreatefromjpeg($logImage->getPathname());
-                        break;
-                    case 'bmp':
-                        $logImgResource = imagecreatefrombmp($logImage->getPathname());
-                        break;
-                    case 'png':
-                        $logImgResource = imagecreatefrompng($logImage->getPathname());
-                        break;
-                }
-
-                if ($logImgResource) {
-                    imagepng($logImgResource, $logImageFullPath);
-                    imagedestroy($logImgResource);
-                    $log_image->image = $logImageName;
-                    $log_image->parents_id = $parent_id;
-                    $log_image->save();
-                }
+            // Delete old profile image only after successful upload and save
+            if ($oldImageName && $oldImageName !== $imageName) {
+                Storage::disk('r2')->delete(
+                    'parent-images/' . $oldImageName
+                );
             }
 
-            return response()->json(['message' => 'Profile Picture uploaded successfully']);
+            return response()->json([
+                'status'  => true,
+                'message' => 'Profile Picture uploaded successfully',
+                'image'   => $imageName,
+            ]);
+
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Tutor not found'], 404);
+            return response()->json([
+                'status'  => false,
+                'error'   => 'Parent not found.',
+            ], 404);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'status'  => false,
+                'error'   => $e->getMessage(),
+            ], 500);
         }
     }
+
 
 
     public function tutorCategoryRequestfilter(Request $request)
