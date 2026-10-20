@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use App\Models\AdvanceSearchSms as ModelsAdvanceSearchSms;
+
 
 class ClearLog extends Command
 {
@@ -31,6 +33,9 @@ class ClearLog extends Command
      */
     public function handle()
     {
+
+        ModelsAdvanceSearchSms::where('created_at', '<', now()->subDays(90))->delete();
+
         // Clear the log file
         $logFile = storage_path('logs/laravel.log');
         if (file_exists($logFile)) {
