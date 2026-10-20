@@ -462,6 +462,7 @@
                                 applied Tutors
                             </th>
                             <th scope="col" class="text-nowrap" width="5%">Live</th>
+                            <th scope="col" class="text-nowrap" width="10%">Job Note</th>
                             <th scope="col" class="text-nowrap" width="30%">Action</th>
                         </tr>
                     </thead>
@@ -618,6 +619,17 @@
                                 </div>
                             </td>
                             <td>
+                                <button type="button"
+                                    class="btn btn-primary py-1 px-2"
+                                    onclick="btnJobNote({{ $job->id }})"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#JobNoteModal">
+                                    Job Note
+                                </button>
+                                
+                                <!--Note model ends here-->
+                            </td>
+                            <td>
                                 <!--Action model starts here-->
                                 <div class="modal fade" id="allOfferAction_{{$job->id}}" tabindex="-1"
                                     aria-labelledby="dateModalLabel" aria-hidden="true">
@@ -653,6 +665,7 @@
                                     </div>
                                 </div>
                                 <!--Action model ends here-->
+                                
 
                                 <button class="btn btn-primary py-1" data-bs-toggle="modal"
                                     data-bs-target="#allOfferAction_{{$job->id}}">
@@ -1045,6 +1058,69 @@
 
     </div>
 </div>
+</div>
+
+
+
+
+<div class="modal fade" id="JobNoteModal" tabindex="-1" aria-labelledby="JobNoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 600px">
+            <div class="modal-content p-2">
+                <div class="modal-body py-0 mt-2">
+                    <div class="mb-4">
+
+                        <form action="{{ route('admin.job.add-job-note') }}" id="jobNoteForm" method="post">
+                            @csrf
+
+                            <input type="hidden" name="note_job_id" id="note_job_id">
+                            <div class="mb-3">
+                                <label for="notet" class="form-label fw-500 fs-14">Note</label>
+                                <textarea name="note" placeholder="Write your note here..."
+                                    class="form-control shadow-none rounded-2" id="job_note"
+                                    rows="4"></textarea>
+
+                            </div>
+                            <span class="text-danger error-text job_note_error"></span>
+
+                            <div class="d-flex justify-content-end align-items-center">
+                                <button type="submit" class="btn btn-primary px-2 py-1">
+                                    Create
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="mb-4" id="allNote">
+
+                    </div>
+                    {{-- <div class="mb-4">
+                     <div class="border-bottom border-1 pb-3">
+                         <div class="bg-light rounded-2 p-2" style="font-size: 14px">
+                             Lorem ipsum dolor sit amet consectetur adipisicing
+                             elit. Perspiciatis, dignissimos.
+                         </div>
+                     </div>
+                     <div class="d-flex justify-content-between align-items-center mt-3">
+                         <div class="d-flex justify-content-start align-items-center gap-3">
+                             <img height="45" width="45" class="rounded-3"
+                                 src="/images/avatar.svg" alt="" />
+                             <div class="">
+                                 <p class="m-0" style="font-size: 14; font-weight: 500">
+                                     Kaji Polash
+                                 </p>
+                                 <p class="m-0 fw-light" style="font-size: 12px">
+                                     Sales & Operation Dep:
+                                 </p>
+                             </div>
+                         </div>
+                         <div>
+                             <p style="font-size: 12px">12:30 PM 21-01-2023</p>
+                         </div>
+                     </div>
+                 </div> --}}
+                </div>
+            </div>
+        </div>
 </div>
 @endsection
 

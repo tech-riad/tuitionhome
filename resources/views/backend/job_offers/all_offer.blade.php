@@ -60,12 +60,14 @@
                                             <div class="pb-3">
                                                 <label for="datef" class="form-label">Date from</label>
                                                 <div>
-                                                    <input type="date" class="form-control shadow rounded-2" id="datef" onchange="inputChange('created_at >=', this.id)" />
+                                                    <input type="date" class="form-control shadow rounded-2" id="datef"
+                                                        onchange="inputChange('created_at >=', this.id)" />
                                                 </div>
                                             </div>
                                             <div class="pb-3">
                                                 <label for="datet" class="form-label">Date To</label>
-                                                <input type="date" class="form-control shadow rounded-2" id="datet" onchange="inputChange('created_at <=', this.id)" />
+                                                <input type="date" class="form-control shadow rounded-2" id="datet"
+                                                    onchange="inputChange('created_at <=', this.id)" />
                                             </div>
                                             <div class="pb-3">
                                                 <label for="crby" class="form-label">Created By</label>
@@ -297,7 +299,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                                <div class="mb-3 ms-4" style="
+                                            <div class="mb-3 ms-4" style="
                                                 margin-top: 34px;
                                                 width: 1px;
                                                 background-color: #f0f1f2;
@@ -431,7 +433,8 @@
 
 
             <form id="all_offer_paginationForm" action="{{ route('admin.job-offer.all-offers') }}" method="GET">
-                <select id="all_offer_paginationLimit" name="pagination_limit" class="form-select rounded" style="width: 100px">
+                <select id="all_offer_paginationLimit" name="pagination_limit" class="form-select rounded"
+                    style="width: 100px">
                     <option value="50" {{ $paginationLimit == 50 ? 'selected' : '' }}>50</option>
                     <option value="100" {{ $paginationLimit == 100 ? 'selected' : '' }}>100</option>
                     <option value="200" {{ $paginationLimit == 200 ? 'selected' : '' }}>200</option>
@@ -467,13 +470,15 @@
                                 Applied Tutors
                             </th>
                             <th scope="col" class="text-nowrap" width="5%">Live</th>
+                            <th scope="col" class="text-nowrap" width="10%">Notes</th>
                             <th scope="col" class="text-nowrap" width="30%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         @foreach ($all_jobs as $job)
-                        <tr class="" style="vertical-align: middle; @if ($job->hire_date > now()) background-color:rgb(0, 0, 0,0.5);color:rgb(0, 0, 0);   @endif ">
+                        <tr class=""
+                            style="vertical-align: middle; @if ($job->hire_date > now()) background-color:rgb(0, 0, 0,0.5);color:rgb(0, 0, 0);   @endif ">
                             <td scope="row " class="text-center text-nowrap" style="padding: 30px 18px">
                                 <input class="checkboxx" type="checkbox" name="ids" id="{{ $job->id }}"
                                     value="{{ $job->parent_id }}" />
@@ -637,6 +642,17 @@
                                 </div>
                             </td>
                             <td>
+                                <button type="button"
+                                    class="btn btn-primary py-1 px-2"
+                                    onclick="btnJobNote({{ $job->id }})"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#JobNoteModal">
+                                    Job Note
+                                </button>
+                                
+                                <!--Note model ends here-->
+                            </td>
+                            <td>
 
                                 <!--Action model starts here-->
                                 <div class="modal fade" id="allOfferAction_{{$job->id}}" tabindex="-1"
@@ -709,27 +725,7 @@
 
 
 
-            {{-- <button class="btn btn-outline-primary py-1 px-2 text-gray-500">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <button class="btn btn-outline-primary py-1 text-gray-500" style="padding: 0 13px">
-                        1
-                    </button>
-
-                    <button class="btn btn-outline-primary py-1 text-gray-500" style="padding: 0 13px">
-                        2
-                    </button>
-                    <button class="btn btn-outline-primary py-1 text-gray-500" style="padding: 0 13px">
-                        ..
-                    </button>
-
-                    <button class="btn btn-outline-primary py-1 text-gray-500" style="padding: 0 13px">
-                        34
-                    </button>
-
-                    <button class="btn btn-outline-primary py-1 px-2 text-gray-500">
-                        <i class="bi bi-chevron-right"></i>
-                    </button> --}}
+            
         </div>
     </div>
     </div>
@@ -739,26 +735,84 @@
 
 
 
+    <div class="modal fade" id="JobNoteModal" tabindex="-1" aria-labelledby="JobNoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 600px">
+            <div class="modal-content p-2">
+                <div class="modal-body py-0 mt-2">
+                    <div class="mb-4">
 
+                        <form action="{{ route('admin.job.add-job-note') }}" id="jobNoteForm" method="post">
+                            @csrf
 
+                            <input type="hidden" name="note_job_id" id="note_job_id">
+                            <div class="mb-3">
+                                <label for="notet" class="form-label fw-500 fs-14">Note</label>
+                                <textarea name="note" placeholder="Write your note here..."
+                                    class="form-control shadow-none rounded-2" id="job_note"
+                                    rows="4"></textarea>
 
+                            </div>
+                            <span class="text-danger error-text job_note_error"></span>
 
-    <!--Date model starts here-->
-    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
-        <div class="modal-dialog model-sm modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body pt-5 pb-4">
-                    <p id="date" class="text-center text-info fs-3">7 June 2023</p>
+                            <div class="d-flex justify-content-end align-items-center">
+                                <button type="submit" class="btn btn-primary px-2 py-1">
+                                    Create
+                                </button>
+                            </div>
 
-                    {{-- <p>{{data}}</p> --}}
-                    <p id="time" class="text-center text-gray-700 border-top fs-1 pt-1">
-                        03:30 PM
-                    </p>
+                        </form>
+                    </div>
+                    <div class="mb-4" id="allNote">
+
+                    </div>
+                    {{-- <div class="mb-4">
+                     <div class="border-bottom border-1 pb-3">
+                         <div class="bg-light rounded-2 p-2" style="font-size: 14px">
+                             Lorem ipsum dolor sit amet consectetur adipisicing
+                             elit. Perspiciatis, dignissimos.
+                         </div>
+                     </div>
+                     <div class="d-flex justify-content-between align-items-center mt-3">
+                         <div class="d-flex justify-content-start align-items-center gap-3">
+                             <img height="45" width="45" class="rounded-3"
+                                 src="/images/avatar.svg" alt="" />
+                             <div class="">
+                                 <p class="m-0" style="font-size: 14; font-weight: 500">
+                                     Kaji Polash
+                                 </p>
+                                 <p class="m-0 fw-light" style="font-size: 12px">
+                                     Sales & Operation Dep:
+                                 </p>
+                             </div>
+                         </div>
+                         <div>
+                             <p style="font-size: 12px">12:30 PM 21-01-2023</p>
+                         </div>
+                     </div>
+                 </div> --}}
                 </div>
             </div>
         </div>
     </div>
-    <!--Date model ends here-->
+
+
+
+        <!--Date model starts here-->
+        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
+            <div class="modal-dialog model-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body pt-5 pb-4">
+                        <p id="date" class="text-center text-info fs-3">7 June 2023</p>
+
+                        {{-- <p>{{data}}</p> --}}
+                        <p id="time" class="text-center text-gray-700 border-top fs-1 pt-1">
+                            03:30 PM
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Date model ends here-->
 
 
 </main>
@@ -815,37 +869,44 @@
                               box-shadow: 0px 4px 7px 0px rgba(59, 60, 61, 0.75);
                             ">
                                 <p class="p-0 m-0">SMS Ranges</p>
-                                <p class="p-0 m-0">{{ old('latest_input_created', optional(@$smsLimit)->latest_input_created) }}</p>
+                                <p class="p-0 m-0">
+                                    {{ old('latest_input_created', optional(@$smsLimit)->latest_input_created) }}</p>
                             </button>
                             @if(in_array(Auth::user()->role_id, [1, 6]))
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#limitModal">
                                 Limit Sms
                             </button>
-                            <form method="POST"  action="{{route('admin.sms.limit')}}" id="limitForm">
+                            <form method="POST" action="{{route('admin.sms.limit')}}" id="limitForm">
                                 @csrf
-                                <div class="modal fade" id="limitModal" tabindex="-1" role="dialog" aria-labelledby="limitModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="limitModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="limitModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="limitModalLabel">Sms Limit</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="">
                                                     <div class="mb-3">
-                                                        <label for="latest_created_input" class="form-label">Latest Created Tutor</label>
+                                                        <label for="latest_created_input" class="form-label">Latest
+                                                            Created Tutor</label>
                                                         <input name="latest_created_input" type="number"
-                                                            class="form-control rounded-3 shadow-none" id="latest_created_input"
-                                                            placeholder="Enter number" style="padding: 14px 18px"
+                                                            class="form-control rounded-3 shadow-none"
+                                                            id="latest_created_input" placeholder="Enter number"
+                                                            style="padding: 14px 18px"
                                                             value="{{ old('latest_created_input', optional(@$smsLimit)->latest_created_input) }}">
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="second_latest_created" class="form-label">2nd Latest Created</label>
+                                                        <label for="second_latest_created" class="form-label">2nd Latest
+                                                            Created</label>
                                                         <input name="second_latest_created" type="number"
-                                                            class="form-control rounded-3 shadow-none" id="second_latest_created"
-                                                            placeholder="Enter number" style="padding: 14px 18px"
+                                                            class="form-control rounded-3 shadow-none"
+                                                            id="second_latest_created" placeholder="Enter number"
+                                                            style="padding: 14px 18px"
                                                             value="{{ old('second_latest_created', optional(@$smsLimit)->second_latest_created) }}">
                                                     </div>
                                                     <div class="mb-3">
@@ -865,8 +926,9 @@
                                                     <div class="mb-3">
                                                         <label for="second_bottom" class="form-label">2nd Bottom</label>
                                                         <input name="second_bottom" type="number"
-                                                            class="form-control rounded-3 shadow-none" id="second_bottom"
-                                                            placeholder="Enter number" style="padding: 14px 18px"
+                                                            class="form-control rounded-3 shadow-none"
+                                                            id="second_bottom" placeholder="Enter number"
+                                                            style="padding: 14px 18px"
                                                             value="{{ old('second_bottom', optional(@$smsLimit)->second_bottom) }}">
                                                     </div>
                                                     <div class="mb-3">
@@ -877,10 +939,12 @@
                                                             value="{{ old('premium', optional(@$smsLimit)->premium) }}">
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="send_sms_range" class="form-label">Sms Send Range</label>
+                                                        <label for="send_sms_range" class="form-label">Sms Send
+                                                            Range</label>
                                                         <input name="send_sms_range" type="number"
-                                                            class="form-control rounded-3 shadow-none" id="send_sms_range"
-                                                            placeholder="Enter number" style="padding: 14px 18px"
+                                                            class="form-control rounded-3 shadow-none"
+                                                            id="send_sms_range" placeholder="Enter number"
+                                                            style="padding: 14px 18px"
                                                             value="{{ old('send_sms_range', optional(@$smsLimit)->send_sms_range) }}">
                                                     </div>
 
@@ -1016,6 +1080,9 @@
 
 
 @include('backend.job_offers.js.all_offer_page_js')
+
+
+
 
 
 @endpush

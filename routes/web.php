@@ -450,7 +450,11 @@ Route::middleware(['auth'])->group(function () {
     Route::any('/admin/job/update',[AllJobOfferController::class,'update'])->name('admin.job.update')->middleware('permission:job-offer-update');
     Route::get('/admin/job/see-condition/{id?}',[AllJobOfferController::class,'seeCondition'])->name('admin.job.see-condition')->middleware('permission:job-offer-see-condition');
     Route::post('/admin/job/update-additional-child',[AllJobOfferController::class,'additionalChildUpdate'])->name('admin.job.additional-child-update')->middleware('permission:additional-child-update');
+    Route::post('/admin/job/job-note-add', [AllJobOfferController::class, 'jobNoteAdd'])
+        ->name('admin.job.add-job-note');
 
+    Route::get('/admin/job/job-note-list', [AllJobOfferController::class, 'jobNoteList'])
+        ->name('admin.job.note-list');
     // Job Offer Sms Send
     Route::any('/admin/parent/sms/editor',[AllJobOfferController::class,'smsEditor'])->name('admin.parent.sms-editor');
 

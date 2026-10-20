@@ -52,6 +52,67 @@ use DateTimeZone;
 class AllJobOfferController extends Controller
 {
 
+    public function jobNoteAdd(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'note_job_id' => 'required|integer|exists:job_offers,id',
+            'note' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $noteId = DB::table('job_offer_notes')->insertGetId([
+            'job_offer_id' => $request->note_job_id,
+            'note' => $request->note,
+            'added_by' => (string) Auth::id(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Job note added successfully.',
+            'note_id' => $noteId,
+        ]);
+    }
+
+
+    public function jobNoteList(Request $request)
+    {
+        $request->validate([
+            'job_id' => 'required|integer|exists:job_offers,id',
+        ]);
+
+        $notes = DB::table('job_offer_notes')
+            ->leftJoin('users', 'users.id', '=', 'job_offer_notes.added_by')
+            ->where('job_offer_notes.job_offer_id', $request->job_id)
+            ->select(
+                'job_offer_notes.id',
+                'job_offer_notes.note',
+                'job_offer_notes.created_at',
+                'users.name as user_name'
+            )
+            ->orderByDesc('job_offer_notes.id')
+            ->get()
+            ->map(function ($item) {
+                $item->created_at = $item->created_at
+                    ? \Carbon\Carbon::parse($item->created_at)->format('d-m-Y h:i A')
+                    : '';
+
+                return $item;
+            });
+
+        return response()->json([
+            'success' => true,
+            'notes' => $notes,
+        ]);
+    }
+
 
     public function matchRate(Request $request){
 

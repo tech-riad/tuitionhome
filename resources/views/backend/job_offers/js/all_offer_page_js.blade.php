@@ -693,3 +693,98 @@ $('#country_id').change(function (){
         });
     });
 </script>
+
+
+<script>
+    // Job Note modal open and load notes
+    function btnJobNote(jobId) {
+        $('#note_job_id').val(jobId);
+        $('#job_note').val('');
+        $('.job_note_error').text('');
+        $('#allNote').html('<p class="text-muted">Loading notes...</p>');
+
+        $.ajax({
+            url: "{{ route('admin.job.note-list') }}",
+            type: "GET",
+            data: {
+                job_id: jobId
+            },
+            success: function (response) {
+                let html = '';
+
+                if (response.notes && response.notes.length > 0) {
+                    response.notes.forEach(function (item) {
+                        html += `
+                            <div class="border-bottom pb-3 mb-3">
+                                <div class="bg-light rounded-2 p-3">
+                                    ${escapeJobNote(item.note)}
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small>${escapeJobNote(item.user_name || 'Unknown')}</small>
+                                    <small>${escapeJobNote(item.created_at || '')}</small>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html = '<p class="text-muted">No notes found for this job.</p>';
+                }
+
+                $('#allNote').html(html);
+            },
+            error: function () {
+                $('#allNote').html(
+                    '<p class="text-danger">Failed to load notes.</p>'
+                );
+            }
+        });
+    }
+
+    // Safely display note text
+    function escapeJobNote(value) {
+        return $('<div>').text(value ?? '').html();
+    }
+
+    // Save a note without refreshing the page
+    $(document).on('submit', '#jobNoteForm', function (e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const submitButton = form.find('button[type="submit"]');
+
+        $('.job_note_error').text('');
+
+        if (!$('#job_note').val().trim()) {
+            $('.job_note_error').text('Please enter a note.');
+            return;
+        }
+
+        submitButton.prop('disabled', true);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    $('#job_note').val('');
+                    btnJobNote($('#note_job_id').val());
+                } else {
+                    alert(response.message || 'Could not save note.');
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                    $('.job_note_error').text(
+                        xhr.responseJSON.errors.note?.[0] || ''
+                    );
+                } else {
+                    alert('Failed to save note. Please try again.');
+                }
+            },
+            complete: function () {
+                submitButton.prop('disabled', false);
+            }
+        });
+    });
+</script>
