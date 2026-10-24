@@ -3059,11 +3059,11 @@ class TutorController extends Controller
 // }
 
 
+
     public function tutorLeadRegistration(Request $request)
     {
         try {
-
-
+            // Honeypot protection
             if ($request->filled('website')) {
                 return response()->json([
                     'status'  => false,
@@ -3071,29 +3071,23 @@ class TutorController extends Controller
                 ], 422);
             }
 
-
-
-
-
-
-
+            // Validate request. Image is OPTIONAL.
             $validator = Validator::make($request->all(), [
                 'phone'              => 'required|string|max:20',
                 'name'               => 'required|string|max:255',
                 'gender'             => 'required',
                 'city_id'            => 'required|integer',
                 'location_id'        => 'required|integer',
-
                 'preferred_location' => 'required',
-
                 'hns_institute_id'   => 'required|integer',
                 'department_id'      => 'required|integer',
                 'university_type'    => 'required',
                 'ssc_curriculamn_id' => 'required|integer',
-
-
                 'website'            => 'nullable|string|max:255',
-                'device_id' => 'required|string|max:255',
+                'device_id'          => 'required|string|max:255',
+
+                // Image optional: maximum 5 MB
+                'image'              => 'nullable|image|mimes:jpg,jpeg,png,bmp,webp|max:5120',
             ]);
 
             if ($validator->fails()) {
@@ -3103,14 +3097,7 @@ class TutorController extends Controller
                 ], 422);
             }
 
-
-
-
             $phone = trim($request->phone);
-
-
-
-
             $deviceId = trim((string) $request->device_id);
 
             if ($deviceId === '') {
@@ -3119,7 +3106,6 @@ class TutorController extends Controller
                     'message' => 'Invalid device.',
                 ], 422);
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -3137,48 +3123,39 @@ class TutorController extends Controller
                 $request->ip()
             );
 
-
             /*
             |--------------------------------------------------------------------------
             | Device Rate Limit
             |--------------------------------------------------------------------------
-            |
-            | Same device → maximum 3 registration attempts / hour
-            |
+            | Same device: maximum 3 attempts per hour
             */
 
             if (RateLimiter::tooManyAttempts($deviceKey, 3)) {
-
                 $seconds = RateLimiter::availableIn($deviceKey);
 
                 return response()->json([
-                    'status'  => false,
-                    'message' => 'Too many registration attempts from this device. Please try again later.',
+                    'status'      => false,
+                    'message'     => 'Too many registration attempts from this device. Please try again later.',
                     'retry_after' => $seconds,
                 ], 429);
             }
-
 
             /*
             |--------------------------------------------------------------------------
             | IP Rate Limit
             |--------------------------------------------------------------------------
-            |
-            | Same IP → maximum 10 registration attempts / hour
-            |
+            | Same IP: maximum 10 attempts per hour
             */
 
             if (RateLimiter::tooManyAttempts($ipKey, 10)) {
-
                 $seconds = RateLimiter::availableIn($ipKey);
 
                 return response()->json([
-                    'status'  => false,
-                    'message' => 'Too many registration attempts from this network. Please try again later.',
+                    'status'      => false,
+                    'message'     => 'Too many registration attempts from this network. Please try again later.',
                     'retry_after' => $seconds,
                 ], 429);
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -3195,20 +3172,14 @@ class TutorController extends Controller
                 ], 409);
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | Consume Rate Limit
             |--------------------------------------------------------------------------
-            |
-            | এখানে hit করা হচ্ছে কারণ request এখন valid এবং
-            | registration process শুরু করার জন্য eligible.
-            |
             */
 
             RateLimiter::hit($deviceKey, 3600);
             RateLimiter::hit($ipKey, 3600);
-
 
             /*
             |--------------------------------------------------------------------------
@@ -3217,9 +3188,7 @@ class TutorController extends Controller
             */
 
             $otp = random_int(1234, 9999);
-
             $otpExpiry = now()->addMinutes(10);
-
 
             /*
             |--------------------------------------------------------------------------
@@ -3233,7 +3202,6 @@ class TutorController extends Controller
                 $otp,
                 $otpExpiry
             ) {
-
                 /*
                 |--------------------------------------------------------------------------
                 | Create Tutor
@@ -3242,111 +3210,163 @@ class TutorController extends Controller
 
                 $tutor = new Tutor();
 
-                $tutor->otp              = $otp;
-                $tutor->otp_expiry       = $otpExpiry;
-                $tutor->name             = trim($request->name);
-                $tutor->phone            = $phone;
-                $tutor->gender           = $request->gender;
-                $tutor->ip_address       = $request->ip();
-                $tutor->role_id          = 3;
-                $tutor->password         = Hash::make('12345678');
-                $tutor->user_agent       = $request->header('User-Agent');
-                $tutor->login_at         = now();
+                $tutor->otp               = $otp;
+                $tutor->otp_expiry        = $otpExpiry;
+                $tutor->name              = trim($request->name);
+                $tutor->phone             = $phone;
+                $tutor->gender            = $request->gender;
+                $tutor->ip_address        = $request->ip();
+                $tutor->role_id           = 3;
+                $tutor->password          = Hash::make('12345678');
+                $tutor->user_agent        = $request->header('User-Agent');
+                $tutor->login_at          = now();
                 $tutor->phone_varified_at = now();
 
+                /*
+                |--------------------------------------------------------------------------
+                | OPTIONAL Image Upload to Cloudflare R2
+                |--------------------------------------------------------------------------
+                | If image is provided, convert it to JPG and upload.
+                | If image is not provided, skip this block.
+                */
+
                 if ($request->hasFile('image')) {
-
-                    $request->validate([
-                        'image' => 'image|mimes:jpg,jpeg,png,bmp,webp|max:5120',
-                    ]);
-
                     $image = $request->file('image');
 
-                    if (!$image->isValid()) {
+                    if (!$image || !$image->isValid()) {
                         throw new \Exception('Image upload failed.');
                     }
 
-                    $imageName = 3 . '_' . time() . '_' . uniqid() . '.jpg';
+                    $extension = strtolower(
+                        $image->getClientOriginalExtension()
+                    );
 
                     $imgResource = null;
 
-                    switch (strtolower($image->getClientOriginalExtension())) {
+                    switch ($extension) {
                         case 'jpg':
                         case 'jpeg':
-                            $imgResource = @imagecreatefromjpeg($image->getPathname());
+                            $imgResource = @imagecreatefromjpeg(
+                                $image->getPathname()
+                            );
                             break;
 
                         case 'png':
-                            $imgResource = @imagecreatefrompng($image->getPathname());
+                            $imgResource = @imagecreatefrompng(
+                                $image->getPathname()
+                            );
                             break;
 
                         case 'bmp':
-                            $imgResource = @imagecreatefrombmp($image->getPathname());
+                            $imgResource = @imagecreatefrombmp(
+                                $image->getPathname()
+                            );
                             break;
 
                         case 'webp':
-                            $imgResource = @imagecreatefromwebp($image->getPathname());
+                            $imgResource = @imagecreatefromwebp(
+                                $image->getPathname()
+                            );
                             break;
 
                         default:
-                            throw new \Exception('Unsupported image format.');
+                            throw new \Exception(
+                                'Unsupported image format.'
+                            );
                     }
 
                     if (!$imgResource) {
-                        throw new \Exception('Unable to read uploaded image.');
+                        throw new \Exception(
+                            'Unable to read uploaded image.'
+                        );
                     }
 
-                    // Preserve transparency with a white background
-                    $width = imagesx($imgResource);
-                    $height = imagesy($imgResource);
+                    try {
+                        // Preserve transparency using a white background
+                        $width = imagesx($imgResource);
+                        $height = imagesy($imgResource);
 
-                    $jpgImage = imagecreatetruecolor($width, $height);
+                        $jpgImage = imagecreatetruecolor(
+                            $width,
+                            $height
+                        );
 
-                    $white = imagecolorallocate($jpgImage, 255, 255, 255);
-                    imagefill($jpgImage, 0, 0, $white);
+                        if (!$jpgImage) {
+                            throw new \Exception(
+                                'Unable to create JPG image.'
+                            );
+                        }
 
-                    imagecopy(
-                        $jpgImage,
-                        $imgResource,
-                        0,
-                        0,
-                        0,
-                        0,
-                        $width,
-                        $height
-                    );
+                        $white = imagecolorallocate(
+                            $jpgImage,
+                            255,
+                            255,
+                            255
+                        );
 
-                    // Convert to JPG in memory
-                    ob_start();
+                        imagefill($jpgImage, 0, 0, $white);
 
-                    $success = imagejpeg($jpgImage, null, 90);
+                        imagecopy(
+                            $jpgImage,
+                            $imgResource,
+                            0,
+                            0,
+                            0,
+                            0,
+                            $width,
+                            $height
+                        );
 
-                    $imageContent = ob_get_clean();
+                        // Convert image to JPG in memory
+                        ob_start();
 
-                    imagedestroy($imgResource);
-                    imagedestroy($jpgImage);
+                        $success = imagejpeg(
+                            $jpgImage,
+                            null,
+                            90
+                        );
 
-                    if (!$success || empty($imageContent)) {
-                        throw new \Exception('Failed to convert image to JPG.');
+                        $imageContent = ob_get_clean();
+
+                        imagedestroy($jpgImage);
+
+                        if (!$success || empty($imageContent)) {
+                            throw new \Exception(
+                                'Failed to convert image to JPG.'
+                            );
+                        }
+                    } finally {
+                        if ($imgResource) {
+                            imagedestroy($imgResource);
+                        }
                     }
 
-                    // Upload to Cloudflare R2
+                    // Upload JPG to Cloudflare R2
+                    $imageName = '3_' . time() . '_' .
+                        uniqid() . '.jpg';
+
                     $path = 'tutor-images/' . $imageName;
 
-                    $uploaded = Storage::disk('r2')->put($path, $imageContent, [
-                        'ContentType' => 'image/jpeg',
-                    ]);
+                    $uploaded = Storage::disk('r2')->put(
+                        $path,
+                        $imageContent,
+                        [
+                            'ContentType' => 'image/jpeg',
+                        ]
+                    );
 
                     if (!$uploaded) {
-                        throw new \Exception('Failed to upload image to R2.');
+                        throw new \Exception(
+                            'Failed to upload image to R2.'
+                        );
                     }
 
+                    // Set image only when upload succeeds
                     $tutor->image = $imageName;
                 }
 
-                // Save tutor only once
+                // Save tutor whether image exists or not
                 $tutor->save();
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -3355,7 +3375,6 @@ class TutorController extends Controller
                 */
 
                 $tutor->get_tutor_unique_id();
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -3368,7 +3387,6 @@ class TutorController extends Controller
                     'tutors'
                 );
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | SMS Balance
@@ -3376,11 +3394,8 @@ class TutorController extends Controller
                 */
 
                 $smsBalance = new SmsBalance();
-
                 $smsBalance->tutor_id = $tutor->id;
-
                 $smsBalance->save();
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -3391,12 +3406,11 @@ class TutorController extends Controller
                 $tutorLog = new TutorLog();
 
                 $tutorLog->tutor_id = $tutor->id;
-                $tutorLog->name     = $tutor->name;
-                $tutorLog->email    = $tutor->email ?? null;
-                $tutorLog->phone    = $tutor->phone;
+                $tutorLog->name = $tutor->name;
+                $tutorLog->email = $tutor->email ?? null;
+                $tutorLog->phone = $tutor->phone;
 
                 $tutorLog->save();
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -3406,16 +3420,15 @@ class TutorController extends Controller
 
                 $counting = new Counting();
 
-                $counting->tutor_id        = $tutor->id;
-                $counting->applied_job     = 0;
+                $counting->tutor_id = $tutor->id;
+                $counting->applied_job = 0;
                 $counting->shortlisted_job = 0;
-                $counting->appointed_job   = 0;
-                $counting->confirmed_job   = 0;
-                $counting->cancel_job      = 0;
-                $counting->payment_job     = 0;
+                $counting->appointed_job = 0;
+                $counting->confirmed_job = 0;
+                $counting->cancel_job = 0;
+                $counting->payment_job = 0;
 
                 $counting->save();
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -3434,7 +3447,6 @@ class TutorController extends Controller
                     ]
                 );
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | Preferred Locations
@@ -3443,7 +3455,6 @@ class TutorController extends Controller
 
                 $tutor->tutor_prefered_locations()
                     ->sync($request->preferred_location);
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -3463,7 +3474,6 @@ class TutorController extends Controller
                     ]
                 );
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | SSC Education
@@ -3480,7 +3490,6 @@ class TutorController extends Controller
                     ]
                 );
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | Response Data
@@ -3492,7 +3501,6 @@ class TutorController extends Controller
                     'token' => $token,
                 ];
             });
-
 
             /*
             |--------------------------------------------------------------------------
@@ -3506,14 +3514,13 @@ class TutorController extends Controller
                 'data'    => $data,
             ], 201);
 
-
         } catch (\Throwable $e) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Error Response
-            |--------------------------------------------------------------------------
-            */
+            // Log the actual error for debugging
+            \Log::error('Tutor registration failed', [
+                'error' => $e->getMessage(),
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine(),
+            ]);
 
             return response()->json([
                 'status'  => false,
@@ -3521,6 +3528,7 @@ class TutorController extends Controller
             ], 500);
         }
     }
+
 
 
 
