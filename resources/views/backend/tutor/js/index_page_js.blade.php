@@ -583,7 +583,7 @@ function loadTutorNotes(tutorId) {
             tutor_id: tutorId
         },
         success: function (response) {
-            console.log('Notes response:', response);
+            // console.log('Notes response:', response);
             $('#allNote').empty();
 
             if (!response.status || !response.notes.length) {
