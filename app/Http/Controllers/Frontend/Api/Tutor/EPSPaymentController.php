@@ -640,7 +640,7 @@ class EPSPaymentController extends Controller
 
         $frontendUrl = rtrim(
             (string) (
-                 'https://tuitionhome.xyz'
+                 'https://localhost:5173'
             ),
             '/'
         );
