@@ -648,7 +648,7 @@ class EPSPaymentController extends Controller
 
         return redirect()->away(
             $frontendUrl .
-            '/payment/success'
+            '/payment/result'
         );
     }
 }
