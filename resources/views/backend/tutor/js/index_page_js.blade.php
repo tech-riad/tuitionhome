@@ -280,7 +280,7 @@
 
 
 
-    
+
 
 </script>
 <script>
@@ -583,6 +583,7 @@ function loadTutorNotes(tutorId) {
             tutor_id: tutorId
         },
         success: function (response) {
+            console.log('Notes response:', response);
             $('#allNote').empty();
 
             if (!response.status || !response.notes.length) {
@@ -600,10 +601,12 @@ function loadTutorNotes(tutorId) {
                 }).text(note.body || '').appendTo(item);
 
                 $('<small>', {
+                    class: 'text-muted d-block'
+                }).text('Created By: ' + (note.created_by || '')).appendTo(item);
+
+                $('<small>', {
                     class: 'text-muted'
-                }).text(
-                    'Created: ' + (note.created_at || '')
-                ).appendTo(item);
+                }).text('Created: ' + (note.created_at || '')).appendTo(item);
 
                 $('#allNote').append(item);
             });

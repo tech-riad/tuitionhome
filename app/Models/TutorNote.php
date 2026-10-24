@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class TutorNote extends Model
 {
     use HasFactory;
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'emp_id', 'id');
+    }
 }
