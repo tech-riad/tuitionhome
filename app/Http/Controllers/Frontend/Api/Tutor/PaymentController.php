@@ -33,33 +33,92 @@ class PaymentController extends Controller
         $password = config('applicationpayment.password');
     }
 
+
     public function invoiceList(Request $request)
     {
         $request->validate([
-            'user_id'=> 'required|integer|exists:tutors,id',
+            'user_id' => 'required|integer|exists:tutors,id',
             'per_page' => 'nullable|integer|min:1',
+            'status' => 'nullable|in:all,pending,paid,overdue,cancelled',
         ]);
-        // where('tutor_id', $request->tutor_id)
-        $invoices = Invoice::select(
-                'id',
-                'tutor_id',
-                'unique_id',
-                'invoice_number',
-                'amount',
-                'status',
-                'issued_at',
-                'job_number',
-                'payment_date',
-                'paid_at',
-                'invoice_type',
-                'due_invoice',
-                'tutor_name as customer_name',
-                'tutor_email as customer_email',
-                'tutor_phone as customer_phone',
-            )
-            ->where('tutor_id', $request->user_id)
-            ->orderBy('id', 'desc')
-            ->paginate($request->per_page ?? 10);
+        // dd($request->all());
+
+        $status = strtolower($request->input('status', 'all'));
+        $perPage = $request->input('per_page', 10);
+
+        $query = Invoice::select(
+            'id',
+            'tutor_id',
+            'unique_id',
+            'invoice_number',
+            'amount',
+            'status',
+            'issued_at',
+            'job_number',
+            'payment_date',
+            'paid_at',
+            'invoice_type',
+            'due_invoice',
+            'tutor_name as customer_name',
+            'tutor_email as customer_email',
+            'tutor_phone as customer_phone'
+        )->where('tutor_id', $request->user_id);
+
+        // Filter invoices according to selected status
+        switch ($status) {
+            case 'pending':
+                $query->whereRaw(
+                    'LOWER(status) = ?',
+                    ['pending']
+                );
+                break;
+
+            case 'paid':
+                $query->whereRaw(
+                    'LOWER(status) = ?',
+                    ['paid']
+                );
+                break;
+
+            case 'overdue':
+            $query->where('status', 'pending')
+                ->whereNotNull('payment_date')
+                ->where('payment_date', '<', now());
+            break;
+                
+
+            case 'cancelled':
+                $query->whereIn(
+                    \Illuminate\Support\Facades\DB::raw('LOWER(status)'),
+                    ['cancel', 'cancelled']
+                );
+                break;
+
+            case 'all':
+            default:
+                // No status filter; show all invoices
+                break;
+        }
+
+        // Default sorting:
+        // Pending -> Paid -> Overdue -> Cancelled
+        // Overdue pending invoices appear after normal pending invoices
+        $query->orderByRaw("
+            CASE
+                WHEN LOWER(status) = 'pending'
+                    AND due_invoice IS NOT NULL
+                    AND DATE(due_invoice) < CURRENT_DATE
+                    THEN 3
+                WHEN LOWER(status) = 'pending' THEN 1
+                WHEN LOWER(status) = 'paid' THEN 2
+                WHEN LOWER(status) IN ('cancel', 'cancelled') THEN 4
+                ELSE 5
+            END ASC
+        ");
+
+        $invoices = $query
+            ->orderByDesc('id')
+            ->paginate($perPage);
 
         return response()->json([
             'data' => $invoices->items(),
@@ -73,6 +132,7 @@ class PaymentController extends Controller
             ],
         ]);
     }
+
 
     public function invoiceDetails($id)
     {
