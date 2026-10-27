@@ -51,6 +51,7 @@
                                     <option value="advance_boost">Advance Boost</option>
                                     <option value="enterprise_boost">Enterprise Boost</option>
                                     <option value="verify">Profile Verify</option>
+                                    <option value="sms">SMS</option>
                                 </select>
                             </div>
 
@@ -79,6 +80,7 @@
                                     <option value="premium">Premium</option>
                                     <option value="profile_verify">Profile Verification</option>
                                     <option value="boost">Boost</option>
+                                    <option value="sms">SMS</option>
 
                                 </select>
                             </div>
@@ -184,6 +186,7 @@
                                                             <option value="advance_boost" {{ $packageAmount->package_name == 'advance_boost' ? 'selected' : '' }}>Advance Boost</option>
                                                             <option value="enterprise_boost" {{ $packageAmount->package_name == 'enterprise_boost' ? 'selected' : '' }}>Enterprise Boost</option>
                                                             <option value="verify" {{ $packageAmount->package_name == 'verify' ? 'selected' : '' }}>Profile Verify</option>
+                                                            <option value="sms" {{ $packageAmount->package_name == 'sms' ? 'selected' : '' }}>SMS</option>
                                                         </select>
                                                     </div>
 

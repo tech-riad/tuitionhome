@@ -4,7 +4,9 @@ namespace App\Http\Controllers\frontend\api\tutor;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdvanceSearchSms;
+use App\Models\Invoice;
 use App\Models\JobSms;
+use App\Models\PackageAmount;
 use App\Models\Sms;
 use App\Models\SmsBalance;
 use App\Models\SmsRecharge;
@@ -349,6 +351,83 @@ class TutorSmsController extends Controller
                                     ]);
         }
 
+
+        public function smsInvoiceCreate(Request $request)
+        {
+             $tutor = Tutor::where('id',Auth::user()->id)->first();
+
+            $package =  PackageAmount::where('id', $request->package_id)->first();
+
+            $cupon = $request->cupon_code;
+            // dd($cupon);
+
+
+            $existingInvoice = Invoice::where('tutor_id', Auth::user()->id)
+                ->where('package_name', $package->package_name)
+                ->where('status', 'pending')
+                ->first();
+
+            if ($existingInvoice) {
+                return response()->json([
+                    'message' => 'You already have an unpaid invoice for this type.',
+                    'invoice_id' => $existingInvoice->id
+                ], 422);
+            }
+
+            if ($cupon !== null ) {
+
+                if ($package->cupon != $cupon) {
+                    return response()->json([
+                        'message' => 'Invalid coupon code.'
+                    ], 422);
+                }
+
+                $invoice_amount = $package->amount - $package->discount ;
+                $cuponCode = $package->cupon;
+            } else {
+                $invoice_amount = $package->amount;
+            }
+
+            if($package->type == 'sms'){
+                $sendMembershipRequest = new PremiumMembership ();
+
+                $sendMembershipRequest->tutor_id        = $tutor->id;
+                $sendMembershipRequest->name            = $tutor->name;
+                $sendMembershipRequest->request_status  = 'pending';
+                $sendMembershipRequest->payment_status  = 'unpaid';
+                $sendMembershipRequest->taka            = $invoice_amount;
+                $sendMembershipRequest->package_name    = $package->package_name;
+                $sendMembershipRequest->channel_name    = 'Website';
+
+                $sendMembershipRequest->save();
+
+            }
+
+
+
+            // dd($sendMembershipRequest->id);
+
+            $invoice = new Invoice();
+            $invoice->tutor_id = $tutor->id;
+            $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+            $invoice->amount = $invoice_amount;
+            $invoice->currency = 'BDT';
+            $invoice->status = 'pending';
+            $invoice->issued_at = Carbon::now();
+            $invoice->tutor_name = $tutor->name;
+            $invoice->tutor_phone = $tutor->phone;
+            $invoice->unique_id = $tutor->unique_id;
+            $invoice->payment_date = now()->addDays(7);
+            $invoice->cupon = $cuponCode ?? null;
+            $invoice->package_id = $package->id;
+
+            $invoice->invoice_type = $package->type;
+            $invoice->package_name = $package->package_name;
+            $invoice->membership_id = $sendMembershipRequest->id ?? null;
+            $invoice->save();
+            return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
+
+    }
 
 
 }

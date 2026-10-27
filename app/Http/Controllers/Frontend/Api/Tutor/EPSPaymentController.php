@@ -9,6 +9,8 @@ use App\Models\JobApplication;
 use App\Models\PackageAmount;
 use App\Models\Payment;
 use App\Models\PremiumMembership;
+use App\Models\SmsBalance;
+use App\Models\SmsRecharge;
 use App\Models\Tutor;
 use App\Models\VerificationRequest;
 use App\Services\EPSPaymentService;
@@ -570,6 +572,35 @@ class EPSPaymentController extends Controller
 
                     }
 
+                    if ($package->type == 'sms') {
+                        $tutorSmsRecharge = new SmsRecharge();
+                        $tutorSmsRecharge->tutor_id = $invoice->tutor_id;
+                        $tutorSmsRecharge->payment_method = 'bkash';
+                        $tutorSmsRecharge->amount = $package['amount'];
+                        $tutorSmsRecharge->invoice_no  = ($verification['EPSTransactionId'] ?? null);
+                        $tutorSmsRecharge->recharge_title = 'Sms Recharge';
+                        $smsQuantity = 0;
+                        try {
+                            $costPerSMS = 0.99;
+                            $smsQuantity = ($invoice->amount - $invoice->amount * 1.5 / 100) / $costPerSMS;
+                            $roundedSmsQuantity = round($smsQuantity);
+                            if ($smsQuantity - $roundedSmsQuantity < 0.5) {
+                                $smsQuantity = floor($smsQuantity);
+                            } else {
+                                $smsQuantity = ceil($smsQuantity);
+                            }
+                        } catch (Exception $e) {
+                            // Log::error('Error calculating SMS quantity: ' . $e->getMessage());
+                        }
+
+                        $tutorSmsRecharge->sms_quantity = $smsQuantity;
+                        $tutorSmsRecharge->costing = 0;
+                        $tutorSmsRecharge->save();
+
+                        $smsBalance = SmsBalance::where('tutor_id',$invoice->tutor_id)->first();
+                        $smsBalance->available_sms = $smsBalance->available_sms + $smsQuantity;
+                        $smsBalance->update();
+                    }
 
                     $invoice->update([
                         'status' => 'paid',

@@ -15,6 +15,7 @@ Route::post('/tutor/sms-log',[TutorSmsController::class,'smsLog'])->name('smsLog
 Route::post('/tutor/sms-log-filter',[TutorSmsController::class,'smsLogFilter'])->name('smsLogFilter');
 Route::get('/tutor/sms-trx-history',[TutorSmsController::class,'transctionHistory'])->name('transctionHistory');
 Route::post('/tutor/sms-alert',[TutorSmsController::class,'smsAlert'])->name('smsAlert');
+Route::post('/tutor/sms-invoice-create',[TutorSmsController::class,'smsInvoiceCreate'])->name('smsInvoiceCreate');
 
 
 });
