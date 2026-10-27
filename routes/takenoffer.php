@@ -20,3 +20,5 @@ Route::get('/admin/taken-offer/payment-offer',[TakenOfferController::class,'paym
 Route::get('/admin/taken-offer/invoices',[InvoiceController::class,'index'])->name('admin.taken_offer.invoices')->middleware('auth');
 Route::post('/admin/taken-offer/invoice/duplicate/{id}',[InvoiceController::class,'duplicate'])->name('admin.taken_offer.invoice.duplicate')->middleware('auth');
 
+// Tutor Invoice List
+Route::get('/admin/taken-offer/invoice-list/{tutorId}',[InvoiceController::class,'tutorInvoiceList'])->name('admin.tutor.invoice.list')->middleware('auth');

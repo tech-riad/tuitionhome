@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\JobApplication;
+use App\Models\Tutor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -75,6 +76,73 @@ class InvoiceController extends Controller
         return redirect()
             ->route('admin.taken_offer.invoices')
             ->with('success', 'Invoice duplicated successfully.');
+    }
+
+
+
+
+    // Tutor Invoice List
+
+    public function tutorInvoiceList(Request $request, $tutorId)
+    {
+        $request->validate([
+            'status' => 'nullable|in:all,pending,paid,overdue,cancelled',
+        ]);
+
+        $tutor = Tutor::findOrFail($tutorId);
+        $baseQuery = Invoice::where('tutor_id', $tutorId);
+        $status = $request->input('status', 'all');
+
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'pending' => (clone $baseQuery)
+                ->whereRaw('LOWER(status) = ?', ['pending'])
+                ->where(function ($query) {
+                    $query->whereNull('payment_date')
+                        ->orWhereDate('payment_date', '>=', now()->toDateString());
+                })
+                ->count(),
+            'paid' => (clone $baseQuery)
+                ->whereRaw('LOWER(status) = ?', ['paid'])
+                ->count(),
+            'overdue' => (clone $baseQuery)
+                ->whereRaw('LOWER(status) = ?', ['pending'])
+                ->whereNotNull('payment_date')
+                ->whereDate('payment_date', '<', now()->toDateString())
+                ->count(),
+            'cancelled' => (clone $baseQuery)
+                ->whereIn(\Illuminate\Support\Facades\DB::raw('LOWER(status)'), ['cancel', 'cancelled'])
+                ->count(),
+        ];
+
+        $query = clone $baseQuery;
+
+        switch ($status) {
+            case 'pending':
+                $query->whereRaw('LOWER(status) = ?', ['pending'])
+                    ->where(function ($query) {
+                        $query->whereNull('payment_date')
+                            ->orWhereDate('payment_date', '>=', now()->toDateString());
+                    });
+                break;
+            case 'paid':
+                $query->whereRaw('LOWER(status) = ?', ['paid']);
+                break;
+            case 'overdue':
+                $query->whereRaw('LOWER(status) = ?', ['pending'])
+                    ->whereNotNull('payment_date')
+                    ->whereDate('payment_date', '<', now()->toDateString());
+                break;
+            case 'cancelled':
+                $query->whereIn(\Illuminate\Support\Facades\DB::raw('LOWER(status)'), ['cancel', 'cancelled']);
+                break;
+        }
+
+        $invoices = $query->orderBy('issued_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('backend.tutor.tutor_invoice_list', compact('invoices', 'tutor', 'counts', 'status'));
     }
 
 }

@@ -41,6 +41,9 @@
             <li class="nav-item"><a class="nav-link " target="_blank"
                     href="{{route('admin.tutor.trx.history',$tutor->id)}}" aria-selected="true">
                     Transction History</a></li>
+            <li class="nav-item"><a class="nav-link " target="_blank"
+                    href="{{route('admin.tutor.invoice.list',$tutor->id)}}" aria-selected="true">
+                    Invoice List</a></li>
         </ul>
     </div>
 </div>
@@ -894,7 +897,7 @@
                                 @csrf
                                 <input type="hidden" name="grant_id" value="{{$tutor->id}}">
 
-                               
+
 
                                 <div class="mb-3">
                                     <label for="taka" class="form-label required">Taka</label>
