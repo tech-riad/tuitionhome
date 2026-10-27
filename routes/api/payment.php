@@ -41,4 +41,4 @@ Route::post('/invoice-list',[PaymentController::class,'invoiceList'])->name('inv
 Route::get('/invoice-details/{id}',[PaymentController::class,'invoiceDetails'])->name('invoiceDetails');
 
 
-`Route::post('/payment/eps/create',[EPSPaymentController::class, 'createPayment']);
+Route::post('/payment/eps/create',[EPSPaymentController::class, 'createPayment']);

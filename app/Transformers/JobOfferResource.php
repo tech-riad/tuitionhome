@@ -106,6 +106,8 @@ class JobOfferResource extends JsonResource
             'total_application'=> $this->total_application,
             'created_at'=> $this->created_at,
             'additionalChild' => $additionalChildren,
+            'appliedTutorIds' => $this->appliedTutorIds ?? [],
+
 
 
         ];

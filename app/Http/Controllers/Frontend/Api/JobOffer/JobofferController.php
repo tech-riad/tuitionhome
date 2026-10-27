@@ -26,7 +26,7 @@ class JobofferController extends Controller
         $this->jobOfferRepository = $jobOfferRepository;
 
     }
-    
+
     public function jobFilterSalary(Request $request)
     {
 
@@ -64,23 +64,41 @@ class JobofferController extends Controller
             'request_data' => $request->all(),
         ]);
     }
+
     public function getJobOffer(Request $request)
     {
         try {
             $perPage = $request->input('per_page', 12);
             $cityId  = $request->input('city_id');
 
-            if($cityId == null){
-                $jobOffers = $this->jobOfferRepository->all()->paginate($perPage);
+            $query = $this->jobOfferRepository->all();
 
-                $totalJobOffers = $this->jobOfferRepository->all()->count();
-
-            }else{
-
-                $jobOffers = $this->jobOfferRepository->all()->where('city_id',$cityId)->paginate($perPage);
-                $totalJobOffers = $this->jobOfferRepository->all()->where('city_id', $cityId)->count();
-
+            if ($cityId != null) {
+                $query = $query->where('city_id', $cityId);
             }
+
+            $jobOffers = $query->paginate($perPage);
+
+            $totalJobOffers = $query->count();
+
+            // Get applied tutor IDs for each job offer
+            $jobOfferIds = $jobOffers->pluck('id');
+
+            $applications = JobApplication::whereIn('job_offer_id', $jobOfferIds)
+                ->get(['job_offer_id', 'tutor_id'])
+                ->groupBy('job_offer_id');
+
+            $jobOffers->getCollection()->transform(function ($job) use ($applications) {
+                $job->appliedTutorIds = ($applications->get($job->id) ?? collect())
+                    ->map(function ($application) {
+                        return [
+                            'tutor_id' => $application->tutor_id
+                        ];
+                    })
+                    ->values();
+
+                return $job;
+            });
 
             $paginationMeta = [
                 'current_page' => $jobOffers->currentPage(),
@@ -94,10 +112,12 @@ class JobofferController extends Controller
                 'job_offers' => JobOfferResource::collection($jobOffers),
                 'meta' => $paginationMeta,
             ]);
+
         } catch (Exception $e) {
             return $this->resposeError('', $e->getMessage());
         }
     }
+
 
 
     // public function apply_to_job_offer(Request $request, $id=null){
@@ -142,12 +162,12 @@ class JobofferController extends Controller
                 ->where('target_id', $id)
                 ->pluck('tutor_id')
                 ->toArray();
-            
+
 
             $bookmarkTutors = array_map(function ($tutorId) {
                 return ['tutor_id' => $tutorId];
             }, $bookmarkTutorIds);
-            
+
             $response = [
                 'jobDetails' => $jobDetails,
                 'appliedTutorIds' => $tutors,
@@ -266,7 +286,7 @@ class JobofferController extends Controller
     //                 )
     //             ) AS distance
     //         ", [$lat, $lon, $lat])
-        
+
     //         ->having('distance', '<=', $distance)
     //         ->orderBy('distance', 'asc');
     //     }
@@ -289,7 +309,7 @@ class JobofferController extends Controller
     //         'request_data' => $request->all(),
     //     ]);
     // }
-    
+
     public function jobFilter(Request $request)
 {
     $catf              = $request->input('catf');
@@ -399,7 +419,7 @@ class JobofferController extends Controller
         $query->where('tutor_gender', $tutor_gender);
     }
 
-    
+
 
     if ($diw !== null) {
         $query->where('days_in_week', $diw);
