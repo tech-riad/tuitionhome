@@ -37,8 +37,8 @@ Route::post('/tutor/payment/execute-payment',[PaymentController::class,'executeP
 
 
 // Public Invoices
-    Route::post('/invoice-list',[PaymentController::class,'invoiceList'])->name('invoiceList');
-    Route::get('/invoice-details/{id}',[PaymentController::class,'invoiceDetails'])->name('invoiceDetails');
+Route::post('/invoice-list',[PaymentController::class,'invoiceList'])->name('invoiceList');
+Route::get('/invoice-details/{id}',[PaymentController::class,'invoiceDetails'])->name('invoiceDetails');
 
 
-    Route::post('/payment/eps/create',[EPSPaymentController::class, 'createPayment']);
+`Route::post('/payment/eps/create',[EPSPaymentController::class, 'createPayment']);

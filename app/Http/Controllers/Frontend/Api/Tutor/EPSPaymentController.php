@@ -640,15 +640,26 @@ class EPSPaymentController extends Controller
 
         $frontendUrl = rtrim(
             (string) (
-                 'https://localhost:5173'
+                 'https://tuitionhome.xyz'
             ),
             '/'
         );
 
 
+        $query = [
+            'status' => $status,
+            'message' => $message,
+        ];
+
+        if ($payment) {
+            $query['invoice_id'] = $payment->invoice_id;
+            $query['payment_id'] = $payment->id;
+        }
+
         return redirect()->away(
             $frontendUrl .
-            '/payment/result'
+            '/payment/result?' .
+            http_build_query($query)
         );
     }
 }
