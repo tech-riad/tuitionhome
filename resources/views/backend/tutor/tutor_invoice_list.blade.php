@@ -123,6 +123,8 @@
                     <th scope="col" class="text-nowrap">Job ID</th>
                     <th scope="col" class="text-nowrap">Status</th>
                     <th scope="col" class="text-nowrap">Amount</th>
+                    <th scope="col" class="text-nowrap">Copy Link</th>
+
                     <th scope="col" class="text-nowrap">Action</th>
                     <th scope="col"></th>
                 </tr>
@@ -160,6 +162,14 @@
                         </span>
                     </td>
                     <td> {{$invoice->amount ?? 'n/a'}}</td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary"
+                                title="Copy Invoice Link"
+                                onclick="copyToClipboard('https://tuitionhome.xyz/invoices/{{ $invoice->tutor_id }}/{{ $invoice->id }}', this)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </td>
                     {{-- {{ route('admin.invoice.show', $invoice->id) }} --}}
                     <td>
                         <button type="button"
@@ -260,5 +270,21 @@
 
 @push('page_scripts')
 @include('backend.tutor.js.swtdeleteMethod_js')
+
+<script>
+    function copyToClipboard(text, button) {
+    navigator.clipboard.writeText(text).then(function () {
+        button.innerHTML = '<i class="fas fa-check text-success"></i>';
+        button.title = 'Copied!';
+
+        setTimeout(function () {
+            button.innerHTML = '<i class="fas fa-copy"></i>';
+            button.title = 'Copy Invoice Link';
+        }, 1500);
+    }).catch(function () {
+        alert('Copy failed!');
+    });
+}
+</script>
 
 @endpush
