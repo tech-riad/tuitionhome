@@ -712,10 +712,10 @@ class PaymentController extends Controller
         $dateto = Carbon::now();
 
 
-        $servicePaymentSum  = Invoice::where('invoice_type','Tuition Fee')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $serviceMemberSum  = Invoice::where('invoice_type','premium')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $serviceverifySum  = Invoice::where('invoice_type','verify')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $serviceboostSum  = Invoice::where('invoice_type','boost')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $servicePaymentSum  = Invoice::where('invoice_type','Tuition Fee')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $serviceMemberSum  = Invoice::where('invoice_type','premium')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $serviceverifySum  = Invoice::where('invoice_type','verify')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $serviceboostSum  = Invoice::where('invoice_type','boost')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
 
 
         $smsRechargeSum     = SmsRecharge::whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
