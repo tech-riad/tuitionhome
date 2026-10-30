@@ -47,6 +47,7 @@ class MembershipController extends Controller
     public function getMembership(Request $request)
     {
         $tutor = Tutor::where('id',Auth::user()->id)->first();
+        // dd($tutor);
 
         $memberships = PremiumMembership::where('tutor_id', $tutor->id)
                  ->where('payment_status', 'paid')

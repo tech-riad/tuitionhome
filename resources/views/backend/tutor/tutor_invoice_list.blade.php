@@ -172,12 +172,16 @@
                     </td>
                     {{-- {{ route('admin.invoice.show', $invoice->id) }} --}}
                     <td>
+                        @if ($invoice->job_id != null)
                         <button type="button"
                                 class="btn btn-sm btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#duplicateInvoiceModal{{ $invoice->id }}">
                             Duplicate
                         </button>
+
+                        @endif
+
                     </td>
 
 
