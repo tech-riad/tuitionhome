@@ -292,6 +292,9 @@
                                     Application deadline:
                                     {{ !empty($data['application_deadline']) ? \Illuminate\Support\Carbon::parse($data['application_deadline'])->format('F d, Y') : 'Not specified' }}
                                 </span>
+                                <a href="{{ route('admin.career.applications', $careerPlan) }}">
+                                    Applicants ({{ $careerPlan->applications_count }})
+                                </a>
                                 <span>Posted {{ $careerPlan->created_at->format('M d, Y') }}</span>
                             </div>
                         </article>

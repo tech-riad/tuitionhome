@@ -19,4 +19,9 @@ class CareerPlan extends Model
     protected $casts = [
         'form_data' => 'array',
     ];
+
+    public function applications()
+    {
+        return $this->hasMany(CareerApplication::class);
+    }
 }

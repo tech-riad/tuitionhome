@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
                 'status' => 401,
                 'message' =>'Unauthenticated'
             ],
-        ]);
+        ], 401);
 
     }
 

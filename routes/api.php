@@ -35,3 +35,4 @@ include ("api/membership.php");
 include ("api/verify.php");
 include ("api/boost.php");
 include ("api/bookmark.php");
+include ("api/careers.php");

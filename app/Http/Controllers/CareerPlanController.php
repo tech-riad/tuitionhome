@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\CareerPlan;
+use App\Models\CareerApplication;
 use App\Models\City;
 use App\Models\Location;
+use App\Models\AdvanceSearchSms;
+use App\Models\SmsBalance;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\URL;
@@ -56,6 +60,7 @@ class CareerPlanController extends Controller
     {
         $careerPlans = CareerPlan::query()
             // ->where('created_by', auth()->id())
+            ->withCount('applications')
             ->orderByDesc('created_at')
             ->paginate(10);
 
@@ -92,6 +97,169 @@ class CareerPlanController extends Controller
         abort_unless((int) $careerPlan->created_by === (int) auth()->id(), 403);
 
         return $this->detailsView($careerPlan, false);
+    }
+
+    public function applications(Request $request, CareerPlan $careerPlan)
+    {
+        $this->authorizeCareerPlan($careerPlan, $request);
+
+        $filters = $request->validate([
+            'status' => ['nullable', Rule::in(CareerApplication::STATUSES)],
+        ]);
+
+        $applications = $careerPlan->applications()
+            ->with(['tutor:id,name,email,phone,is_sms', 'notes.user:id,name'])
+            ->when(!empty($filters['status']), function ($query) use ($filters) {
+                $query->where('status', $filters['status']);
+            })
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('backend.career.applications', [
+            'careerPlan' => $careerPlan,
+            'applications' => $applications,
+            'statuses' => CareerApplication::STATUSES,
+            'selectedStatus' => $filters['status'] ?? '',
+        ]);
+    }
+
+    public function updateApplicationStatus(Request $request, CareerPlan $careerPlan, CareerApplication $application)
+    {
+        $this->authorizeCareerPlan($careerPlan, $request);
+        abort_unless((int) $application->career_plan_id === (int) $careerPlan->id, 404);
+
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(CareerApplication::STATUSES)],
+        ]);
+
+        $application->update(['status' => $validated['status']]);
+
+        return redirect()
+            ->route('admin.career.applications', [
+                'careerPlan' => $careerPlan,
+                'status' => $request->query('status'),
+            ])
+            ->with('success', 'Application status updated.');
+    }
+
+    public function storeApplicationNote(Request $request, CareerPlan $careerPlan, CareerApplication $application)
+    {
+        $this->authorizeCareerPlan($careerPlan, $request);
+        abort_unless((int) $application->career_plan_id === (int) $careerPlan->id, 404);
+
+        $validated = $request->validate([
+            'note' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $note = $application->notes()->create([
+            'user_id' => $request->user()->id,
+            'note' => trim($validated['note']),
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Application note added.',
+                'note' => [
+                    'id' => $note->id,
+                    'body' => $note->note,
+                    'created_by' => $request->user()->name,
+                    'emp_id' => (string) $request->user()->id,
+                    'created_at' => $note->created_at->format('d M Y, h:i A'),
+                ],
+                'count' => $application->notes()->count(),
+            ], 201);
+        }
+
+        return redirect()
+            ->route('admin.career.applications', [
+                'careerPlan' => $careerPlan,
+                'status' => $request->query('status'),
+                'page' => $request->query('page'),
+            ])
+            ->with('success', 'Application note added.');
+    }
+
+    public function applicationNotes(Request $request, CareerPlan $careerPlan, CareerApplication $application)
+    {
+        $this->authorizeCareerPlan($careerPlan, $request);
+        abort_unless((int) $application->career_plan_id === (int) $careerPlan->id, 404);
+
+        return response()->json([
+            'status' => true,
+            'data' => $application->notes()
+                ->with('user:id,name')
+                ->get()
+                ->map(function ($note) {
+                    return [
+                        'id' => $note->id,
+                        'body' => $note->note,
+                        'created_by' => optional($note->user)->name ?? 'Admin',
+                        'emp_id' => (string) $note->user_id,
+                        'created_at' => $note->created_at->format('d M Y, h:i A'),
+                    ];
+                })
+                ->values(),
+        ]);
+    }
+
+    public function applicationSmsEditor(Request $request, CareerPlan $careerPlan)
+    {
+        $this->authorizeCareerPlan($careerPlan, $request);
+
+        $validated = $this->validateSelectedApplicationIds($request);
+        $applications = $this->getSmsEligibleApplications($careerPlan, $validated['application_ids']);
+
+        return view('backend.career.sms-editor', [
+            'careerPlan' => $careerPlan,
+            'applications' => $applications,
+        ]);
+    }
+
+    public function selectApplicationSmsRecipients(Request $request, CareerPlan $careerPlan)
+    {
+        $this->authorizeCareerPlan($careerPlan, $request);
+
+        $validated = $this->validateSelectedApplicationIds($request);
+        $this->getSmsEligibleApplications($careerPlan, $validated['application_ids']);
+
+        return redirect()->route('admin.career.applications.sms.editor', [
+            'careerPlan' => $careerPlan,
+            'application_ids' => $validated['application_ids'],
+        ]);
+    }
+
+    public function sendApplicationSms(Request $request, CareerPlan $careerPlan)
+    {
+        $this->authorizeCareerPlan($careerPlan, $request);
+
+        $validated = $this->validateSelectedApplicationIds($request);
+        $validated = array_merge($validated, $request->validate([
+            'message' => ['required', 'string', 'max:300'],
+        ]));
+        $applications = $this->getSmsEligibleApplications($careerPlan, $validated['application_ids']);
+
+        DB::transaction(function () use ($applications, $validated, $request) {
+            foreach ($applications as $application) {
+                $phone = $this->normalizeBangladeshPhone($application->tutor->phone);
+
+                $sms = new AdvanceSearchSms();
+                $sms->send_by = $request->user()->id;
+                $sms->body = $validated['message'];
+                $sms->phone = $phone;
+                $sms->is_send = 0;
+                $sms->save();
+
+                $balance = SmsBalance::firstOrNew(['tutor_id' => $application->tutor_id]);
+                $balance->unpaid_sms = (int) $balance->unpaid_sms + 1;
+                $balance->save();
+            }
+        });
+
+        return redirect()
+            ->route('admin.career.applications', $careerPlan)
+            ->with('success', 'SMS queued for ' . $applications->count() . ' selected tutor(s).');
     }
 
     public function share(CareerPlan $careerPlan)
@@ -131,7 +299,64 @@ class CareerPlanController extends Controller
             'careerPlan' => $careerPlan,
             'data' => $data,
             'shared' => $shared,
+            'applicationsCount' => $shared ? null : $careerPlan->applications()->count(),
         ]);
+    }
+
+    private function authorizeCareerPlan(CareerPlan $careerPlan, Request $request)
+    {
+        abort_unless((int) $careerPlan->created_by === (int) $request->user()->id, 403);
+    }
+
+    private function validateSelectedApplicationIds(Request $request)
+    {
+        return $request->validate([
+            'application_ids' => ['required', 'array', 'min:1', 'max:20'],
+            'application_ids.*' => ['required', 'integer', 'distinct', 'exists:career_applications,id'],
+        ]);
+    }
+
+    private function getSmsEligibleApplications(CareerPlan $careerPlan, array $applicationIds)
+    {
+        $applications = $careerPlan->applications()
+            ->with('tutor:id,name,phone,is_sms')
+            ->whereIn('id', $applicationIds)
+            ->get();
+
+        if ($applications->count() !== count($applicationIds)) {
+            abort(422, 'One or more selected applicants do not belong to this job.');
+        }
+
+        foreach ($applications as $application) {
+            if (!$application->tutor || (int) $application->tutor->is_sms !== 1) {
+                abort(422, 'SMS is disabled for one or more selected tutors.');
+            }
+
+            if ($this->normalizeBangladeshPhone($application->tutor->phone) === null) {
+                abort(422, 'A selected tutor does not have a valid Bangladesh mobile number.');
+            }
+        }
+
+        return $applications;
+    }
+
+    private function normalizeBangladeshPhone($phone)
+    {
+        $phone = preg_replace('/\D+/', '', (string) $phone);
+
+        if (preg_match('/^8801[3-9]\d{8}$/', $phone)) {
+            return substr($phone, 2);
+        }
+
+        if (preg_match('/^01[3-9]\d{8}$/', $phone)) {
+            return $phone;
+        }
+
+        if (preg_match('/^1[3-9]\d{8}$/', $phone)) {
+            return '0' . $phone;
+        }
+
+        return null;
     }
 
     public function create()
