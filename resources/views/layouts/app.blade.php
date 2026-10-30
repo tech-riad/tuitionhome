@@ -414,6 +414,7 @@
 
     </script>
 
+    @unless(request()->routeIs('admin.career.*'))
     <script src="https://cdn.ckeditor.com/4.8.0/full-all/ckeditor.js"></script>
     <script src="{{ asset('lineheight/plugin.js') }}"></script>
 
@@ -595,6 +596,7 @@
         });
 
     </script>
+    @endunless
 
 {{-- Parent Caroseljs --}}
 

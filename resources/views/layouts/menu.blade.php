@@ -790,6 +790,16 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
     </a>
 
 </li>
+<li class="nav-item">
+    <a href="{{ route('admin.career.index') }}" class="nav-link" style="background-color: #343A40">
+        <i class='fas fa-sun'></i>
+        <i class="fa-light fa-money-check-dollar"></i>
+        <p>
+            Career Planning
+        </p>
+    </a>
+
+</li>
 
 
 {{-- Marketting --}}

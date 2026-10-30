@@ -772,6 +772,7 @@ include("setting.php");
 include("takenoffer.php");
 include("cprequesthandle.php");
 include("corporatepartner.php");
+include("career.php");
 
 require __DIR__.'/notice.php';
 
