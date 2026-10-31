@@ -355,13 +355,11 @@ class PaymentController extends Controller
     {
         $currentYear = Carbon::now()->year;
         $currentMonth = Carbon::now()->month;
-
-        $servicePaymentSumMonthly  = Invoice::whereYear('created_at', $currentYear)
-                                    ->whereMonth('created_at', $currentMonth)
-                                    ->sum('received_amount');
-        $servicePaymentSumMonthlyCount  = Invoice::whereYear('created_at', $currentYear)
-                                        ->whereMonth('created_at', $currentMonth)
-                                        ->count();
+        $monthStart = Carbon::now()->startOfMonth();
+        $monthEnd = Carbon::now()->endOfMonth();
+        $monthlyInvoices = $this->paidInvoiceQuery($monthStart, $monthEnd);
+        $servicePaymentSumMonthly = (clone $monthlyInvoices)->sum('amount');
+        $servicePaymentSumMonthlyCount = (clone $monthlyInvoices)->count();
         $refundDue = DuePayments::sum('amount');
         $smsPayment = SmsBalance::where('available_sms', '>', 0)->sum('available_sms');
         $smsPaymentDue = $smsPayment * 0.25;
@@ -518,13 +516,13 @@ class PaymentController extends Controller
 
         $payments = Invoice::where('status', 'paid')->orderBy('id','DESC')->paginate($paginationLimit);
 
-        $servicePaymentSum  = Invoice::where('invoice_type','Tuition Fee')->where('status', 'paid')->sum('amount');
-        $serviceMemberSum  = Invoice::where('invoice_type','premium')->where('status', 'paid')->sum('amount');
-        $serviceverifySum  = Invoice::where('invoice_type','verify')->where('status', 'paid')->sum('amount');
-        $serviceboostSum  = Invoice::where('invoice_type','boost')->where('status', 'paid')->sum('amount');
+        $servicePaymentSum = $this->paidInvoiceCategoryQuery(['tuition fee', 'service charge'])->sum('amount');
+        $serviceMemberSum = $this->paidInvoiceCategoryQuery(['premium', 'membership payment'])->sum('amount');
+        $serviceverifySum = $this->paidInvoiceCategoryQuery(['verify', 'verification payment'])->sum('amount');
+        $serviceboostSum = $this->paidInvoiceCategoryQuery(['boost', 'boost payment'])->sum('amount');
 
 
-        $smsRechargeSum     = SmsRecharge::sum('amount');
+        $smsRechargeSum = SmsRecharge::sum('amount');
 
         $employees = User::orderBy('id', 'desc')->get();
         $admin = User::whereIn('role_id', [1])->orderBy('id', 'desc')->get();
@@ -555,17 +553,16 @@ class PaymentController extends Controller
 
         $tutorId = Tutor::where('phone', $tutorUniqueId)->value('id');
 
-        $payments = Invoice::where('tutor_id', $tutorId)->where('status', 'paid')
-                                      ->orderBy('id', 'DESC')
-                                      ->paginate(10);
-        $servicePaymentSumTop  = Invoice::where('tutor_id', $tutorId)->where('status', 'paid')->sum('amount');
-        $smsRechargeSumCount     = SmsRecharge::where('tutor_id', $tutorId)->sum('amount');
+        $tutorInvoices = $this->paidInvoiceQuery($datefrom, $dateto)->where('tutor_id', $tutorId);
+        $payments = (clone $tutorInvoices)->orderBy('id', 'DESC')->paginate(10);
+        $servicePaymentSumTop = (clone $tutorInvoices)->sum('amount');
+        $smsRechargeSumCount = (clone $tutorInvoices)->count();
 
-        $smsRechargeSum     = SmsRecharge::sum('amount');
-        $servicePaymentSum  = Invoice::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','Tuition Fee')->where('status', 'paid')->sum('amount');
-        $serviceMemberSum  = Invoice::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','premium')->where('status', 'paid')->sum('amount');
-        $serviceverifySum  = Invoice::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','verify')->where('status', 'paid')->sum('amount');
-        $serviceboostSum  = Invoice::whereBetween('created_at', [$datefrom, $dateto])->where('service_category','boost')->where('status', 'paid')->sum('amount');
+        $smsRechargeSum = SmsRecharge::whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $servicePaymentSum = $this->paidInvoiceCategoryQuery(['tuition fee', 'service charge'], $datefrom, $dateto)->sum('amount');
+        $serviceMemberSum = $this->paidInvoiceCategoryQuery(['premium', 'membership payment'], $datefrom, $dateto)->sum('amount');
+        $serviceverifySum = $this->paidInvoiceCategoryQuery(['verify', 'verification payment'], $datefrom, $dateto)->sum('amount');
+        $serviceboostSum = $this->paidInvoiceCategoryQuery(['boost', 'boost payment'], $datefrom, $dateto)->sum('amount');
 
 
         $employees = User::orderBy('id', 'desc')->get();
@@ -610,16 +607,16 @@ class PaymentController extends Controller
         $filtersumcount = Invoice::whereIn('id', $paymentIds)->where('status', 'paid')->count();
         $payments->appends(['revenue_filter' => $searchCriteria]);
 
-        // Additional data
-        $servicePaymentSum  = Invoice::where('service_category','Tuition Fee')->where('status', 'paid')->sum('amount');
-        $serviceMemberSum  = Invoice::where('service_category','premium')->where('status', 'paid')->sum('amount');
-        $serviceverifySum  = Invoice::where('service_category','verify')->where('status', 'paid')->sum('amount');
-        $serviceboostSum  = Invoice::where('service_category','boost')->where('status', 'paid')->sum('amount');
-        $smsRechargeSum = SmsRecharge::sum('amount');
-
         $setpoint = WebSetting::first();
         $datefrom = $setpoint->set_point_date ?? now();
         $dateto = Carbon::now();
+
+        // Additional data
+        $servicePaymentSum = $this->paidInvoiceCategoryQuery(['tuition fee', 'service charge'], $datefrom, $dateto)->sum('amount');
+        $serviceMemberSum = $this->paidInvoiceCategoryQuery(['premium', 'membership payment'], $datefrom, $dateto)->sum('amount');
+        $serviceverifySum = $this->paidInvoiceCategoryQuery(['verify', 'verification payment'], $datefrom, $dateto)->sum('amount');
+        $serviceboostSum = $this->paidInvoiceCategoryQuery(['boost', 'boost payment'], $datefrom, $dateto)->sum('amount');
+        $smsRechargeSum = SmsRecharge::whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
 
         // Employee and admin lists
         $employees = User::orderBy('id', 'desc')->get();
@@ -840,21 +837,14 @@ class PaymentController extends Controller
 
     public function monthlyRevenue()
     {
-        $currentYear = Carbon::now()->year;
-        $currentMonth = Carbon::now()->month;
+        $monthStart = Carbon::now()->startOfMonth();
+        $monthEnd = Carbon::now()->endOfMonth();
+        $monthlyInvoices = $this->paidInvoiceQuery($monthStart, $monthEnd);
+        $servicePaymentSumMonthly = (clone $monthlyInvoices)->sum('amount');
+        $servicePaymentSumMonthlyCount = (clone $monthlyInvoices)->count();
 
-        $servicePaymentSumMonthly  = Invoice::whereYear('created_at', $currentYear)
-                                                ->whereMonth('created_at', $currentMonth)
-                                                ->sum('received_amount');
-        $servicePaymentSumMonthlyCount  = Invoice::whereYear('created_at', $currentYear)
-                                                ->whereMonth('created_at', $currentMonth)
-                                                ->count();
-
-        $monthlyRevenue = Invoice::whereYear('created_at', $currentYear)
-                                            ->whereMonth('created_at', $currentMonth)
-                                            ->orderBy('id','DESC')
-                                            ->paginate(10);
-        $servicePaymentSum  = Invoice::sum('received_amount');
+        $monthlyRevenue = (clone $monthlyInvoices)->orderBy('paid_at', 'DESC')->paginate(10);
+        $servicePaymentSum = $this->paidInvoiceQuery()->sum('amount');
         $smsRechargeSum     = SmsRecharge::sum('amount');
 
 
@@ -883,27 +873,16 @@ class PaymentController extends Controller
         $dateto = Carbon::now();
         // Summing up the amounts
         // dd($setpoint);
-        $serviceCharge = Invoice::where('invoice_type','Tuition Fee')->whereBetween('paid_at', [$datefrom, $dateto])->status('paid')->sum('amount');
-        $premiumCharge = Invoice::where('invoice_type','premium')
-                                            ->where('render_by','!=','Payment Gateway')
-                                            ->whereBetween('paid_at', [$datefrom, $dateto])->sum('amount');
-        $verifyCharge = Invoice::whereIn('invoice_type', ['verify'])
-                                            ->where('render_by','!=','Payment Gateway')
-                                            ->whereBetween('paid_at', [$datefrom, $dateto])
-                                            ->sum('amount');
-        $revenue = Invoice::whereBetween('paid_at', [$datefrom, $dateto])
-                                        ->whereNotIn('invoice_type', ['premium', 'verify'])
-                                        ->orWhere(function ($query) {
-                                            $query->where('render_by', 'Payment Gateway');
-                                        })
-                                        ->whereBetween('paid_at', [$datefrom, $dateto])
-                                        ->sum('amount');
+        $serviceCharge = $this->paidInvoiceCategoryQuery(['Tuition fee', 'service charge'], $datefrom, $dateto)->sum('amount');
+        $premiumCharge = $this->paidInvoiceCategoryQuery(['premium', 'membership payment'], $datefrom, $dateto)->sum('amount');
+        $verifyCharge = $this->paidInvoiceCategoryQuery(['verify', 'verification payment'], $datefrom, $dateto)->sum('amount');
+        $revenue = $this->paidInvoiceQuery($datefrom, $dateto)->sum('amount');
 
         $refund = DuePayments::whereBetween('created_at', [$datefrom, $dateto])
                                         ->sum('amount');
 
         // Fetching the data
-        $revenueApplications = Invoice::whereBetween('paid_at', [$datefrom, $dateto])
+        $revenueApplications = $this->paidInvoiceQuery($datefrom, $dateto)
                                 ->with('tutor')->orderBy('paid_at', 'desc')->get();
         $refundApplications = DuePayments::whereBetween('created_at', [$datefrom, $dateto])
                                 ->orderBy('created_at', 'desc')->get();
@@ -962,20 +941,27 @@ class PaymentController extends Controller
 
         $tutorId = Tutor::where('phone', $tutorUniqueId)->value('id');
 
-        $serviceCharge = Invoice::where('service_category','Tuition Fee')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $premiumCharge = Invoice::where('service_category','Premium')
-                                            ->where('render_by','!=','Payment Gateway')
-                                            ->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $verifyCharge = Invoice::whereIn('service_category', ['Verify'])
-                                            ->where('render_by','!=','Payment Gateway')
-                                            ->whereBetween('created_at', [$datefrom, $dateto])
-                                            ->sum('amount');
-        $revenue = Invoice::whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $refund = DuePayments::whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $tutorInvoices = $this->paidInvoiceQuery($datefrom, $dateto)->where('tutor_id', $tutorId);
+        $serviceCharge = $this->paidInvoiceCategoryQuery(['tuition fee', 'service charge'], $datefrom, $dateto)
+            ->where('tutor_id', $tutorId)
+            ->sum('amount');
+        $premiumCharge = $this->paidInvoiceCategoryQuery(['premium', 'membership payment'], $datefrom, $dateto)
+            ->where('tutor_id', $tutorId)
+            ->sum('amount');
+        $verifyCharge = $this->paidInvoiceCategoryQuery(['verify', 'verification payment'], $datefrom, $dateto)
+            ->where('tutor_id', $tutorId)
+            ->sum('amount');
+        $revenue = (clone $tutorInvoices)->sum('amount');
+        $refundQuery = DuePayments::where('tutor_id', $tutorId)
+            ->whereBetween('created_at', [$datefrom, $dateto]);
+        $refund = (clone $refundQuery)->sum('amount');
 
         // Fetching the data
-        $revenueApplications = Invoice::where('tutor_id',$tutorId)->get();
-        $refundApplications = DuePayments::where('tutor_id',$tutorId)->get();
+        $revenueApplications = (clone $tutorInvoices)
+            ->with('tutor')
+            ->orderBy('paid_at', 'desc')
+            ->get();
+        $refundApplications = $refundQuery->orderBy('created_at', 'desc')->get();
 
         // Merging both collections
         $allApplications = $revenueApplications->map(function ($item) {
@@ -1028,40 +1014,33 @@ class PaymentController extends Controller
 
         $currentRoute = \Route::currentRouteName();
         $paginationLimit = $request->get('pagination_limit', 30);
-        $revenueApplicationsquery = Invoice::with('tutor')->orderBy('created_at', 'desc');
+        $applyInvoiceFilters = function ($query) use ($request, $datefrom, $dateto) {
+            if ($request->has('set_point')) {
+                $query->whereBetween('paid_at', [$datefrom, $dateto]);
+            }
 
-        $serviceChargehistory = Invoice::where('service_category', 'Tuition Fee')
-            ->whereBetween('created_at', [$datefrom, $dateto])
-            ->where('ownership_by', $request->owner_by_name)
-            ->selectRaw('SUM(amount) as total_received, SUM(refund_coin) as total_refund')
-            ->first();
+            if ($request->owner_by_name !== null) {
+                $query->where('owned_by', $request->owner_by_name);
+            }
+            if ($request->owner_by_id !== null) {
+                $query->where('owned_by', $request->owner_by_id);
+            }
 
-        $totalReceived = $serviceChargehistory->total_received ?? 0;
-        $totalRefund = $serviceChargehistory->total_refund ?? 0;
+            return $query;
+        };
 
-        $serviceCharge = $totalReceived + $totalRefund;
-
-
-        $premiumCharge = Invoice::where('service_category','membership payment')
-                                            ->where('render_by','!=','Payment Gateway')
-                                            ->where('ownership_by',$request->owner_by_name)
-                                            ->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $verifyCharge = Invoice::whereIn('service_category', ['Verify'])
-                                            ->where('render_by','!=','Payment Gateway')
-                                            ->where('ownership_by',$request->owner_by_name)
-                                            ->whereBetween('created_at', [$datefrom, $dateto])
-                                            ->sum('amount');
-
-        if ($request->has('set_point')) {
-            $revenueApplicationsquery->whereBetween('created_at', [$datefrom, $dateto]);
-        }
-
-        if ($request->owner_by_name !== null) {
-            $revenueApplicationsquery->where('ownership_by', $request->owner_by_name);
-        }
-        if ($request->owner_by_id !== null) {
-            $revenueApplicationsquery->where('ownership_by', $request->owner_by_id);
-        }
+        $revenueApplicationsquery = $applyInvoiceFilters(
+            $this->paidInvoiceQuery()->with('tutor')->orderBy('paid_at', 'desc')
+        );
+        $serviceCharge = $applyInvoiceFilters(
+            $this->paidInvoiceCategoryQuery(['tuition fee', 'service charge'])
+        )->sum('amount');
+        $premiumCharge = $applyInvoiceFilters(
+            $this->paidInvoiceCategoryQuery(['premium', 'membership payment'])
+        )->sum('amount');
+        $verifyCharge = $applyInvoiceFilters(
+            $this->paidInvoiceCategoryQuery(['verify', 'verification payment'])
+        )->sum('amount');
 
         $revenueApplications = $revenueApplicationsquery->get();
 
@@ -1082,9 +1061,7 @@ class PaymentController extends Controller
 
         $refundApplications = $refundApplicationquery->get();
 
-        $revenue = $revenueApplications->sum(function ($application) {
-            return $application->amount + $application->refund_coin;
-        });
+        $revenue = $revenueApplications->sum('amount');
         $refund = $refundApplications->sum('amount');
 
         $allApplications = $revenueApplications->map(function ($item) {
@@ -1140,6 +1117,7 @@ class PaymentController extends Controller
         $searchCriteria = str_replace('==', '=', $searchCriteria);
 
         $revenueApplications = Invoice::with('tutor')
+            ->where('status', 'paid')
             ->whereRaw($searchCriteria)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -1176,11 +1154,11 @@ class PaymentController extends Controller
         );
 
         // Summing up amounts
-        $revenue = Invoice::whereRaw($searchCriteria)
-                    ->selectRaw('SUM(amount + refund_coin) as total_revenue')
-                    ->value('total_revenue');
+        $revenue = Invoice::where('status', 'paid')
+                    ->whereRaw($searchCriteria)
+                    ->sum('amount');
         $refund = DuePayments::whereRaw($searchCriteria)->sum('amount');
-        $revenueCount = Invoice::whereRaw($searchCriteria)->count();
+        $revenueCount = Invoice::where('status', 'paid')->whereRaw($searchCriteria)->count();
         $refundCount = DuePayments::whereRaw($searchCriteria)->count();
 
         $allCount = $revenueCount + $refundCount;
@@ -1196,8 +1174,8 @@ class PaymentController extends Controller
     public function tutorInvoice($id)
         {
             $invoices = Invoice::where('tutor_id', $id)
-                            ->where('service_category', 'service charge')
-                            ->where('in_out', 'received')
+                            ->where('invoice_type', 'Tuition Fee')
+                            ->where('status', 'paid')
                             ->get();
 
             $invoiceData = [];
@@ -1207,7 +1185,7 @@ class PaymentController extends Controller
                     'invoiceNo'       => 'TM0' . $invoice->id,
                     'tutorName'       => $invoice->tutor->name,
                     'tutorEmail'       => $invoice->tutor->email,
-                    'serviceCategory' => $invoice->service_category,
+                    'serviceCategory' => $invoice->invoice_type,
                     'jobId'           => $invoice->job_offer_id,
                     'tutorId'         => $invoice->tutor->unique_id,
                     'createdDate'     => optional($invoice->created_at)->toDateString() ?? 'N/A',
@@ -1245,8 +1223,8 @@ class PaymentController extends Controller
         public function paymentTrx($id)
         {
             $transctions = Invoice::where('tutor_id', $id)
-                            ->where('service_category', 'service charge')
-                            ->where('in_out', 'received')
+                            ->where('invoice_type', 'Tuition Fee')
+                            ->where('status', 'paid')
                             ->get();
 
             $transctionData = [];
@@ -1310,6 +1288,25 @@ class PaymentController extends Controller
 
         }
 
+
+    private function paidInvoiceQuery($dateFrom = null, $dateTo = null)
+    {
+        $query = Invoice::where('status', 'paid');
+
+        if ($dateFrom !== null && $dateTo !== null) {
+            $query->whereBetween('paid_at', [$dateFrom, $dateTo]);
+        }
+
+        return $query;
+    }
+
+    private function paidInvoiceCategoryQuery(array $categories, $dateFrom = null, $dateTo = null)
+    {
+        $categories = array_map('strtolower', $categories);
+
+        return $this->paidInvoiceQuery($dateFrom, $dateTo)
+            ->whereIn(DB::raw('LOWER(invoice_type)'), $categories);
+    }
 
     public function smsRechargeAdd(Request $request)
     {
