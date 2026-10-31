@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Counting;
 use App\Models\JobApplication;
+use App\Models\JobOffer;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class InvoiceController extends Controller
 {
@@ -143,6 +147,71 @@ class InvoiceController extends Controller
             ->withQueryString();
 
         return view('backend.tutor.tutor_invoice_list', compact('invoices', 'tutor', 'counts', 'status'));
+    }
+
+    public function updateTutorInvoiceStatus(Request $request, $tutorId, $invoiceId)
+    {
+        abort_unless(in_array((int) $request->user()->role_id, [1, 6], true), 403);
+
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(['pending', 'paid', 'cancelled'])],
+            'filter' => ['nullable', Rule::in(['all', 'pending', 'paid', 'overdue', 'cancelled'])],
+        ]);
+
+        $invoice = Invoice::where('tutor_id', $tutorId)->findOrFail($invoiceId);
+        $currentStatus = strtolower($invoice->status ?? '');
+        if ($currentStatus === 'cancel') {
+            $currentStatus = 'cancelled';
+        }
+
+        $newStatus = $validated['status'];
+        if ($currentStatus === 'paid' && $newStatus !== 'paid') {
+            return back()
+                ->withErrors(['status' => 'Paid invoices cannot be changed.'])
+                ->withInput();
+        }
+
+        if ($currentStatus === 'cancelled' && $newStatus === 'paid') {
+            return back()
+                ->withErrors(['status' => 'Reopen the invoice as pending before marking it paid.'])
+                ->withInput();
+        }
+
+        if ($newStatus === 'cancelled' && $currentStatus !== 'pending' && $currentStatus !== 'cancelled') {
+            return back()
+                ->withErrors(['status' => 'Only pending invoices can be cancelled.'])
+                ->withInput();
+        }
+
+        DB::transaction(function () use ($invoice, $newStatus, $currentStatus) {
+            if ($newStatus === 'cancelled' && $currentStatus === 'pending' && $invoice->job_id) {
+                $stage = JobApplication::where('id', $invoice->job_id)->firstOrFail();
+                $stage->current_stage = 'closed';
+                $stage->closed_about = 'After invoice cancellation, the job is closed.';
+                $stage->closed_date = now();
+                $stage->save();
+
+                $stageUpdate = JobOffer::where('id', $stage->job_offer_id)->firstOrFail();
+                $stageUpdate->is_active = 0;
+                $stageUpdate->live_off_date = now();
+                $stageUpdate->save();
+
+                $counting = Counting::where('tutor_id', $stage->tutor_id)->firstOrFail();
+                $counting->cancel_job++;
+                $counting->save();
+            }
+
+            $invoice->status = $newStatus;
+            $invoice->paid_at = $newStatus === 'paid' ? ($invoice->paid_at ?? now()) : null;
+            $invoice->save();
+        });
+
+        return redirect()
+            ->route('admin.tutor.invoice.list', [
+                'tutorId' => $tutorId,
+                'status' => $validated['filter'] ?? 'all',
+            ])
+            ->with('success', 'Invoice status updated successfully.');
     }
 
 }

@@ -14,6 +14,7 @@ use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MembershipController extends Controller
 {
@@ -142,20 +143,13 @@ class MembershipController extends Controller
             $package =  PackageAmount::where('id', $request->package_id)->first();
 
             $cupon = $request->cupon_code;
+            $cuponCode = null;
             // dd($cupon);
 
 
-            $existingInvoice = Invoice::where('tutor_id', Auth::user()->id)
+            $existingInvoices = Invoice::where('tutor_id', Auth::user()->id)
                 ->where('package_name', $package->package_name)
-                ->where('status', 'pending')
-                ->first();
-
-            if ($existingInvoice) {
-                return response()->json([
-                    'message' => 'You already have an unpaid invoice for this type.',
-                    'invoice_id' => $existingInvoice->id
-                ], 422);
-            }
+                ->where('status', 'pending');
 
             if ($cupon !== null ) {
 
@@ -171,43 +165,43 @@ class MembershipController extends Controller
                 $invoice_amount = $package->amount;
             }
 
-            if($package->type == 'premium'){
-                 $sendMembershipRequest = new PremiumMembership ();
+            $invoice = DB::transaction(function () use ($existingInvoices, $package, $tutor, $invoice_amount, $cuponCode) {
+                $existingInvoices->delete();
 
-                $sendMembershipRequest->tutor_id        = $tutor->id;
-                $sendMembershipRequest->name            = $tutor->name;
-                $sendMembershipRequest->request_status  = 'pending';
-                $sendMembershipRequest->payment_status  = 'unpaid';
-                $sendMembershipRequest->taka            = $invoice_amount;
-                $sendMembershipRequest->package_name    = $package->package_name;
-                $sendMembershipRequest->channel_name    = 'Website';
+                $sendMembershipRequest = null;
+                if ($package->type == 'premium') {
+                    $sendMembershipRequest = new PremiumMembership();
+                    $sendMembershipRequest->tutor_id = $tutor->id;
+                    $sendMembershipRequest->name = $tutor->name;
+                    $sendMembershipRequest->request_status = 'pending';
+                    $sendMembershipRequest->payment_status = 'unpaid';
+                    $sendMembershipRequest->taka = $invoice_amount;
+                    $sendMembershipRequest->package_name = $package->package_name;
+                    $sendMembershipRequest->channel_name = 'Website';
+                    $sendMembershipRequest->save();
+                }
 
-                $sendMembershipRequest->save();
+                $invoice = new Invoice();
+                $invoice->tutor_id = $tutor->id;
+                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+                $invoice->amount = $invoice_amount;
+                $invoice->currency = 'BDT';
+                $invoice->status = 'pending';
+                $invoice->issued_at = Carbon::now();
+                $invoice->tutor_name = $tutor->name;
+                $invoice->tutor_phone = $tutor->phone;
+                $invoice->unique_id = $tutor->unique_id;
+                $invoice->payment_date = now()->addDays(7);
+                $invoice->cupon = $cuponCode ?? null;
+                $invoice->package_id = $package->id;
+                $invoice->invoice_type = $package->type;
+                $invoice->package_name = $package->package_name;
+                $invoice->membership_id = $sendMembershipRequest->id ?? null;
+                $invoice->save();
 
-            }
+                return $invoice;
+            });
 
-
-
-            // dd($sendMembershipRequest->id);
-
-            $invoice = new Invoice();
-            $invoice->tutor_id = $tutor->id;
-            $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
-            $invoice->amount = $invoice_amount;
-            $invoice->currency = 'BDT';
-            $invoice->status = 'pending';
-            $invoice->issued_at = Carbon::now();
-            $invoice->tutor_name = $tutor->name;
-            $invoice->tutor_phone = $tutor->phone;
-            $invoice->unique_id = $tutor->unique_id;
-            $invoice->payment_date = now()->addDays(7);
-            $invoice->cupon = $cuponCode ?? null;
-            $invoice->package_id = $package->id;
-
-            $invoice->invoice_type = $package->type;
-            $invoice->package_name = $package->package_name;
-            $invoice->membership_id = $sendMembershipRequest->id ?? null;
-            $invoice->save();
             return response()->json(['message' => 'Request Sent.','invoice_id' => $invoice->id ]);
 
     }

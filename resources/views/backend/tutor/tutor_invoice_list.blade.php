@@ -100,6 +100,17 @@
     </div>
 </div>
 
+@if (session('success'))
+    <div class="alert alert-success mt-3" role="status">{{ session('success') }}</div>
+@endif
+@if ($errors->any())
+    <div class="alert alert-danger mt-3" role="alert">
+        @foreach ($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
+    </div>
+@endif
+
 <div class="invoice-status-filters" aria-label="Filter invoices by status">
     @foreach ($invoiceFilters as $filter => $label)
         <a href="{{ route('admin.tutor.invoice.list', ['tutorId' => $tutor->id, 'status' => $filter]) }}"
@@ -126,12 +137,11 @@
                     <th scope="col" class="text-nowrap">Copy Link</th>
 
                     <th scope="col" class="text-nowrap">Action</th>
-                    <th scope="col"></th>
+                    <th scope="col" class="text-nowrap">Update Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($invoices as $invoice)
-
 
                 <tr style="border-bottom: 1px solid #dee2e6">
                     <th scope="row" class="d-flex align-items-center gap-4 border-0">
@@ -183,8 +193,33 @@
                         @endif
 
                     </td>
-
-
+                    <td>
+                        @if (in_array((int) Auth::user()->role_id, [1, 6], true))
+                            @if ($invoiceStatus === 'paid')
+                                <span class="text-muted">Paid (final)</span>
+                            @else
+                                <form action="{{ route('admin.tutor.invoice.status', ['tutorId' => $tutor->id, 'invoiceId' => $invoice->id]) }}"
+                                    method="POST" class="invoice-status-update-form d-flex align-items-center gap-2">
+                                    @csrf
+                                    <input type="hidden" name="filter" value="{{ $status }}">
+                                    <select name="status" class="form-select form-select-sm"
+                                        aria-label="Update status for invoice {{ $invoice->invoice_number }}">
+                                        @if ($invoiceStatus === 'pending')
+                                            <option value="pending" selected>Pending</option>
+                                            <option value="paid">Paid</option>
+                                            <option value="cancelled">Cancelled</option>
+                                        @else
+                                            <option value="cancelled" selected>Cancelled</option>
+                                            <option value="pending">Reopen as pending</option>
+                                        @endif
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary text-nowrap">Update</button>
+                                </form>
+                            @endif
+                        @else
+                            <span class="text-muted">—</span>
+                        @endif
+                    </td>
 
                 </tr>
                 <div class="modal fade" id="duplicateInvoiceModal{{ $invoice->id }}" tabindex="-1"
@@ -276,6 +311,19 @@
 @include('backend.tutor.js.swtdeleteMethod_js')
 
 <script>
+    document.querySelectorAll('.invoice-status-update-form').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            var status = form.querySelector('[name="status"]').value;
+            var confirmation = status === 'cancelled'
+                ? 'Cancel this pending invoice?'
+                : (status === 'paid' ? 'Mark this invoice as paid? Revenue reports will be updated.' : '');
+
+            if (confirmation && !window.confirm(confirmation)) {
+                event.preventDefault();
+            }
+        });
+    });
+
     function copyToClipboard(text, button) {
     navigator.clipboard.writeText(text).then(function () {
         button.innerHTML = '<i class="fas fa-check text-success"></i>';
