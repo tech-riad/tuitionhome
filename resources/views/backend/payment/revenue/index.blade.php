@@ -174,9 +174,9 @@
                                     <td class="">
                                         <a type="button" class="text-decoration-none text-gray-800 text-nowrap"
                                             data-bs-toggle="modal" data-bs-target="#showDateTimeModal_{{$item->id}}">
-                                            {{ isset($item->issued_at) ? $item->issued_at->format('Y-m-d') : '' }}
+                                            {{ isset($item->paid_at) ? $item->paid_at->format('Y-m-d') : '' }}
                                             <br>
-                                            {{ isset($item->issued_at) ? $item->issued_at->format('g:i A') : '' }}
+                                            {{ isset($item->paid_at) ? $item->paid_at->format('g:i A') : '' }}
 
                                         </a>
                                     </td>

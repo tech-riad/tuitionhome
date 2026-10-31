@@ -712,17 +712,17 @@ class PaymentController extends Controller
         $dateto = Carbon::now();
 
 
-        $servicePaymentSum  = Invoice::where('invoice_type','Tuition Fee')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $serviceMemberSum  = Invoice::where('invoice_type','premium')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $serviceverifySum  = Invoice::where('invoice_type','verify')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $serviceboostSum  = Invoice::where('invoice_type','boost')->where('status', 'paid')->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
+        $servicePaymentSum  = Invoice::where('invoice_type','Tuition Fee')->where('status', 'paid')->whereBetween('paid_at', [$datefrom, $dateto])->sum('amount');
+        $serviceMemberSum  = Invoice::where('invoice_type','premium')->where('status', 'paid')->whereBetween('paid_at', [$datefrom, $dateto])->sum('amount');
+        $serviceverifySum  = Invoice::where('invoice_type','verify')->where('status', 'paid')->whereBetween('paid_at', [$datefrom, $dateto])->sum('amount');
+        $serviceboostSum  = Invoice::where('invoice_type','boost')->where('status', 'paid')->whereBetween('paid_at', [$datefrom, $dateto])->sum('amount');
 
 
         $smsRechargeSum     = SmsRecharge::whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
 
 
         $payments = Invoice::where('status', 'paid')
-                            ->whereBetween('created_at', [$datefrom, $dateto])
+                            ->whereBetween('paid_at', [$datefrom, $dateto])
                             ->orderBy('id', 'desc')->paginate($paginationLimit);
         return view('backend.payment.revenue.index',compact('serviceboostSum','serviceverifySum','serviceMemberSum','currentRoute','paginationLimit','datefrom','payments','servicePaymentSum','smsRechargeSum','employees','admin'));
 
@@ -882,28 +882,29 @@ class PaymentController extends Controller
         $datefrom = $setpoint->set_point_date;
         $dateto = Carbon::now();
         // Summing up the amounts
-        $serviceCharge = Invoice::where('service_category','Tuition Fee')->whereBetween('created_at', [$datefrom, $dateto])->status('paid')->sum('amount');
-        $premiumCharge = Invoice::where('service_category','Premium')
+        // dd($setpoint);
+        $serviceCharge = Invoice::where('invoice_type','Tuition Fee')->whereBetween('paid_at', [$datefrom, $dateto])->status('paid')->sum('amount');
+        $premiumCharge = Invoice::where('invoice_type','premium')
                                             ->where('render_by','!=','Payment Gateway')
-                                            ->whereBetween('created_at', [$datefrom, $dateto])->sum('amount');
-        $verifyCharge = Invoice::whereIn('service_category', ['Verify'])
+                                            ->whereBetween('paid_at', [$datefrom, $dateto])->sum('amount');
+        $verifyCharge = Invoice::whereIn('invoice_type', ['verify'])
                                             ->where('render_by','!=','Payment Gateway')
-                                            ->whereBetween('created_at', [$datefrom, $dateto])
+                                            ->whereBetween('paid_at', [$datefrom, $dateto])
                                             ->sum('amount');
-        $revenue = Invoice::whereBetween('created_at', [$datefrom, $dateto])
-                                        ->whereNotIn('service_category', ['Premium', 'Verify'])
+        $revenue = Invoice::whereBetween('paid_at', [$datefrom, $dateto])
+                                        ->whereNotIn('invoice_type', ['premium', 'verify'])
                                         ->orWhere(function ($query) {
                                             $query->where('render_by', 'Payment Gateway');
                                         })
-                                        ->whereBetween('created_at', [$datefrom, $dateto])
+                                        ->whereBetween('paid_at', [$datefrom, $dateto])
                                         ->sum('amount');
 
         $refund = DuePayments::whereBetween('created_at', [$datefrom, $dateto])
                                         ->sum('amount');
 
         // Fetching the data
-        $revenueApplications = Invoice::whereBetween('created_at', [$datefrom, $dateto])
-                                ->with('tutor')->orderBy('created_at', 'desc')->get();
+        $revenueApplications = Invoice::whereBetween('paid_at', [$datefrom, $dateto])
+                                ->with('tutor')->orderBy('paid_at', 'desc')->get();
         $refundApplications = DuePayments::whereBetween('created_at', [$datefrom, $dateto])
                                 ->orderBy('created_at', 'desc')->get();
 
