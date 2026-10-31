@@ -132,6 +132,7 @@
                     <th scope="col">Issued By </th>
                     <th scope="col">Owned By</th>
                     <th scope="col" class="text-nowrap">Job ID</th>
+                    <th scope="col" class="text-nowrap">Type</th>
                     <th scope="col" class="text-nowrap">Status</th>
                     <th scope="col" class="text-nowrap">Amount</th>
                     <th scope="col" class="text-nowrap">Copy Link</th>
@@ -155,6 +156,7 @@
                     <td> {{$invoice->render->name ?? 'n/a'}}</td>
                     <td> {{$invoice->owner->name ?? 'n/a'}}</td>
                     <td> {{$invoice->job_number ?? 'n/a'}}</td>
+                    <td> {{$invoice->invoice_type ?? 'n/a'}}</td>
                     <td>
                         @php
                             $invoiceStatus = strtolower($invoice->status ?? '');
