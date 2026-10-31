@@ -181,7 +181,7 @@
                                                     </div>
                                                     <div class="row row-cols-2 border-bottom border-2 mb-4">
                                                         <p class="fw-semibold">Unique ID</p>
-                                                        <p class="text-info">{{$item->tutor->unique_id ?? ''}}</p>
+                                                        <p class="text-info">{{ optional($item->tutor)->unique_id ?? '' }}</p>
                                                     </div>
                                                     <div class="row row-cols-2">
                                                         <p class="fw-semibold">Service ID</p>
@@ -255,15 +255,15 @@
                                                 <div class="modal-body pt-4 pb-4 px-5">
                                                     <div class="row row-cols-2 mt-3 border-bottom border-2 mb-4">
                                                         <p class="fw-semibold">Render By</p>
-                                                        <p class="">{{$item->render->name}}</p>
+                                                        <p class="">{{ optional($item->render)->name ?? 'n/a' }}</p>
                                                     </div>
                                                     <div class="row row-cols-2 border-bottom border-2 mb-4">
                                                         <p class="fw-semibold">Ownership By</p>
-                                                        <p class="">{{$item->ownerBy->name}}</p>
+                                                        <p class="">{{ optional($item->ownerBy)->name ?? 'n/a' }}</p>
                                                     </div>
                                                     <div class="row row-cols-2">
                                                         <p class="fw-semibold">Verifyed By</p>
-                                                        <p class="">{{$item->verifyBy->name ?? ''}}</p>
+                                                        <p class="">{{ optional($item->verifyBy)->name ?? 'n/a' }}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -288,7 +288,7 @@
                                                 <div class="modal-body pt-4 pb-4 px-5">
                                                     <div class="row row-cols-2 mt-3 border-bottom border-2 mb-4">
                                                         <p class="fw-semibold">Account Name</p>
-                                                        <p class="">{{$tutorAccount->tutor->name ?? 'n/a'}}</p>
+                                                        <p class="">{{ optional(optional($tutorAccount)->tutor)->name ?? 'n/a' }}</p>
                                                     </div>
                                                     <div class="row row-cols-2 border-bottom border-2 mb-4">
                                                         <p class="fw-semibold">Account Type</p>
