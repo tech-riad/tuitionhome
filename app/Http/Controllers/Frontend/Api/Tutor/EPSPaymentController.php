@@ -406,12 +406,21 @@ class EPSPaymentController extends Controller
                 $epsAmount !== null &&
                 abs($epsAmount - $localAmount) < 0.01
             ) {
+                $invoice = Invoice::where(
+                    'id',
+                    $payment->invoice_check
+                )->first();
+
+                if (!$invoice) {
+                    throw new Exception('Invoice not found.');
+                }
 
                 /*
-                * Prevent duplicate callback processing
-                */
+                 * Prevent duplicate callback processing while allowing an invoice
+                 * left pending by an earlier partial callback to be repaired.
+                 */
                 if ($payment->status !== 'success') {
-
+                    DB::beginTransaction();
                     $payment->update([
                         'status' => 'success',
                         'paid_at' => now(),
@@ -420,14 +429,6 @@ class EPSPaymentController extends Controller
                             $payment->eps_transaction_id
                             ?? ($verification['EPSTransactionId'] ?? null),
                     ]);
-
-                    $invoice_id = $payment->invoice_check;
-
-                    $invoice = Invoice::where('id', $invoice_id)->first();
-
-                    if (!$invoice) {
-                        throw new Exception('Invoice not found.');
-                    }
 
                     if ($invoice->job_id != null) {
 
@@ -474,9 +475,15 @@ class EPSPaymentController extends Controller
                         }
                     }
 
-                    $package = PackageAmount::find($invoice->package_id);
+                    $package = $invoice->package_id
+                        ? PackageAmount::find($invoice->package_id)
+                        : null;
 
-                    if ($package->type == 'premium') {
+                    if ($invoice->package_id && !$package) {
+                        throw new Exception('Invoice package not found.');
+                    }
+
+                    if ($package && $package->type == 'premium') {
 
                         $membership = PremiumMembership::find($invoice->membership_id);
 
@@ -539,7 +546,7 @@ class EPSPaymentController extends Controller
                     }
 
 
-                    if ($package->type == 'profile_verify') {
+                    if ($package && $package->type == 'profile_verify') {
                         $verifyRequest = VerificationRequest::find($invoice->verification_id);
 
                         $tutor = Tutor::find($invoice->tutor_id);
@@ -557,7 +564,7 @@ class EPSPaymentController extends Controller
                         ]);
 
                     }
-                    if ($package->type == 'boost') {
+                    if ($package && $package->type == 'boost') {
 
                         $tutor = Tutor::where('id',$invoice->tutor_id)->first();
 
@@ -572,7 +579,7 @@ class EPSPaymentController extends Controller
 
                     }
 
-                    if ($package->type == 'sms') {
+                    if ($package && $package->type == 'sms') {
                         $tutorSmsRecharge = new SmsRecharge();
                         $tutorSmsRecharge->tutor_id = $invoice->tutor_id;
                         $tutorSmsRecharge->payment_method = 'bkash';
@@ -609,6 +616,16 @@ class EPSPaymentController extends Controller
                         'merchanttrx_id' =>($verification['MerchantTransactionId'] ?? null),
                         'payment_method' =>($verification['FinancialEntity'] ?? null),
                     ]);
+
+                    DB::commit();
+                } elseif ($invoice->status !== 'paid') {
+                    $invoice->update([
+                        'status' => 'paid',
+                        'paid_at' => $payment->paid_at ?? now(),
+                        'trx_id' => ($verification['EPSTransactionId'] ?? null),
+                        'merchanttrx_id' => ($verification['MerchantTransactionId'] ?? null),
+                        'payment_method' => ($verification['FinancialEntity'] ?? null),
+                    ]);
                 }
 
                 return $this->redirectToFrontend(
@@ -643,6 +660,9 @@ class EPSPaymentController extends Controller
             );
 
         } catch (Exception $e) {
+            if (DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
 
             Log::error('EPS Callback Error', [
                 'message' => $e->getMessage(),
