@@ -91,49 +91,54 @@ class InvoiceController extends Controller
 
     public function duplicate(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'new_payment_date' => 'required|date',
             'new_amount' => 'required|numeric|min:0',
         ]);
 
         $invoice = Invoice::findOrFail($id);
+        $application = $invoice->job_id
+            ? JobApplication::findOrFail($invoice->job_id)
+            : null;
 
-        $newInvoice = $invoice->replicate();
+        if ($application && (float) $validated['new_amount'] > (float) $invoice->amount) {
+            return back()
+                ->withErrors(['new_amount' => 'Due amount cannot exceed the original invoice amount.'])
+                ->withInput();
+        }
 
-        // Generate new unique invoice number
-        do {
-            $invoiceNumber = 'JOB' . '-' . random_int(1000, 9999);
-        } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+        DB::transaction(function () use ($invoice, $application, $validated) {
+            $newInvoice = $invoice->replicate();
 
-        $newInvoice->invoice_number = $invoiceNumber;
+            do {
+                $invoiceNumber = 'JOB-' . random_int(1000, 9999);
+            } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
-        // New values from modal
-        $newInvoice->amount = $request->new_amount;
-        $newInvoice->due_invoice = 1;
-        $newInvoice->payment_date = $request->new_payment_date;
+            $newInvoice->invoice_number = $invoiceNumber;
+            $newInvoice->amount = $validated['new_amount'];
+            $newInvoice->status = 'pending';
+            $newInvoice->paid_at = null;
+            $newInvoice->trx_id = null;
+            $newInvoice->merchanttrx_id = null;
+            $newInvoice->payment_method = null;
+            $newInvoice->due_invoice = $application ? 1 : $invoice->due_invoice;
+            $newInvoice->payment_date = $validated['new_payment_date'];
+            $newInvoice->issued_at = now();
+            $newInvoice->issued_by = Auth::id();
 
-        // dd($newInvoice->job_id, $newInvoice->payment_date);
-        $application = JobApplication::find($invoice->job_id);
-                if (!$application) {
-                    return response()->json([
-                        'status' => false,
-                        'error'  => 'Application not found.'
-                    ]);
-                }
+            if ($application) {
+                $application->payment_status = 'due';
+                $application->due_amount = $validated['new_amount'];
+                $application->due_payment_date = $validated['new_payment_date'];
+                $application->save();
 
-        $application->payment_status = 'due';
-        $application->due_amount = $request->new_amount;
-        $application->due_payment_date = $request->new_payment_date;
-        $application->save();
+                $invoice->amount = (float) $invoice->amount - (float) $validated['new_amount'];
+                $invoice->save();
+            }
 
-        // Updated values
-        $invoice->amount = $invoice->amount - $request->new_amount;
-        $newInvoice->issued_at = now();
-        $newInvoice->issued_by = Auth::id();
-        $newInvoice->updated_at = now();
+            $newInvoice->save();
+        });
 
-        $newInvoice->save();
-        $invoice->save();
         return redirect()
             ->route('admin.taken_offer.invoices')
             ->with('success', 'Invoice duplicated successfully.');
@@ -208,13 +213,16 @@ class InvoiceController extends Controller
 
     public function updateTutorInvoiceStatus(Request $request, $tutorId, $invoiceId)
     {
-        abort_unless(in_array((int) $request->user()->role_id, [1, 6], true), 403);
-
         $validated = $request->validate([
             'status' => ['required', Rule::in(['pending', 'paid', 'cancelled'])],
             'filter' => ['nullable', Rule::in(['all', 'pending', 'paid', 'overdue', 'cancelled'])],
             'listing' => ['nullable', Rule::in(['global', 'tutor'])],
         ]);
+
+        $canManageInvoices = in_array((int) $request->user()->role_id, [1, 6], true);
+        if (!$canManageInvoices && $validated['status'] !== 'cancelled') {
+            abort(403, 'You may only cancel pending invoices.');
+        }
 
         $invoice = Invoice::where('tutor_id', $tutorId)->findOrFail($invoiceId);
         $currentStatus = strtolower($invoice->status ?? '');

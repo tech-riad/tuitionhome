@@ -263,16 +263,15 @@
                                             Note
                                         </button>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <button type="button" class="dropdown-item"
                                             id="{{ $confirm_application->id }}"
                                             onclick="stageJobId(this.id, 2,{{$charge}})"
-                                            {{-- onclick="stageJobId({{ $closed_application->id }}
-                                            ,'confirmOffcanvas')" --}} data-bs-toggle="modal"
+                                             data-bs-toggle="modal"
                                             data-bs-target="#confirmTabPaymentModal">
                                             Payment
                                         </button>
-                                    </li>
+                                    </li> --}}
 
                                 </div>
                             </ul>

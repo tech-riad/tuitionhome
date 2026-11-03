@@ -178,15 +178,12 @@
                     </td>
                     {{-- {{ route('admin.invoice.show', $invoice->id) }} --}}
                     <td>
-                        @if ($invoice->job_id != null)
                         <button type="button"
                                 class="btn btn-sm btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#duplicateInvoiceModal{{ $invoice->id }}">
                             Duplicate
                         </button>
-
-                        @endif
 
                     </td>
                     <td>
@@ -215,6 +212,17 @@
                                     <button type="submit" class="btn btn-sm btn-primary text-nowrap">Update</button>
                                 </form>
                             @endif
+                        @elseif ($invoiceStatus === 'pending')
+                            <form action="{{ route('admin.tutor.invoice.status', ['tutorId' => $invoice->tutor_id, 'invoiceId' => $invoice->id]) }}"
+                                method="POST" class="invoice-status-update-form">
+                                @csrf
+                                <input type="hidden" name="filter" value="{{ $status }}">
+                                @if (!isset($tutor) || !$tutor)
+                                    <input type="hidden" name="listing" value="global">
+                                @endif
+                                <input type="hidden" name="status" value="cancelled">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                            </form>
                         @else
                             <span class="text-muted">—</span>
                         @endif
