@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\InvoiceNote;
 use App\Models\Counting;
 use App\Models\JobApplication;
 use App\Models\JobOffer;
@@ -76,6 +77,7 @@ class InvoiceController extends Controller
         }
 
         $invoices = $query->with(['render', 'owner'])
+            ->withCount('notes')
             ->orderByDesc('issued_at')
             ->paginate(10)
             ->withQueryString();
@@ -202,7 +204,8 @@ class InvoiceController extends Controller
                 break;
         }
 
-        $invoices = $query->orderBy('issued_at', 'desc')
+        $invoices = $query->withCount('notes')
+            ->orderBy('issued_at', 'desc')
             ->paginate(10)
             ->withQueryString();
         $invoiceTypes = PackageAmount::query()
@@ -212,6 +215,49 @@ class InvoiceController extends Controller
             ->pluck('type');
 
         return view('backend.tutor.tutor_invoice_list', compact('invoices', 'tutor', 'counts', 'status', 'invoiceTypes'));
+    }
+
+    public function invoiceNotes(Invoice $invoice)
+    {
+        return response()->json([
+            'status' => true,
+            'data' => $invoice->notes()
+                ->with('user:id,name')
+                ->get()
+                ->map(function (InvoiceNote $note) {
+                    return [
+                        'id' => $note->id,
+                        'note' => $note->note,
+                        'created_by' => optional($note->user)->name ?? 'Unknown user',
+                        'created_at' => $note->created_at->format('d M Y, h:i A'),
+                    ];
+                })
+                ->values(),
+        ]);
+    }
+
+    public function storeInvoiceNote(Request $request, Invoice $invoice)
+    {
+        $validated = $request->validate([
+            'note' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $note = $invoice->notes()->create([
+            'user_id' => $request->user()->id,
+            'note' => trim($validated['note']),
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Invoice note added.',
+            'note' => [
+                'id' => $note->id,
+                'note' => $note->note,
+                'created_by' => $request->user()->name,
+                'created_at' => $note->created_at->format('d M Y, h:i A'),
+            ],
+            'count' => $invoice->notes()->count(),
+        ], 201);
     }
 
     public function storeForTutor(Request $request, $tutorId)

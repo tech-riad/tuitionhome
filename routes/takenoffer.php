@@ -18,6 +18,8 @@ Route::get('/admin/taken-offer/confirm-offer',[TakenOfferController::class,'conf
 Route::get('/admin/taken-offer/payment-offer',[TakenOfferController::class,'paymentOffer'])->name('admin.taken_offer.payment.offer')->middleware('auth');
 // Invoices
 Route::get('/admin/taken-offer/invoices',[InvoiceController::class,'index'])->name('admin.taken_offer.invoices')->middleware('auth');
+Route::get('/admin/taken-offer/invoice/{invoice}/notes',[InvoiceController::class,'invoiceNotes'])->name('admin.invoice.notes')->middleware('auth');
+Route::post('/admin/taken-offer/invoice/{invoice}/notes',[InvoiceController::class,'storeInvoiceNote'])->name('admin.invoice.notes.store')->middleware('auth');
 Route::post('/admin/taken-offer/invoice/duplicate/{id}',[InvoiceController::class,'duplicate'])->name('admin.taken_offer.invoice.duplicate')->middleware('auth');
 
 // Tutor Invoice List

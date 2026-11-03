@@ -184,6 +184,7 @@
                     <th scope="col" class="text-nowrap">Copy Link</th>
 
                     <th scope="col" class="text-nowrap">Action</th>
+                    <th scope="col" class="text-nowrap">Notes</th>
                     <th scope="col" class="text-nowrap">Update Status</th>
                 </tr>
             </thead>
@@ -237,6 +238,15 @@
                             Duplicate
                         </button>
 
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary invoice-notes-button"
+                            data-notes-url="{{ route('admin.invoice.notes', $invoice->id) }}"
+                            data-store-url="{{ route('admin.invoice.notes.store', $invoice->id) }}"
+                            data-invoice-number="{{ $invoice->invoice_number }}"
+                            data-note-count="{{ $invoice->notes_count }}">
+                            Notes ({{ $invoice->notes_count }})
+                        </button>
                     </td>
                     <td>
                         @if (in_array((int) Auth::user()->role_id, [1, 6], true))
@@ -356,6 +366,31 @@
         </div>
 </div>
 
+<div class="modal fade" id="invoiceNotesModal" tabindex="-1" aria-labelledby="invoiceNotesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="invoiceNotesModalLabel">
+                    Notes for invoice <span id="invoiceNotesNumber"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="invoiceNotesList" class="mb-3" aria-live="polite"></div>
+                <form id="invoiceNoteForm">
+                    <label for="invoiceNoteInput" class="form-label">Add Note</label>
+                    <textarea id="invoiceNoteInput" name="note" class="form-control" rows="3" maxlength="5000"
+                        required placeholder="Write your note here..."></textarea>
+                    <div id="invoiceNoteError" class="text-danger small mt-1" role="alert"></div>
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" id="saveInvoiceNote" class="btn btn-primary">Add Note</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 @endsection
@@ -390,6 +425,112 @@
         alert('Copy failed!');
     });
 }
+
+    (function () {
+        var modal = document.getElementById('invoiceNotesModal');
+        var list = document.getElementById('invoiceNotesList');
+        var form = document.getElementById('invoiceNoteForm');
+        var noteInput = document.getElementById('invoiceNoteInput');
+        var noteError = document.getElementById('invoiceNoteError');
+        var saveButton = document.getElementById('saveInvoiceNote');
+        var activeButton = null;
+        var storeUrl = '';
+
+        function showModal() {
+            if (window.bootstrap && window.bootstrap.Modal) {
+                window.bootstrap.Modal.getOrCreateInstance(modal).show();
+            } else if (window.jQuery && typeof jQuery.fn.modal === 'function') {
+                jQuery(modal).modal('show');
+            }
+        }
+
+        function renderNotes(notes) {
+            list.innerHTML = '';
+            if (!notes.length) {
+                list.textContent = 'No notes yet.';
+                list.className = 'mb-3 text-muted';
+                return;
+            }
+
+            list.className = 'mb-3';
+            notes.forEach(function (note) {
+                var item = document.createElement('div');
+                item.className = 'border rounded p-2 mb-2';
+                var body = document.createElement('p');
+                body.className = 'mb-1';
+                body.textContent = note.note;
+                var creator = document.createElement('small');
+                creator.className = 'text-muted d-block';
+                creator.textContent = 'Added by: ' + note.created_by;
+                var createdAt = document.createElement('small');
+                createdAt.className = 'text-muted';
+                createdAt.textContent = note.created_at;
+                item.appendChild(body);
+                item.appendChild(creator);
+                item.appendChild(createdAt);
+                list.appendChild(item);
+            });
+        }
+
+        function loadNotes() {
+            list.textContent = 'Loading notes...';
+            list.className = 'mb-3 text-muted';
+            jQuery.ajax({
+                url: activeButton.dataset.notesUrl,
+                type: 'GET',
+                dataType: 'json',
+                cache: false
+            }).done(function (response) {
+                if (response.status) renderNotes(response.data || []);
+            }).fail(function () {
+                list.textContent = 'Unable to load invoice notes.';
+                list.className = 'mb-3 text-danger';
+            });
+        }
+
+        jQuery(document).on('click', '.invoice-notes-button', function () {
+            activeButton = this;
+            storeUrl = this.dataset.storeUrl;
+            document.getElementById('invoiceNotesNumber').textContent = this.dataset.invoiceNumber;
+            noteInput.value = '';
+            noteError.textContent = '';
+            loadNotes();
+            showModal();
+        });
+
+        jQuery(form).on('submit', function (event) {
+            event.preventDefault();
+            noteError.textContent = '';
+            saveButton.disabled = true;
+
+            jQuery.ajax({
+                url: storeUrl,
+                type: 'POST',
+                data: jQuery(form).serialize(),
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            }).done(function (response) {
+                if (response.status) {
+                    noteInput.value = '';
+                    activeButton.dataset.noteCount = response.count;
+                    activeButton.textContent = 'Notes (' + response.count + ')';
+                    loadNotes();
+                }
+            }).fail(function (xhr) {
+                if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    noteError.textContent = xhr.responseJSON.errors.note
+                        ? xhr.responseJSON.errors.note[0]
+                        : 'Please check the submitted note.';
+                } else {
+                    noteError.textContent = 'Unable to save the note. Please try again.';
+                }
+            }).always(function () {
+                saveButton.disabled = false;
+            });
+        });
+    })();
 </script>
 
 @endpush

@@ -55,4 +55,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(User::class, 'verified_by');
     }
+
+    public function notes()
+    {
+        return $this->hasMany(InvoiceNote::class)->latest();
+    }
 }
