@@ -87,53 +87,7 @@ class MembershipController extends Controller
 
     }
 
-    public function createPayment(Request $request)
-    {
-
-        $appKey = config('premium.app_key');
-        $baseUrl = config('premium.base_url');
-        $callBackUrl = config('premium.callbackURL');
-        $invoiceAmount = $request->amount;
-        $invoiceNumber = $request->invoice_no;
-        $payerReference = $request->payerReference ?? '1';
-        $mode = '0011';
-        $token = $request->token;
-        $requestData = [
-            'amount' => $invoiceAmount,
-            'intent' => 'sale',
-            'currency' => 'BDT',
-            'merchantInvoiceNumber' => $invoiceNumber,
-            'mode' => $mode,
-            'payerReference' => $payerReference,
-            'callbackURL' => url($callBackUrl)
-        ];
-        $url = "$baseUrl/v1.2.0-beta/tokenized/checkout/create";
-        $requestDataJson = json_encode($requestData);
-        $header = [
-            'Content-Type: application/json',
-            "Authorization: $token",
-            "x-app-key: $appKey"
-        ];
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $requestDataJson);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        $resultData = curl_exec($curl);
-        $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-        $responseData = json_decode($resultData, true);
-        if ($httpStatus === 401) {
-            return response()->json(['error' => 'Unauthorized'], $httpStatus);
-        }
-
-
-        return response()->json($responseData);
-
-    }
+    
 
     public function createInvoice(Request $request)
     {

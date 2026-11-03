@@ -44,6 +44,9 @@ Route::get('/tutor/get-tutoring-platform-status/{unique_id}',[TutorController::c
 
 //Route::prefix('api-tutor.')->group(function (){
     Route::group( ['middleware' => ['auth:t-api','scopes:tutors'] ],function(){
+
+        Route::get('/tutor/tutor-package-status',[TutorController::class,'profileStatus']);
+
         Route::get('/tutor/tutor-profile-completed',[TutorController::class,'profileCompletion']);
 
         Route::any('tutor/lat-long-save',[TutorController::class,'latLongSave'])->name('lat.long.save');

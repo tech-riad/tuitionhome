@@ -3530,6 +3530,24 @@ class TutorController extends Controller
     }
 
 
+    public function profileStatus()
+    {
+        $tutor = Tutor::findOrFail(Auth::user()->id);
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'is_verified' => $tutor->is_verified,
+                'is_premium' => $tutor->is_premium,
+                'is_active' => $tutor->is_active,
+                'is_premium_pro' => $tutor->is_premium_pro,
+                'is_premium_advance' => $tutor->is_premium_advance,
+                'is_boost' => $tutor->is_boost,
+                'boost_package' => $tutor->boost_package,
+            ]
+        ]);
+    }
+
 
 
 
