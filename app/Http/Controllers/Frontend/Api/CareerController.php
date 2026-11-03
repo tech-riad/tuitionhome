@@ -141,6 +141,26 @@ class CareerController extends Controller
         ], 201);
     }
 
+    public function applicationStatus(Request $request, CareerPlan $careerPlan)
+    {
+        $application = CareerApplication::query()
+            ->where('career_plan_id', $careerPlan->id)
+            ->where('tutor_id', $request->user('t-api')->getAuthIdentifier())
+            ->first();
+
+        return response()->json([
+            'data' => [
+                'career_plan_id' => $careerPlan->id,
+                'applied' => $application !== null,
+                'application_id' => $application ? $application->id : null,
+                'application_status' => $application ? $application->status : null,
+                'applied_at' => $application && $application->created_at
+                    ? $application->created_at->toIso8601String()
+                    : null,
+            ],
+        ]);
+    }
+
     private function mapCareerPlans($careerPlans)
     {
         $areaIds = $careerPlans

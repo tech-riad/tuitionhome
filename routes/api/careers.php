@@ -14,4 +14,8 @@ Route::middleware(['auth:t-api', 'scopes:tutors'])->group(function () {
     Route::post('/careers/{careerPlan}/apply', [CareerController::class, 'apply'])
         ->whereNumber('careerPlan')
         ->name('api.careers.apply');
+
+    Route::get('/careers/{careerPlan}/application-status', [CareerController::class, 'applicationStatus'])
+        ->whereNumber('careerPlan')
+        ->name('api.careers.application-status');
 });
