@@ -22,4 +22,5 @@ Route::post('/admin/taken-offer/invoice/duplicate/{id}',[InvoiceController::clas
 
 // Tutor Invoice List
 Route::get('/admin/taken-offer/invoice-list/{tutorId}',[InvoiceController::class,'tutorInvoiceList'])->name('admin.tutor.invoice.list')->middleware('auth');
+Route::post('/admin/taken-offer/invoice-list/{tutorId}/create',[InvoiceController::class,'storeForTutor'])->name('admin.tutor.invoice.store')->middleware('auth');
 Route::post('/admin/taken-offer/invoice-list/{tutorId}/{invoiceId}/status',[InvoiceController::class,'updateTutorInvoiceStatus'])->name('admin.tutor.invoice.status')->middleware('auth');

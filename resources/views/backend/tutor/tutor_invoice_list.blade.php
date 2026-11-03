@@ -98,6 +98,9 @@
         <h4 class="mb-1">Invoices <span class="badge bg-primary">{{ $counts['all'] }}</span></h4>
         <p class="text-muted mb-0">All billing invoices for this tutor</p>
     </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTutorInvoiceModal">
+        Create Invoice
+    </button>
 </div>
 
 @if (session('success'))
@@ -110,6 +113,49 @@
         @endforeach
     </div>
 @endif
+
+<div class="modal fade" id="createTutorInvoiceModal" tabindex="-1" aria-labelledby="createTutorInvoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.tutor.invoice.store', $tutor->id) }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createTutorInvoiceModalLabel">Create Invoice for {{ $tutor->name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="tutor-invoice-type" class="form-label">Invoice Type <span class="text-danger">*</span></label>
+                        <select id="tutor-invoice-type" name="invoice_type" class="form-select" required>
+                            <option value="">Select type</option>
+                            @foreach ($invoiceTypes as $invoiceType)
+                                <option value="{{ $invoiceType }}" @if (old('invoice_type') === $invoiceType) selected @endif>
+                                    {{ ucfirst(str_replace('_', ' ', $invoiceType)) }}
+                                </option>
+                            @endforeach
+                            <option value="random" @if (old('invoice_type') === 'random') selected @endif>Random</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tutor-invoice-amount" class="form-label">Amount (BDT) <span class="text-danger">*</span></label>
+                        <input id="tutor-invoice-amount" type="number" name="amount" class="form-control"
+                            value="{{ old('amount') }}" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tutor-invoice-payment-date" class="form-label">Payment Date <span class="text-danger">*</span></label>
+                        <input id="tutor-invoice-payment-date" type="date" name="payment_date" class="form-control"
+                            value="{{ old('payment_date', now()->addDays(7)->format('Y-m-d')) }}" required>
+                    </div>
+                    <p class="text-muted mb-0">Invoice number will be generated automatically.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Invoice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div class="invoice-status-filters" aria-label="Filter invoices by status">
     @foreach ($invoiceFilters as $filter => $label)

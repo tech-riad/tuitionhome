@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class VerificationRequestController extends Controller
 {
@@ -97,7 +98,10 @@ class VerificationRequestController extends Controller
 
         $invoice = new Invoice();
         $invoice->tutor_id = $verify->tutor_id;
-        $invoice->invoice_number = 'VR-' . strtoupper(uniqid());
+        do {
+            $invoiceNumber = 'VR-' . Str::upper(Str::random(6));
+        } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+        $invoice->invoice_number = $invoiceNumber;
         $invoice->amount = $request->taka;
         $invoice->verification_id = $verify->id;
         $invoice->currency = 'BDT';

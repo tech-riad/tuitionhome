@@ -15,6 +15,7 @@ use App\Services\BkashTokenService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TutorSmsController extends Controller
 {
@@ -387,7 +388,10 @@ class TutorSmsController extends Controller
 
                 $invoice = new Invoice();
                 $invoice->tutor_id = $tutor->id;
-                $invoice->invoice_number = 'SMS-' . strtoupper(uniqid());
+                do {
+                    $invoiceNumber = 'SMS-' . Str::upper(Str::random(6));
+                } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+                $invoice->invoice_number = $invoiceNumber;
                 $invoice->amount = $invoice_amount;
                 $invoice->currency = 'BDT';
                 $invoice->status = 'pending';

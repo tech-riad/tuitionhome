@@ -27,6 +27,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToArray;
 use App\Models\Study;
 use App\Models\JobSms;
@@ -1770,10 +1771,8 @@ class BackendTutorController extends Controller
                 'TutorCertificate',
                 'smsBalances',
 
-            ])->where('id',$id)->first();
+            ])->where('id', $id)->firstOrFail();
 
-            // dd($tutor);
-            // dd();
             $refferedBy = Reffer::where('reffer_for', $tutor->phone)->latest('created_at')->orderBy('id','desc')->get();
 
 
@@ -2638,7 +2637,10 @@ class BackendTutorController extends Controller
 
         $invoice = new Invoice();
         $invoice->tutor_id = $tutor->id;
-        $invoice->invoice_number = 'PR-' . strtoupper(uniqid());
+        do {
+            $invoiceNumber = 'PR-' . Str::upper(Str::random(6));
+        } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+        $invoice->invoice_number = $invoiceNumber;
         $invoice->amount = $request->taka;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';
@@ -2775,7 +2777,10 @@ class BackendTutorController extends Controller
 
         $invoice = new Invoice();
         $invoice->tutor_id = $tutor->id;
-        $invoice->invoice_number = 'BS-' . strtoupper(uniqid());
+        do {
+            $invoiceNumber = 'BS-' . Str::upper(Str::random(6));
+        } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+        $invoice->invoice_number = $invoiceNumber;
         $invoice->amount = $request->taka;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';

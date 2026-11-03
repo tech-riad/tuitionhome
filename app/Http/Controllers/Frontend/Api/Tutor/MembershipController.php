@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class MembershipController extends Controller
 {
@@ -131,7 +132,7 @@ class MembershipController extends Controller
                 $invoicePrefix = $invoicePrefixes[$package->type] ?? 'INV';
 
                 do {
-                    $invoiceNumber = $invoicePrefix . '-' . random_int(10000, 99999);
+                    $invoiceNumber = $invoicePrefix . '-' . Str::upper(Str::random(6));
                 } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
                 $invoice = new Invoice();

@@ -12,6 +12,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class BoostController extends Controller
 {
@@ -29,7 +30,10 @@ class BoostController extends Controller
 
             $invoice = new Invoice();
             $invoice->tutor_id = $tutor->id;
-            $invoice->invoice_number = 'BS-' . strtoupper(uniqid());
+            do {
+                $invoiceNumber = 'BS-' . Str::upper(Str::random(6));
+            } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+            $invoice->invoice_number = $invoiceNumber;
             $invoice->amount = $request->amount;
             $invoice->currency = 'BDT';
             $invoice->status = 'pending';

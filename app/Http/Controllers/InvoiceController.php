@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Counting;
 use App\Models\JobApplication;
 use App\Models\JobOffer;
+use App\Models\PackageAmount;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -78,7 +79,6 @@ class InvoiceController extends Controller
             ->orderByDesc('issued_at')
             ->paginate(10)
             ->withQueryString();
-
         return view('backend.taken_offer.invoices', [
             'invoices' => $invoices,
             'counts' => $counts,
@@ -86,8 +86,6 @@ class InvoiceController extends Controller
             'tutor' => null,
         ]);
     }
-
-
 
     public function duplicate(Request $request, $id)
     {
@@ -111,7 +109,7 @@ class InvoiceController extends Controller
             $newInvoice = $invoice->replicate();
 
             do {
-                $invoiceNumber = 'JOB-' . random_int(1000, 9999);
+                $invoiceNumber = 'JOB-' . Str::upper(Str::random(6));
             } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
             $newInvoice->invoice_number = $invoiceNumber;
@@ -207,8 +205,68 @@ class InvoiceController extends Controller
         $invoices = $query->orderBy('issued_at', 'desc')
             ->paginate(10)
             ->withQueryString();
+        $invoiceTypes = PackageAmount::query()
+            ->whereNotNull('type')
+            ->distinct()
+            ->orderBy('type')
+            ->pluck('type');
 
-        return view('backend.tutor.tutor_invoice_list', compact('invoices', 'tutor', 'counts', 'status'));
+        return view('backend.tutor.tutor_invoice_list', compact('invoices', 'tutor', 'counts', 'status', 'invoiceTypes'));
+    }
+
+    public function storeForTutor(Request $request, $tutorId)
+    {
+        $invoiceTypes = PackageAmount::query()
+            ->whereNotNull('type')
+            ->distinct()
+            ->pluck('type')
+            ->all();
+        $allowedTypes = array_merge($invoiceTypes, ['random']);
+
+        $validated = $request->validate([
+            'amount' => ['required', 'numeric', 'min:0.01', 'max:9999999999.99'],
+            'payment_date' => ['required', 'date'],
+            'invoice_type' => ['required', Rule::in($allowedTypes)],
+        ]);
+
+        $tutor = Tutor::findOrFail($tutorId);
+        $type = $validated['invoice_type'] === 'random'
+            ? 'Random'
+            : $validated['invoice_type'];
+
+        $prefixes = [
+            'premium' => 'PR',
+            'boost' => 'BS',
+            'sms' => 'SMS',
+            'profile_verify' => 'VR',
+            'random' => 'RAN',
+        ];
+        $prefix = $prefixes[strtolower($type)] ?? 'INV';
+
+        do {
+            $invoiceNumber = $prefix . '-' . Str::upper(Str::random(6));
+        } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+
+        Invoice::create([
+            'tutor_id' => $tutor->id,
+            'invoice_number' => $invoiceNumber,
+            'amount' => $validated['amount'],
+            'currency' => 'BDT',
+            'status' => 'pending',
+            'issued_at' => now(),
+            'tutor_email' => $tutor->email,
+            'tutor_name' => $tutor->name,
+            'tutor_phone' => $tutor->phone,
+            'unique_id' => $tutor->unique_id,
+            'payment_date' => $validated['payment_date'],
+            'issued_by' => Auth::id(),
+            'owned_by' => Auth::id(),
+            'invoice_type' => $type,
+        ]);
+
+        return redirect()
+            ->route('admin.tutor.invoice.list', ['tutorId' => $tutor->id])
+            ->with('success', 'Invoice created successfully.');
     }
 
     public function updateTutorInvoiceStatus(Request $request, $tutorId, $invoiceId)

@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 
 class TakenOfferController extends Controller
@@ -487,7 +488,10 @@ class TakenOfferController extends Controller
         // dd($stage->toArray());
         $invoice = new Invoice();
         $invoice->tutor_id = $stage->tutor_id;
-        $invoice->invoice_number = 'JOB-' . strtoupper(uniqid());
+        do {
+            $invoiceNumber = 'JOB-' . Str::upper(Str::random(6));
+        } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
+        $invoice->invoice_number = $invoiceNumber;
         $invoice->amount = $stage->charge;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';
