@@ -2638,7 +2638,7 @@ class BackendTutorController extends Controller
 
         $invoice = new Invoice();
         $invoice->tutor_id = $tutor->id;
-        $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        $invoice->invoice_number = 'PR-' . strtoupper(uniqid());
         $invoice->amount = $request->taka;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';
@@ -2775,7 +2775,7 @@ class BackendTutorController extends Controller
 
         $invoice = new Invoice();
         $invoice->tutor_id = $tutor->id;
-        $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        $invoice->invoice_number = 'BS-' . strtoupper(uniqid());
         $invoice->amount = $request->taka;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';

@@ -168,22 +168,21 @@ class MembershipController extends Controller
             $invoice = DB::transaction(function () use ($existingInvoices, $package, $tutor, $invoice_amount, $cuponCode) {
                 $existingInvoices->delete();
 
-                $sendMembershipRequest = null;
-                if ($package->type == 'premium') {
-                    $sendMembershipRequest = new PremiumMembership();
-                    $sendMembershipRequest->tutor_id = $tutor->id;
-                    $sendMembershipRequest->name = $tutor->name;
-                    $sendMembershipRequest->request_status = 'pending';
-                    $sendMembershipRequest->payment_status = 'unpaid';
-                    $sendMembershipRequest->taka = $invoice_amount;
-                    $sendMembershipRequest->package_name = $package->package_name;
-                    $sendMembershipRequest->channel_name = 'Website';
-                    $sendMembershipRequest->save();
-                }
+                $invoicePrefixes = [
+                    'premium' => 'PR',
+                    'boost' => 'BS',
+                    'sms' => 'SMS',
+                    'profile_verify' => 'VR',
+                ];
+                $invoicePrefix = $invoicePrefixes[$package->type] ?? 'INV';
+
+                do {
+                    $invoiceNumber = $invoicePrefix . '-' . random_int(10000, 99999);
+                } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
                 $invoice = new Invoice();
                 $invoice->tutor_id = $tutor->id;
-                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+                $invoice->invoice_number = $invoiceNumber;
                 $invoice->amount = $invoice_amount;
                 $invoice->currency = 'BDT';
                 $invoice->status = 'pending';

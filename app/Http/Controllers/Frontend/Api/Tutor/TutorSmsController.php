@@ -387,7 +387,7 @@ class TutorSmsController extends Controller
 
                 $invoice = new Invoice();
                 $invoice->tutor_id = $tutor->id;
-                $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+                $invoice->invoice_number = 'SMS-' . strtoupper(uniqid());
                 $invoice->amount = $invoice_amount;
                 $invoice->currency = 'BDT';
                 $invoice->status = 'pending';
