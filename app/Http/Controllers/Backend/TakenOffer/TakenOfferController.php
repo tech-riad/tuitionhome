@@ -487,7 +487,7 @@ class TakenOfferController extends Controller
         // dd($stage->toArray());
         $invoice = new Invoice();
         $invoice->tutor_id = $stage->tutor_id;
-        $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        $invoice->invoice_number = 'JOB-' . strtoupper(uniqid());
         $invoice->amount = $stage->charge;
         $invoice->currency = 'BDT';
         $invoice->status = 'pending';
