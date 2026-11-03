@@ -303,7 +303,7 @@
             {{ $invoices->links() }}
 
         </div>
-    </div>
+</div>
 
 
 

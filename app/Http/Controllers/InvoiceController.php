@@ -16,18 +16,75 @@ use Illuminate\Validation\Rule;
 class InvoiceController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $query = Invoice::query();
+        $validated = $request->validate([
+            'status' => ['nullable', Rule::in(['all', 'pending', 'paid', 'overdue', 'cancelled'])],
+        ]);
 
-        if (auth()->user()->role_id != 1) {
-            $query->where('owned_by', auth()->id());
+        $user = $request->user();
+        $baseQuery = Invoice::query();
+
+        if ((int) $user->role_id !== 1) {
+            $baseQuery->where('owned_by', $user->id);
         }
 
-        $invoices = $query->orderBy('issued_at', 'desc')
-                        ->paginate(10);
+        $status = $validated['status'] ?? 'all';
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'pending' => (clone $baseQuery)
+                ->whereRaw('LOWER(status) = ?', ['pending'])
+                ->where(function ($query) {
+                    $query->whereNull('payment_date')
+                        ->orWhereDate('payment_date', '>=', now()->toDateString());
+                })
+                ->count(),
+            'paid' => (clone $baseQuery)
+                ->whereRaw('LOWER(status) = ?', ['paid'])
+                ->count(),
+            'overdue' => (clone $baseQuery)
+                ->whereRaw('LOWER(status) = ?', ['pending'])
+                ->whereNotNull('payment_date')
+                ->whereDate('payment_date', '<', now()->toDateString())
+                ->count(),
+            'cancelled' => (clone $baseQuery)
+                ->whereIn(DB::raw('LOWER(status)'), ['cancel', 'cancelled'])
+                ->count(),
+        ];
 
-        return view('backend.taken_offer.invoices', compact('invoices'));
+        $query = clone $baseQuery;
+        switch ($status) {
+            case 'pending':
+                $query->whereRaw('LOWER(status) = ?', ['pending'])
+                    ->where(function ($query) {
+                        $query->whereNull('payment_date')
+                            ->orWhereDate('payment_date', '>=', now()->toDateString());
+                    });
+                break;
+            case 'paid':
+                $query->whereRaw('LOWER(status) = ?', ['paid']);
+                break;
+            case 'overdue':
+                $query->whereRaw('LOWER(status) = ?', ['pending'])
+                    ->whereNotNull('payment_date')
+                    ->whereDate('payment_date', '<', now()->toDateString());
+                break;
+            case 'cancelled':
+                $query->whereIn(DB::raw('LOWER(status)'), ['cancel', 'cancelled']);
+                break;
+        }
+
+        $invoices = $query->with(['render', 'owner'])
+            ->orderByDesc('issued_at')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('backend.taken_offer.invoices', [
+            'invoices' => $invoices,
+            'counts' => $counts,
+            'status' => $status,
+            'tutor' => null,
+        ]);
     }
 
 
@@ -45,7 +102,7 @@ class InvoiceController extends Controller
 
         // Generate new unique invoice number
         do {
-            $invoiceNumber = 'INV-' . strtoupper(Str::random(13));
+            $invoiceNumber = 'JOB' . '-' . random_int(1000, 9999);
         } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
         $newInvoice->invoice_number = $invoiceNumber;
@@ -156,6 +213,7 @@ class InvoiceController extends Controller
         $validated = $request->validate([
             'status' => ['required', Rule::in(['pending', 'paid', 'cancelled'])],
             'filter' => ['nullable', Rule::in(['all', 'pending', 'paid', 'overdue', 'cancelled'])],
+            'listing' => ['nullable', Rule::in(['global', 'tutor'])],
         ]);
 
         $invoice = Invoice::where('tutor_id', $tutorId)->findOrFail($invoiceId);
@@ -206,12 +264,16 @@ class InvoiceController extends Controller
             $invoice->save();
         });
 
-        return redirect()
-            ->route('admin.tutor.invoice.list', [
-                'tutorId' => $tutorId,
+        $redirect = ($validated['listing'] ?? 'tutor') === 'global'
+            ? redirect()->route('admin.taken_offer.invoices', [
                 'status' => $validated['filter'] ?? 'all',
             ])
-            ->with('success', 'Invoice status updated successfully.');
+            : redirect()->route('admin.tutor.invoice.list', [
+                'tutorId' => $tutorId,
+                'status' => $validated['filter'] ?? 'all',
+            ]);
+
+        return $redirect->with('success', 'Invoice status updated successfully.');
     }
 
 }
