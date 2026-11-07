@@ -44,8 +44,8 @@ class EPSPaymentController extends Controller
 
         ]);
 
-        DB::beginTransaction();
-
+        $payment = null;
+        $merchantTransactionId = null;
         try {
 
             /*
@@ -116,6 +116,7 @@ class EPSPaymentController extends Controller
                 'request_data' => $request->all(),
             ]);
 
+            // Do not keep a database transaction open while waiting for EPS.
             /*
              * EPS Initialize
              */
@@ -240,8 +241,6 @@ class EPSPaymentController extends Controller
                     $epsResponse['response'],
             ]);
 
-            DB::commit();
-
             return response()->json([
                 'success' => true,
 
@@ -266,22 +265,32 @@ class EPSPaymentController extends Controller
 
         } catch (Exception $e) {
 
-            DB::rollBack();
+            if ($payment) {
+                $payment->update([
+                    'response_data' => [
+                        'initialize_error' => $e->getMessage(),
+                        'outcome_unknown' => true,
+                    ],
+                ]);
+            }
 
             Log::error('EPS Payment Create Error', [
                 'message' => $e->getMessage(),
-                'request' => $request->except([
-                    'password',
-                    'card',
-                    'cvv',
-                ]),
+                'payment_id' => $payment ? $payment->id : null,
+                'merchant_transaction_id' => $merchantTransactionId,
             ]);
+
+            $isTimeout = $e->getCode() === 504
+                || stripos($e->getMessage(), 'timed out') !== false
+                || stripos($e->getMessage(), 'timeout') !== false;
 
             return response()->json([
                 'success' => false,
-                'message' =>
-                    $e->getMessage(),
-            ], 500);
+                'message' => $isTimeout
+                    ? 'Payment gateway timed out. Your payment status is uncertain. Please contact support before trying again.'
+                    : 'Unable to start payment right now. Please try again later.',
+                'payment_status' => $payment ? 'pending' : null,
+            ], $isTimeout ? 504 : 502);
         }
     }
 

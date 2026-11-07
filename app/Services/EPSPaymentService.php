@@ -63,7 +63,11 @@ class EPSPaymentService
     {
         $hash = $this->generateHash($this->username);
 
-        $response = Http::withHeaders([
+        $response = Http::timeout(config('services.eps.timeout', 60))
+            ->withOptions([
+                'connect_timeout' => config('services.eps.connect_timeout', 10),
+            ])
+            ->withHeaders([
             'x-hash' => $hash,
             'Content-Type' => 'application/json',
         ])->post(
@@ -76,7 +80,8 @@ class EPSPaymentService
 
         if (!$response->successful()) {
             throw new Exception(
-                'EPS GetToken HTTP Error: ' . $response->body()
+                'EPS GetToken HTTP Error: HTTP ' . $response->status(),
+                $response->status()
             );
         }
 
@@ -216,7 +221,11 @@ class EPSPaymentService
                 $paymentData['productCategory'] ?? 'General',
         ];
 
-        $response = Http::withHeaders([
+        $response = Http::timeout(config('services.eps.timeout', 60))
+            ->withOptions([
+                'connect_timeout' => config('services.eps.connect_timeout', 10),
+            ])
+            ->withHeaders([
             'x-hash' => $hash,
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
@@ -227,7 +236,8 @@ class EPSPaymentService
 
         if (!$response->successful()) {
             throw new Exception(
-                'EPS Initialize HTTP Error: ' . $response->body()
+                'EPS Initialize HTTP Error: HTTP ' . $response->status(),
+                $response->status()
             );
         }
 
@@ -263,7 +273,11 @@ class EPSPaymentService
         $url = $this->baseUrl .
             '/v1/EPSEngine/CheckMerchantTransactionStatus';
 
-        $response = Http::withHeaders([
+        $response = Http::timeout(config('services.eps.timeout', 60))
+            ->withOptions([
+                'connect_timeout' => config('services.eps.connect_timeout', 10),
+            ])
+            ->withHeaders([
             'x-hash' => $hash,
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
@@ -273,7 +287,8 @@ class EPSPaymentService
 
         if (!$response->successful()) {
             throw new Exception(
-                'EPS Verification HTTP Error: ' . $response->body()
+                'EPS Verification HTTP Error: HTTP ' . $response->status(),
+                $response->status()
             );
         }
 
