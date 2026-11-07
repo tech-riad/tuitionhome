@@ -145,7 +145,15 @@
                         <p class="m-0 text-nowrap">{{ $invoice->issued_at ?? 'n/a' }}</p>
                     </th>
 
-                    <td> {{$invoice->unique_id ?? 'n/a'}}</td>
+                    <td>
+                        @if ($invoice->tutor_id)
+                            <a href="{{ route('admin.tutor.tutorshow', $invoice->tutor_id) }}">
+                                {{ $invoice->unique_id ?? $invoice->tutor_id }}
+                            </a>
+                        @else
+                            n/a
+                        @endif
+                    </td>
                     <td> {{$invoice->payment_date ?? $invoice->new_payment_date ?? 'n/a'}}</td>
                     <td> {{$invoice->invoice_number ?? 'n/a'}}</td>
                     <td> {{$invoice->render->name ?? 'n/a'}}</td>

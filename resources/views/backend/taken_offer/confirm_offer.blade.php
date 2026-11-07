@@ -263,7 +263,7 @@
                                             Note
                                         </button>
                                     </li>
-                                    {{-- <li>
+                                    <li>
                                         <button type="button" class="dropdown-item"
                                             id="{{ $confirm_application->id }}"
                                             onclick="stageJobId(this.id, 2,{{$charge}})"
@@ -271,7 +271,7 @@
                                             data-bs-target="#confirmTabPaymentModal">
                                             Payment
                                         </button>
-                                    </li> --}}
+                                    </li>
 
                                 </div>
                             </ul>
