@@ -301,7 +301,7 @@ class EPSPaymentController extends Controller
 
             if ($payment) {
                 $payment->update([
-                    'status' => $outcomeUnknown ? 'pending' : 'failed',
+                    'status' => 'failed',
                     'response_data' => [
                         'initialize_error' => $e->getMessage(),
                         'outcome_unknown' => $outcomeUnknown,
@@ -318,10 +318,10 @@ class EPSPaymentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $outcomeUnknown
-                    ? 'Payment gateway did not confirm the result. Payment status is unknown; do not retry until this payment is checked.'
+                    ? 'The payment gateway did not return a payment link. You can try creating a new payment.'
                     : 'Unable to start payment right now. Please try again later.',
                 'payment_status' => $payment ? $payment->status : null,
-                'retry_allowed' => !$outcomeUnknown,
+                'retry_allowed' => true,
                 'payment_id' => $payment ? $payment->id : null,
                 'merchant_transaction_id' => $merchantTransactionId,
             ], $isTimeout ? 504 : 502);
