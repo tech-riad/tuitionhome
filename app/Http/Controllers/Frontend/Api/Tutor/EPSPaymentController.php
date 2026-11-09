@@ -114,6 +114,8 @@ class EPSPaymentController extends Controller
                     ->latest('id')
                     ->first();
 
+                $activePayment->delete();
+
                 if ($activePayment) {
                     $responseData = $activePayment->response_data ?? [];
                     $redirectUrl = $responseData['RedirectURL']
