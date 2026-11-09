@@ -287,9 +287,10 @@ class EPSPaymentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $isTimeout
-                    ? 'Payment gateway timed out. Your payment status is uncertain. Please contact support before trying again.'
+                    ? 'Payment gateway timed out. If no money was deducted, you can retry. If you were charged, contact support before retrying.'
                     : 'Unable to start payment right now. Please try again later.',
                 'payment_status' => $payment ? 'pending' : null,
+                'retry_allowed' => true,
             ], $isTimeout ? 504 : 502);
         }
     }

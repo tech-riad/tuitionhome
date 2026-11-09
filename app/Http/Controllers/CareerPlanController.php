@@ -94,8 +94,6 @@ class CareerPlanController extends Controller
 
     public function show(CareerPlan $careerPlan)
     {
-        abort_unless((int) $careerPlan->created_by === (int) auth()->id(), 403);
-
         return $this->detailsView($careerPlan, false);
     }
 
