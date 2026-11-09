@@ -44,7 +44,7 @@ return [
         'store_id'      => env('EPS_STORE_ID', env('EPSStoreID')),
         'merchant_id'   => env('EPS_MERCHANT_ID', env('EPSMerchentID')),
         'device_type'   => env('EPS_DEVICE_TYPE_ID', env('EPSDeviceTypeID')),
-        'timeout'       => (int) env('EPS_TIMEOUT', 15),
+        'timeout'       => (int) env('EPS_TIMEOUT', 60),
         'connect_timeout' => (int) env('EPS_CONNECT_TIMEOUT', 10),
     ],
 

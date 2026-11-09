@@ -63,7 +63,7 @@ class EPSPaymentService
     {
         $hash = $this->generateHash($this->username);
 
-        $response = Http::timeout(config('services.eps.timeout', 15))
+        $response = Http::timeout(config('services.eps.timeout', 60))
             ->withOptions([
                 'connect_timeout' => config('services.eps.connect_timeout', 10),
             ])
@@ -221,7 +221,7 @@ class EPSPaymentService
                 $paymentData['productCategory'] ?? 'General',
         ];
 
-        $response = Http::timeout(config('services.eps.timeout', 15))
+        $response = Http::timeout(config('services.eps.timeout', 60))
             ->withOptions([
                 'connect_timeout' => config('services.eps.connect_timeout', 10),
             ])
@@ -273,7 +273,7 @@ class EPSPaymentService
         $url = $this->baseUrl .
             '/v1/EPSEngine/CheckMerchantTransactionStatus';
 
-        $response = Http::timeout(config('services.eps.timeout', 15))
+        $response = Http::timeout(config('services.eps.timeout', 60))
             ->withOptions([
                 'connect_timeout' => config('services.eps.connect_timeout', 10),
             ])

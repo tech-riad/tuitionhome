@@ -59,91 +59,49 @@ class EPSPaymentController extends Controller
             $merchantTransactionId =
                 date('YmdHis') . rand(1000, 9999);
 
-            $paymentData = DB::transaction(function () use (
-                $request,
-                $invoiceId,
-                $merchantTransactionId
-            ) {
-                $invoice = Invoice::where('id', $request->invoice_id)
-                    ->lockForUpdate()
-                    ->first();
+            /*
+             * Create local payment first
+             */
+            $invoice = Invoice::where('id', $request->invoice_id)->first();
 
-                if (!$invoice) {
-                    return [
-                        'response' => response()->json([
-                            'success' => false,
-                            'message' => 'Invoice not found.',
-                        ], 404),
-                    ];
+            if (!$invoice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invoice not found.',
+                ], 404);
+            }
+            if ($invoice->job_id !== null) {
+                $invoices = Invoice::where('job_id', $invoice->job_id)
+                    ->orderBy('id', 'asc')
+                    ->get();
+
+                $previousInvoices = $invoices->where('id', '<', $invoice->id);
+                $unpaidPreviousInvoice = $previousInvoices->first(function ($item) {
+                    return $item->status != 'paid';
+                });
+
+                if ($unpaidPreviousInvoice) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Please pay the previous invoice first.',
+                        'previous_invoice_id' => $unpaidPreviousInvoice->invoice_number,
+                    ], 400);
                 }
-
-                if ($invoice->status === 'paid') {
-                    return [
-                        'response' => response()->json([
-                            'success' => false,
-                            'message' => 'This invoice has already been paid.',
-                            'retry_allowed' => false,
-                        ], 409),
-                    ];
-                }
-
-                if ($invoice->job_id !== null) {
-                    $invoices = Invoice::where('job_id', $invoice->job_id)
-                        ->orderBy('id', 'asc')
-                        ->get();
-
-                    $unpaidPreviousInvoice = $invoices
-                        ->where('id', '<', $invoice->id)
-                        ->first(function ($item) {
-                            return $item->status !== 'paid';
-                        });
-
-                    if ($unpaidPreviousInvoice) {
-                        return [
-                            'response' => response()->json([
-                                'success' => false,
-                                'message' => 'Please pay the previous invoice first.',
-                                'previous_invoice_id' => $unpaidPreviousInvoice->invoice_number,
-                            ], 400),
-                        ];
-                    }
-                }
-
-                $activePayment = Payment::where('invoice_check', $invoice->id)
-                    // ->whereIn('status', ['pending', 'processing'])
-                    ->latest('id')
-                    ->first();
-
-                if ($activePayment) {
-                    $activePayment->delete();
-                }
-
-                $payment = Payment::create([
-                    'user_id' => auth()->check()
-                        ? auth()->id()
-                        : null,
-                    'invoice_id' => $invoiceId,
-                    'invoice_check' => $invoice->id,
-                    'transaction_id' => $merchantTransactionId,
-                    'amount' => $invoice->amount,
-                    'currency' => 'BDT',
-                    'payment_method' => 'EPS',
-                    'status' => 'pending',
-                    'request_data' => $request->all(),
-                ]);
-
-                return [
-                    'invoice' => $invoice,
-                    'payment' => $payment,
-                ];
-            });
-
-            if (isset($paymentData['response'])) {
-                return $paymentData['response'];
             }
 
-            $invoice = $paymentData['invoice'];
-            $payment = $paymentData['payment'];
+            $payment = Payment::create([
+                'user_id' => auth()->check()
+                    ? auth()->id()
+                    : null,
+                'invoice_id' => $invoiceId,
+                'invoice_check' => $invoice->id,
+                'transaction_id' => $merchantTransactionId,
+                'amount' => $invoice->amount,
+                'currency' => 'BDT',
+                'payment_method' => 'EPS',
+                'status' => 'pending',
+                'request_data' => $request->all(),
+            ]);
 
             // Do not keep a database transaction open while waiting for EPS.
             /*
@@ -293,18 +251,11 @@ class EPSPaymentController extends Controller
             ], 200);
 
         } catch (Exception $e) {
-            $isTimeout = $e->getCode() === 504
-                || stripos($e->getMessage(), 'timed out') !== false
-                || stripos($e->getMessage(), 'timeout') !== false;
-            $isServerError = $e->getCode() >= 500;
-            $outcomeUnknown = $isTimeout || $isServerError;
-
             if ($payment) {
                 $payment->update([
-                    'status' => 'failed',
                     'response_data' => [
                         'initialize_error' => $e->getMessage(),
-                        'outcome_unknown' => $outcomeUnknown,
+                        'outcome_unknown' => true,
                     ],
                 ]);
             }
@@ -315,15 +266,17 @@ class EPSPaymentController extends Controller
                 'merchant_transaction_id' => $merchantTransactionId,
             ]);
 
+            $isTimeout = $e->getCode() === 504
+                || stripos($e->getMessage(), 'timed out') !== false
+                || stripos($e->getMessage(), 'timeout') !== false;
+
             return response()->json([
                 'success' => false,
-                'message' => $outcomeUnknown
-                    ? 'The payment gateway did not return a payment link. You can try creating a new payment.'
+                'message' => $isTimeout
+                    ? 'Payment gateway timed out. If no money was deducted, you can retry. If you were charged, contact support before retrying.'
                     : 'Unable to start payment right now. Please try again later.',
-                'payment_status' => $payment ? $payment->status : null,
+                'payment_status' => $payment ? 'pending' : null,
                 'retry_allowed' => true,
-                'payment_id' => $payment ? $payment->id : null,
-                'merchant_transaction_id' => $merchantTransactionId,
             ], $isTimeout ? 504 : 502);
         }
     }
