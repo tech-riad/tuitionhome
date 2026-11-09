@@ -167,15 +167,14 @@
         </section>
 
         @unless($shared)
-            @unless($shared)
-                <section class="career-detail-section">
-                    <h2>Applications</h2>
-                    <p class="career-detail-value">Review applicants and update their application status.</p>
-                    <a class="career-detail-share" href="{{ route('admin.career.applications', $careerPlan) }}">
-                        View applications ({{ $applicationsCount }})
-                    </a>
-                </section>
-            @endunless
+            <section class="career-detail-section">
+                <h2>Applications</h2>
+                <p class="career-detail-value">Review applicants and update their application status.</p>
+                <a class="career-detail-share" href="{{ route('admin.career.applications', $careerPlan) }}">
+                    View applications ({{ $applicationsCount }})
+                </a>
+            </section>
+        @endunless
 
         @if(!$shared && $careerPlan->status === 'published')
             <section class="career-detail-section">
