@@ -114,39 +114,8 @@ class EPSPaymentController extends Controller
                     ->latest('id')
                     ->first();
 
-                $activePayment->delete();
-
                 if ($activePayment) {
-                    $responseData = $activePayment->response_data ?? [];
-                    $redirectUrl = $responseData['RedirectURL']
-                        ?? $responseData['redirect_url']
-                        ?? null;
-
-                    if ($redirectUrl) {
-                        return [
-                            'response' => response()->json([
-                                'success' => true,
-                                'message' => 'Payment initialized successfully.',
-                                'payment_id' => $activePayment->id,
-                                'invoice_id' => $invoice->id,
-                                'merchant_transaction_id' => $activePayment->transaction_id,
-                                'transaction_id' => $activePayment->eps_transaction_id
-                                    ?? ($responseData['TransactionId'] ?? null),
-                                'redirect_url' => $redirectUrl,
-                            ]),
-                        ];
-                    }
-
-                    return [
-                        'response' => response()->json([
-                            'success' => false,
-                            'message' => 'The previous payment attempt has no payment link and its status is unknown. Please contact support before trying again.',
-                            'payment_status' => $activePayment->status,
-                            'retry_allowed' => false,
-                            'payment_id' => $activePayment->id,
-                            'merchant_transaction_id' => $activePayment->transaction_id,
-                        ], 409),
-                    ];
+                    $activePayment->delete();
                 }
 
                 $payment = Payment::create([
