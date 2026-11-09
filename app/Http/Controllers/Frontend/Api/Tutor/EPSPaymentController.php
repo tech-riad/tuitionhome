@@ -110,7 +110,7 @@ class EPSPaymentController extends Controller
                 }
 
                 $activePayment = Payment::where('invoice_check', $invoice->id)
-                    ->whereIn('status', ['pending', 'processing'])
+                    // ->whereIn('status', ['pending', 'processing'])
                     ->latest('id')
                     ->first();
 
