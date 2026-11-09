@@ -99,8 +99,6 @@ class CareerPlanController extends Controller
 
     public function applications(Request $request, CareerPlan $careerPlan)
     {
-        $this->authorizeCareerPlan($careerPlan, $request);
-
         $filters = $request->validate([
             'status' => ['nullable', Rule::in(CareerApplication::STATUSES)],
         ]);
@@ -124,7 +122,6 @@ class CareerPlanController extends Controller
 
     public function updateApplicationStatus(Request $request, CareerPlan $careerPlan, CareerApplication $application)
     {
-        $this->authorizeCareerPlan($careerPlan, $request);
         abort_unless((int) $application->career_plan_id === (int) $careerPlan->id, 404);
 
         $validated = $request->validate([
@@ -143,7 +140,6 @@ class CareerPlanController extends Controller
 
     public function storeApplicationNote(Request $request, CareerPlan $careerPlan, CareerApplication $application)
     {
-        $this->authorizeCareerPlan($careerPlan, $request);
         abort_unless((int) $application->career_plan_id === (int) $careerPlan->id, 404);
 
         $validated = $request->validate([
@@ -181,7 +177,6 @@ class CareerPlanController extends Controller
 
     public function applicationNotes(Request $request, CareerPlan $careerPlan, CareerApplication $application)
     {
-        $this->authorizeCareerPlan($careerPlan, $request);
         abort_unless((int) $application->career_plan_id === (int) $careerPlan->id, 404);
 
         return response()->json([
@@ -204,8 +199,6 @@ class CareerPlanController extends Controller
 
     public function applicationSmsEditor(Request $request, CareerPlan $careerPlan)
     {
-        $this->authorizeCareerPlan($careerPlan, $request);
-
         $validated = $this->validateSelectedApplicationIds($request);
         $applications = $this->getSmsEligibleApplications($careerPlan, $validated['application_ids']);
 
@@ -217,8 +210,6 @@ class CareerPlanController extends Controller
 
     public function selectApplicationSmsRecipients(Request $request, CareerPlan $careerPlan)
     {
-        $this->authorizeCareerPlan($careerPlan, $request);
-
         $validated = $this->validateSelectedApplicationIds($request);
         $this->getSmsEligibleApplications($careerPlan, $validated['application_ids']);
 
@@ -230,8 +221,6 @@ class CareerPlanController extends Controller
 
     public function sendApplicationSms(Request $request, CareerPlan $careerPlan)
     {
-        $this->authorizeCareerPlan($careerPlan, $request);
-
         $validated = $this->validateSelectedApplicationIds($request);
         $validated = array_merge($validated, $request->validate([
             'message' => ['required', 'string', 'max:300'],
@@ -269,8 +258,6 @@ class CareerPlanController extends Controller
 
     public function updateStatus(Request $request, CareerPlan $careerPlan)
     {
-        abort_unless((int) $careerPlan->created_by === (int) $request->user()->id, 403);
-
         $validated = $request->validate([
             'status' => ['required', Rule::in(['published', 'closed'])],
         ]);
@@ -299,11 +286,6 @@ class CareerPlanController extends Controller
             'shared' => $shared,
             'applicationsCount' => $shared ? null : $careerPlan->applications()->count(),
         ]);
-    }
-
-    private function authorizeCareerPlan(CareerPlan $careerPlan, Request $request)
-    {
-        abort_unless((int) $careerPlan->created_by === (int) $request->user()->id, 403);
     }
 
     private function validateSelectedApplicationIds(Request $request)
