@@ -12,6 +12,8 @@ Route::middleware(['auth'])->prefix('admin/consultation-requests')->name('admin.
         ->name('invoice.create');
     Route::patch('/{consultationRequest}/payment-status', [TutorConsultationRequestController::class, 'updatePaymentStatus'])
         ->name('payment-status');
+    Route::patch('/{consultationRequest}/invoice/cancel', [TutorConsultationRequestController::class, 'cancelInvoice'])
+        ->name('invoice.cancel');
     Route::patch('/{consultationRequest}', [TutorConsultationRequestController::class, 'updateDetails'])
         ->name('update');
     Route::patch('/{consultationRequest}/status', [TutorConsultationRequestController::class, 'updateStatus'])

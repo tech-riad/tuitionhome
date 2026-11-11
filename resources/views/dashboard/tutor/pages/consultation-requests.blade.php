@@ -29,6 +29,15 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
+            @if($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    @foreach($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
+
+            @if($canSubmitRequest)
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Request a consultation</h5>
@@ -45,7 +54,6 @@
                                 class="form-control @error('message') is-invalid @enderror"
                                 rows="4"
                                 maxlength="5000"
-                                required
                             >{{ old('message') }}</textarea>
                             @error('message')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -56,6 +64,11 @@
                     </form>
                 </div>
             </div>
+            @else
+                <div class="alert alert-info" role="status">
+                    You can submit a new consultation request after all previous requests are canceled.
+                </div>
+            @endif
 
             <div class="card">
                 <div class="card-header">

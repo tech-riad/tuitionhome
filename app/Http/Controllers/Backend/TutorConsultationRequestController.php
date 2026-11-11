@@ -19,6 +19,8 @@ class TutorConsultationRequestController extends Controller
     {
         $validated = $request->validate([
             'status' => ['nullable', Rule::in(TutorConsultationRequest::STATUSES)],
+            'scheduled_date' => ['nullable', 'date_format:Y-m-d'],
+            'tutor_phone' => ['nullable', 'string', 'max:30'],
         ]);
 
         $consultationRequests = TutorConsultationRequest::with([
@@ -29,6 +31,14 @@ class TutorConsultationRequestController extends Controller
             ->when(!empty($validated['status']), function ($query) use ($validated) {
                 $query->where('status', $validated['status']);
             })
+            ->when(!empty($validated['scheduled_date']), function ($query) use ($validated) {
+                $query->whereDate('scheduled_at', $validated['scheduled_date']);
+            })
+            ->when(!empty($validated['tutor_phone']), function ($query) use ($validated) {
+                $query->whereHas('tutor', function ($tutorQuery) use ($validated) {
+                    $tutorQuery->where('phone', 'like', '%' . $validated['tutor_phone'] . '%');
+                });
+            })
             ->latest()
             ->paginate(20)
             ->withQueryString();
@@ -37,14 +47,19 @@ class TutorConsultationRequestController extends Controller
             'consultationRequests' => $consultationRequests,
             'statuses' => TutorConsultationRequest::STATUSES,
             'selectedStatus' => $validated['status'] ?? '',
-            'packageAmounts' => PackageAmount::query()->orderBy('package_name')->get(),
+            'selectedScheduledDate' => $validated['scheduled_date'] ?? '',
+            'selectedTutorPhone' => $validated['tutor_phone'] ?? '',
+            'packageAmounts' => PackageAmount::query()
+                ->where('type', 'consultation')
+                ->orderBy('package_name')
+                ->get(),
         ]);
     }
 
     public function createInvoice(Request $request, TutorConsultationRequest $consultationRequest)
     {
         $validated = $request->validate([
-            'package_amount_id' => ['required', 'integer', 'exists:package_amounts,id'],
+            'package_amount_id' => ['required', 'integer', Rule::exists('package_amounts', 'id')->where('type', 'consultation')],
         ]);
 
         if ($consultationRequest->invoice_id) {
@@ -149,7 +164,61 @@ class TutorConsultationRequestController extends Controller
             'status' => true,
             'message' => 'Payment status updated.',
             'payment_status' => $consultationRequest->fresh()->payment_status,
-            'invoice_status' => $invoice->fresh()->status,
+            'invoice' => [
+                'invoice_number' => $invoice->invoice_number,
+                'currency' => $invoice->currency,
+                'amount' => $invoice->amount,
+                'status' => $invoice->fresh()->status,
+            ],
+        ]);
+    }
+
+    public function cancelInvoice(TutorConsultationRequest $consultationRequest)
+    {
+        $invoice = $consultationRequest->invoice;
+        if (!$invoice) {
+            return response()->json([
+                'status' => false,
+                'message' => 'There is no invoice to cancel.',
+            ], 422);
+        }
+
+        $result = DB::transaction(function () use ($consultationRequest) {
+            $invoice = Invoice::whereKey($consultationRequest->invoice_id)->lockForUpdate()->firstOrFail();
+            $invoiceStatus = strtolower($invoice->status);
+            if ($invoiceStatus !== 'pending') {
+                if ($invoiceStatus === 'paid') {
+                    return ['error' => 'Paid invoices cannot be cancelled.'];
+                }
+                if (in_array($invoiceStatus, ['cancel', 'cancelled'], true)) {
+                    return ['error' => 'This invoice is already cancelled.'];
+                }
+                return ['error' => 'Only pending invoices can be cancelled.'];
+            }
+
+            $invoice->update(['status' => 'cancelled', 'paid_at' => null]);
+            $consultationRequest->update(['payment_status' => 'unpaid']);
+
+            return ['invoice' => $invoice->fresh()];
+        });
+
+        if (isset($result['error'])) {
+            return response()->json([
+                'status' => false,
+                'message' => $result['error'],
+            ], 422);
+        }
+
+        $invoice = $result['invoice'];
+        return response()->json([
+            'status' => true,
+            'message' => 'Invoice cancelled.',
+            'invoice' => [
+                'invoice_number' => $invoice->invoice_number,
+                'currency' => $invoice->currency,
+                'amount' => $invoice->amount,
+                'status' => $invoice->fresh()->status,
+            ],
         ]);
     }
 

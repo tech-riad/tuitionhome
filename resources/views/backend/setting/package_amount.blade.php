@@ -52,6 +52,7 @@
                                     <option value="enterprise_boost">Enterprise Boost</option>
                                     <option value="verify">Profile Verify</option>
                                     <option value="sms">SMS</option>
+                                    <option value="teacher_consultation">Teacher Consultation</option>
                                 </select>
                             </div>
 
@@ -81,6 +82,7 @@
                                     <option value="profile_verify">Profile Verification</option>
                                     <option value="boost">Boost</option>
                                     <option value="sms">SMS</option>
+                                    <option value="consultation">Teacher Consultation</option>
 
                                 </select>
                             </div>
@@ -187,6 +189,7 @@
                                                             <option value="enterprise_boost" {{ $packageAmount->package_name == 'enterprise_boost' ? 'selected' : '' }}>Enterprise Boost</option>
                                                             <option value="verify" {{ $packageAmount->package_name == 'verify' ? 'selected' : '' }}>Profile Verify</option>
                                                             <option value="sms" {{ $packageAmount->package_name == 'sms' ? 'selected' : '' }}>SMS</option>
+                                                            <option value="teacher_consultation" {{ $packageAmount->package_name == 'teacher_consultation' ? 'selected' : '' }}>Teacher Consultation</option>
                                                         </select>
                                                     </div>
 
@@ -211,7 +214,7 @@
                                                     <div class="mb-3">
                                                         <label class="form-label">Type</label>
                                                         <input type="text" class="form-control" name="type"
-                                                            value="{{ $packageAmount->type }}">
+                                                            value="{{ $packageAmount->type }}" placeholder="e.g. consultation">
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label">Cupon Code</label>

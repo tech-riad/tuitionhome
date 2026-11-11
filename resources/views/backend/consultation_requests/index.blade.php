@@ -44,7 +44,28 @@
                     </option>
                 @endforeach
             </select>
+            <label class="mr-2" for="scheduled-date-filter">Scheduled date</label>
+            <input
+                class="form-control mr-2"
+                id="scheduled-date-filter"
+                name="scheduled_date"
+                type="date"
+                value="{{ $selectedScheduledDate }}"
+            >
+            <label class="mr-2" for="tutor-phone-filter">Tutor phone</label>
+            <input
+                class="form-control mr-2"
+                id="tutor-phone-filter"
+                name="tutor_phone"
+                type="search"
+                maxlength="30"
+                placeholder="Search phone number"
+                value="{{ $selectedTutorPhone }}"
+            >
             <button class="btn btn-primary" type="submit">Filter</button>
+            @if($selectedStatus || $selectedScheduledDate || $selectedTutorPhone)
+                <a class="btn btn-outline-secondary ml-2" href="{{ route('admin.consultation-requests.index') }}">Clear</a>
+            @endif
         </form>
         <form id="consultationSmsForm" class="mt-3" method="POST" action="{{ route('admin.consultation-requests.sms.editor.select') }}">
             @csrf
@@ -108,9 +129,10 @@
                                     {{ $consultationRequest->scheduled_at ? $consultationRequest->scheduled_at->format('M d, Y g:i A') : '—' }}
                                 </td>
                                 <td><span class="badge {{ $consultationRequest->payment_status === 'paid' ? 'badge-success' : 'badge-warning' }}" data-payment-status>{{ ucfirst($consultationRequest->payment_status) }}</span></td>
-                                <td class="text-nowrap" data-invoice-summary>
+                                <td class="text-nowrap" data-invoice-summary data-invoice-number="{{ $consultationRequest->invoice ? $consultationRequest->invoice->invoice_number : '' }}">
                                     @if($consultationRequest->invoice)
                                         {{ $consultationRequest->invoice->invoice_number }}
+                                        <small class="d-block text-muted">{{ ucfirst($consultationRequest->invoice->status) }}</small>
                                     @else
                                         —
                                     @endif
@@ -191,27 +213,39 @@
                                     <span class="badge {{ $consultationRequest->payment_status === 'paid' ? 'badge-success' : 'badge-warning' }}" data-modal-payment-status>{{ ucfirst($consultationRequest->payment_status) }}</span>
                                     <div class="small text-muted" data-modal-invoice-summary>
                                         @if($consultationRequest->invoice)
-                                            Invoice {{ $consultationRequest->invoice->invoice_number }} · {{ $consultationRequest->invoice->currency }} {{ number_format((float) $consultationRequest->invoice->amount, 2) }}
+                                            Invoice {{ $consultationRequest->invoice->invoice_number }} · {{ $consultationRequest->invoice->currency }} {{ number_format((float) $consultationRequest->invoice->amount, 2) }} · {{ ucfirst($consultationRequest->invoice->status) }}
                                         @else
                                             No invoice created
                                         @endif
                                     </div>
                                 </div>
                                 @if($consultationRequest->invoice)
-                                    <form method="POST" data-consultation-ajax action="{{ route('admin.consultation-requests.payment-status', $consultationRequest->id) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="input-group input-group-sm">
-                                            <select class="form-control" name="payment_status" aria-label="Payment status">
-                                                <option value="unpaid" {{ $consultationRequest->payment_status === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                                                <option value="paid" {{ $consultationRequest->payment_status === 'paid' ? 'selected' : '' }}>Paid</option>
-                                            </select>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-primary" type="submit">Update</button>
+                                    @if(!in_array(strtolower($consultationRequest->invoice->status), ['cancel', 'cancelled'], true))
+                                        <form method="POST" data-consultation-ajax action="{{ route('admin.consultation-requests.payment-status', $consultationRequest->id) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <div class="input-group input-group-sm">
+                                                <select class="form-control" name="payment_status" aria-label="Payment status" {{ strtolower($consultationRequest->invoice->status) === 'paid' ? 'disabled' : '' }}>
+                                                    <option value="unpaid" {{ $consultationRequest->payment_status === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+                                                    <option value="paid" {{ $consultationRequest->payment_status === 'paid' ? 'selected' : '' }}>Paid</option>
+                                                </select>
+                                                @if(strtolower($consultationRequest->invoice->status) !== 'paid')
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-primary" type="submit">Update</button>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        </div>
-                                        <div class="consultation-ajax-feedback alert mt-2 mb-0" role="status"></div>
-                                    </form>
+                                            <div class="consultation-ajax-feedback alert mt-2 mb-0" role="status"></div>
+                                        </form>
+                                    @endif
+                                    @if(!in_array(strtolower($consultationRequest->invoice->status), ['paid', 'cancel', 'cancelled'], true))
+                                        <form method="POST" data-consultation-ajax data-cancel-invoice action="{{ route('admin.consultation-requests.invoice.cancel', $consultationRequest->id) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">Cancel invoice</button>
+                                            <div class="consultation-ajax-feedback alert mt-2 mb-0" role="status"></div>
+                                        </form>
+                                    @endif
                                 @endif
                             </div>
 
@@ -312,11 +346,39 @@
                 badge.textContent = paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1);
                 badge.className = 'badge ' + (paymentStatus === 'paid' ? 'badge-success' : 'badge-warning');
             });
+            if (paymentStatus === 'paid' && modal) {
+                var paymentSelect = modal.querySelector('[name="payment_status"]');
+                if (paymentSelect) {
+                    paymentSelect.disabled = true;
+                    var updateButton = paymentSelect.closest('form').querySelector('button[type="submit"]');
+                    if (updateButton) updateButton.remove();
+                }
+                var cancelForm = modal.querySelector('[data-cancel-invoice]');
+                if (cancelForm) cancelForm.remove();
+            }
+        }
+
+        function updateInvoiceDisplay(requestId, invoice) {
+            var row = document.getElementById('consultation-row-' + requestId);
+            var modal = document.getElementById('consultation-modal-' + requestId);
+            if (modal) {
+                modal.querySelector('[data-modal-invoice-summary]').textContent =
+                    'Invoice ' + invoice.invoice_number + ' · ' + invoice.currency + ' ' +
+                    Number(invoice.amount).toFixed(2) + ' · ' + invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1);
+            }
+            if (row) {
+                var invoiceCell = row.querySelector('[data-invoice-summary]');
+                invoiceCell.dataset.invoiceNumber = invoice.invoice_number;
+                invoiceCell.textContent = invoice.invoice_number + ' · ' + invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1);
+            }
         }
 
         document.querySelectorAll('[data-consultation-ajax]').forEach(function (form) {
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
+                if (form.hasAttribute('data-cancel-invoice') && !window.confirm('Are you sure you want to cancel this invoice?')) {
+                    return;
+                }
                 var button = form.querySelector('button[type="submit"]');
                 if (button) button.disabled = true;
 
@@ -343,8 +405,7 @@
 
                     if (form.querySelector('[name="package_amount_id"]')) {
                         form.remove();
-                        modal.querySelector('[data-modal-invoice-summary]').textContent =
-                            'Invoice ' + data.invoice.invoice_number + ' · ' + data.invoice.currency + ' ' + Number(data.invoice.amount).toFixed(2);
+                        updateInvoiceDisplay(requestId, data.invoice);
                         var paymentArea = modal.querySelector('[data-modal-payment-status]').parentElement;
                         var paymentForm = document.createElement('form');
                         paymentForm.method = 'POST';
@@ -359,11 +420,29 @@
                             '<div class="consultation-ajax-feedback alert mt-2 mb-0" role="status"></div>';
                         paymentArea.appendChild(paymentForm);
                         bindForm(paymentForm);
-                        if (row) row.querySelector('[data-invoice-summary]').textContent = data.invoice.invoice_number;
+                        var cancelForm = document.createElement('form');
+                        cancelForm.method = 'POST';
+                        cancelForm.action = "{{ route('admin.consultation-requests.invoice.cancel', ['consultationRequest' => '__ID__']) }}".replace('__ID__', requestId);
+                        cancelForm.setAttribute('data-consultation-ajax', '');
+                        cancelForm.setAttribute('data-cancel-invoice', '');
+                        cancelForm.innerHTML =
+                            '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+                            '<input type="hidden" name="_method" value="PATCH">' +
+                            '<button class="btn btn-sm btn-outline-danger" type="submit">Cancel invoice</button>' +
+                            '<div class="consultation-ajax-feedback alert mt-2 mb-0" role="status"></div>';
+                        paymentArea.appendChild(cancelForm);
+                        bindForm(cancelForm);
                         updatePaymentDisplay(requestId, 'unpaid');
                         if (row) row.querySelector('[data-payment-status]').textContent = 'Unpaid';
+                    } else if (form.hasAttribute('data-cancel-invoice')) {
+                        updatePaymentDisplay(requestId, 'unpaid');
+                        updateInvoiceDisplay(requestId, data.invoice);
+                        var paymentForm = modal.querySelector('form[data-consultation-ajax] [name="payment_status"]');
+                        if (paymentForm) paymentForm.closest('form').remove();
+                        form.remove();
                     } else if (form.querySelector('[name="payment_status"]')) {
                         updatePaymentDisplay(requestId, data.payment_status);
+                        updateInvoiceDisplay(requestId, data.invoice);
                     } else if (form.querySelector('[name="note"]')) {
                         var list = modal.querySelector('[data-notes-list]');
                         var emptyMessage = list.querySelector('.text-muted');
@@ -400,6 +479,9 @@
         function bindForm(form) {
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
+                if (form.hasAttribute('data-cancel-invoice') && !window.confirm('Are you sure you want to cancel this invoice?')) {
+                    return;
+                }
                 var button = form.querySelector('button[type="submit"]');
                 if (button) button.disabled = true;
                 fetch(form.action, {
@@ -416,9 +498,19 @@
                         return data;
                     });
                 }).then(function (data) {
-                    var requestId = form.closest('.modal').id.replace('consultation-modal-', '');
-                    updatePaymentDisplay(requestId, data.payment_status);
-                    showFeedback(form, data.message, false);
+                    var modal = form.closest('.modal');
+                    var requestId = modal.id.replace('consultation-modal-', '');
+                    if (form.hasAttribute('data-cancel-invoice')) {
+                        updatePaymentDisplay(requestId, 'unpaid');
+                        updateInvoiceDisplay(requestId, data.invoice);
+                        var paymentForm = modal.querySelector('form[data-consultation-ajax] [name="payment_status"]');
+                        if (paymentForm) paymentForm.closest('form').remove();
+                        form.remove();
+                    } else {
+                        updatePaymentDisplay(requestId, data.payment_status);
+                        updateInvoiceDisplay(requestId, data.invoice);
+                        showFeedback(form, data.message, false);
+                    }
                 }).catch(function (error) {
                     showFeedback(form, error.message, true);
                 }).finally(function () {
