@@ -90,7 +90,22 @@
         justify-content:space-between;
     }
     .career-job-main { min-width:0; }
-    .career-job-actions { align-items:center; display:flex; gap:9px; position:relative; }
+    .career-job-actions { align-items:center; display:flex; flex:0 0 auto; flex-wrap:wrap; gap:9px; justify-content:flex-end; position:relative; }
+    .career-job-toggle-form { margin:0; }
+    .career-job-toggle-button {
+        background:#fff;
+        border:1px solid #e1e7ef;
+        border-radius:7px;
+        color:#42546a;
+        cursor:pointer;
+        font-size:12px;
+        font-weight:600;
+        min-height:34px;
+        padding:7px 11px;
+        white-space:nowrap;
+    }
+    .career-job-toggle-button:hover { background:#fff5f5; border-color:#f0caca; color:#bd3b3b; }
+    .career-job-toggle-button.is-closed:hover { background:#eef9f2; border-color:#cce9d5; color:#21834b; }
     .career-job-menu-toggle {
         align-items:center;
         background:#fff;
@@ -211,7 +226,8 @@
         .career-list-toolbar { align-items:stretch; padding:15px; }
         .career-search { max-width:none; }
         .career-job-list { padding:0 15px; }
-        .career-job-top { flex-direction:column; gap:9px; }
+        .career-job-top { flex-direction:column; gap:12px; }
+        .career-job-actions { align-self:stretch; }
         .career-pagination { padding:12px 15px; }
     }
 </style>
@@ -265,17 +281,19 @@
                                 </div>
                                 <div class="career-job-actions">
                                     <span class="career-job-status {{ $careerPlan->status === 'draft' ? 'is-draft' : ($careerPlan->status === 'closed' ? 'is-closed' : '') }}">{{ $careerPlan->status }}</span>
+                                    <form class="career-job-toggle-form" method="POST" action="{{ route('admin.career.status', $careerPlan) }}">
+                                        @csrf
+                                        <input type="hidden" name="status" value="{{ $careerPlan->status === 'published' ? 'closed' : 'published' }}">
+                                        <button class="career-job-toggle-button {{ $careerPlan->status !== 'published' ? 'is-closed' : '' }}" type="submit">
+                                            {{ $careerPlan->status === 'published' ? 'Turn off job' : 'Turn on job' }}
+                                        </button>
+                                    </form>
                                     <button type="button" class="career-job-menu-toggle" aria-label="Job actions" aria-expanded="false" aria-haspopup="true" data-job-menu-toggle>⋯</button>
                                     <div class="career-job-menu" role="menu" hidden>
                                         <a href="{{ route('admin.career.show', $careerPlan) }}" role="menuitem">View details</a>
                                         @if($careerPlan->status === 'published')
                                             <button type="button" role="menuitem" data-share-url="{{ $careerPlan->share_url }}">Share</button>
                                         @endif
-                                        <form method="POST" action="{{ route('admin.career.status', $careerPlan) }}">
-                                            @csrf
-                                            <input type="hidden" name="status" value="{{ $careerPlan->status === 'published' ? 'closed' : 'published' }}">
-                                            <button type="submit" role="menuitem">{{ $careerPlan->status === 'published' ? 'Turn off job' : 'Turn on job' }}</button>
-                                        </form>
                                     </div>
                                     <div class="career-share-status" role="status" aria-live="polite"></div>
                                 </div>
