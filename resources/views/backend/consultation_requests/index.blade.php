@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Teacher Consultation Requests')
+@section('title', $consultationType === 'parent' ? 'Parent Consultation Requests' : 'Tutor Consultation Requests')
 
 @push('page_css')
 <style>
@@ -21,7 +21,7 @@
 @section('content')
 <main class="consultation-page">
     <div class="container-fluid">
-        <h1 class="h3 mb-4">Teacher Consultation Requests</h1>
+        <h1 class="h3 mb-4">{{ ucfirst($consultationType) }} Consultation Requests</h1>
 
         @if(session('success'))
             <div class="alert alert-success" role="status">{{ session('success') }}</div>
@@ -34,7 +34,7 @@
             </div>
         @endif
 
-        <form class="form-inline mb-3" method="GET" action="{{ route('admin.consultation-requests.index') }}">
+        <form class="form-inline mb-3" method="GET" action="{{ $consultationType === 'parent' ? route('admin.consultation-requests.parents.index') : route('admin.consultation-requests.index') }}">
             <label class="mr-2" for="status-filter">Status</label>
             <select class="form-control mr-2" id="status-filter" name="status">
                 <option value="">All statuses</option>
@@ -52,7 +52,7 @@
                 type="date"
                 value="{{ $selectedScheduledDate }}"
             >
-            <label class="mr-2" for="tutor-phone-filter">Tutor phone</label>
+            <label class="mr-2" for="tutor-phone-filter">{{ ucfirst($consultationType) }} phone</label>
             <input
                 class="form-control mr-2"
                 id="tutor-phone-filter"
@@ -64,16 +64,18 @@
             >
             <button class="btn btn-primary" type="submit">Filter</button>
             @if($selectedStatus || $selectedScheduledDate || $selectedTutorPhone)
-                <a class="btn btn-outline-secondary ml-2" href="{{ route('admin.consultation-requests.index') }}">Clear</a>
+                <a class="btn btn-outline-secondary ml-2" href="{{ $consultationType === 'parent' ? route('admin.consultation-requests.parents.index') : route('admin.consultation-requests.index') }}">Clear</a>
             @endif
         </form>
-        <form id="consultationSmsForm" class="mt-3" method="POST" action="{{ route('admin.consultation-requests.sms.editor.select') }}">
-            @csrf
-            <input type="hidden" name="status" value="{{ $selectedStatus }}">
-            <button type="submit" class="btn btn-outline-dark">Send Bulk SMS</button>
-            <small class="text-muted ml-2">Select up to 20 requests. Tutors with SMS disabled cannot be selected.</small>
-        </form>
-        <br>
+        @if($consultationType === 'tutor')
+            <form id="consultationSmsForm" class="mt-3" method="POST" action="{{ route('admin.consultation-requests.sms.editor.select') }}">
+                @csrf
+                <input type="hidden" name="status" value="{{ $selectedStatus }}">
+                <button type="submit" class="btn btn-outline-dark">Send Bulk SMS</button>
+                <small class="text-muted ml-2">Select up to 20 requests. Tutors with SMS disabled cannot be selected.</small>
+            </form>
+            <br>
+        @endif
 
         <div class="card">
             <div class="table-responsive">
@@ -82,7 +84,7 @@
                         <tr>
                             <th><input type="checkbox" id="selectAllConsultationRequests" aria-label="Select all requests on this page"></th>
                             <th>Request</th>
-                            <th>Teacher</th>
+                            <th>{{ ucfirst($consultationType) }}</th>
                             <th>Message</th>
                             <th>Request status</th>
                             <th>Scheduled</th>
@@ -96,6 +98,7 @@
                         @forelse($consultationRequests as $consultationRequest)
                             <tr id="consultation-row-{{ $consultationRequest->id }}">
                                 <td>
+                                    @if($consultationType === 'tutor')
                                     <input
                                         class="consultation-request-checkbox"
                                         type="checkbox"
@@ -105,18 +108,22 @@
                                         {{ !$consultationRequest->tutor || (int) $consultationRequest->tutor->is_sms !== 1 ? 'disabled' : '' }}
                                         aria-label="Select consultation request {{ $consultationRequest->id }}"
                                     >
+                                    @endif
                                 </td>
                                 <td>#{{ $consultationRequest->id }}</td>
                                 <td>
-                                    @if($consultationRequest->tutor)
-                                    <a href="{{ route('admin.tutor.tutorshow', $consultationRequest->tutor->id) }}" target="_blank">
-                                        {{ optional($consultationRequest->tutor)->name ?? 'Tutor account unavailable' }}
-                                    </a>
+                                    @if($consultationType === 'tutor' && $consultationRequest->tutor)
+                                        <a href="{{ route('admin.tutor.tutorshow', $consultationRequest->tutor->id) }}" target="_blank">
+                                            {{ $consultationRequest->tutor->name }}
+                                        </a>
+                                        <small class="d-block text-muted">Tutor · {{ $consultationRequest->tutor->phone }}</small>
+                                    @elseif($consultationType === 'parent' && $consultationRequest->parent)
+                                        <a href="{{ route('admin.view.parent', $consultationRequest->parent->id) }}" target="_blank">
+                                            {{ $consultationRequest->parent->name }}
+                                        </a>
+                                        <small class="d-block text-muted">Parent · {{ $consultationRequest->parent->phone }}</small>
                                     @else
-                                        Tutor account unavailable
-                                    @endif
-                                    @if(optional($consultationRequest->tutor)->phone)
-                                        <small class="d-block text-muted">{{ $consultationRequest->tutor->phone }}</small>
+                                        Account unavailable
                                     @endif
                                 </td>
                                 <td>
@@ -167,7 +174,11 @@
                         <div class="modal-header">
                             <div>
                                 <h5 class="modal-title" id="consultation-modal-title-{{ $consultationRequest->id }}">Manage request #{{ $consultationRequest->id }}</h5>
-                                <small class="text-muted">{{ optional($consultationRequest->tutor)->name ?? 'Tutor account unavailable' }}</small>
+                                <small class="text-muted">
+                                    {{ $consultationType === 'parent'
+                                        ? (optional($consultationRequest->parent)->name ?? 'Parent account unavailable')
+                                        : (optional($consultationRequest->tutor)->name ?? 'Tutor account unavailable') }}
+                                </small>
                             </div>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -180,7 +191,7 @@
 
                                 <div class="form-group">
                                     <label for="message-{{ $consultationRequest->id }}">Message</label>
-                                    <textarea class="form-control" id="message-{{ $consultationRequest->id }}" name="message" rows="3" maxlength="5000" required>{{ $consultationRequest->message }}</textarea>
+                                    <textarea class="form-control" id="message-{{ $consultationRequest->id }}" name="message" rows="3" maxlength="5000">{{ $consultationRequest->message }}</textarea>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">

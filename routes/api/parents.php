@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Frontend\Api\Parent\ParentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\Api\Parent\PersonalInformationController;
+use App\Http\Controllers\Frontend\Api\Tutor\TutorConsultationRequestController as ConsultationRequestController;
 use App\Http\Controllers\ReviewsController;
 
 Route::post('/parent/register',[ParentController::class,'register']);
@@ -33,6 +34,8 @@ Route::any('/reset-password-by-email', [ParentController::class, 'verifyResetLin
 
 Route::group( ['middleware' => ['auth:p-api','scopes:parents'] ],function(){
     // authenticated staff routes here
+    Route::get('/parent/consultation-requests', [ConsultationRequestController::class, 'parentIndex']);
+    Route::post('/parent/send-consultation-requests', [ConsultationRequestController::class, 'parentStore']);
     Route::post('/parent/update-name',[ParentController::class, 'updateName']);
     Route::post('/parent/update-phone',[ParentController::class, 'updatePhone']);
     Route::post('/parent/verify-otp-for-update-phone',[ParentController::class,'verifyPhoneOtpAndUpdate']);

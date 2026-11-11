@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin/consultation-requests')->name('admin.consultation-requests.')->group(function () {
     Route::get('/', [TutorConsultationRequestController::class, 'index'])->name('index');
+    Route::get('/parents', [TutorConsultationRequestController::class, 'parentIndex'])
+        ->name('parents.index');
     Route::get('/sms/editor', [TutorConsultationRequestController::class, 'smsEditor'])->name('sms.editor');
     Route::post('/sms/editor', [TutorConsultationRequestController::class, 'selectSmsRecipients'])->name('sms.editor.select');
     Route::post('/sms/send', [TutorConsultationRequestController::class, 'sendBulkSms'])->name('sms.send');

@@ -15,6 +15,7 @@ class TutorConsultationRequest extends Model
 
     protected $fillable = [
         'tutor_id',
+        'parent_id',
         'topic',
         'message',
         'status',
@@ -30,6 +31,11 @@ class TutorConsultationRequest extends Model
     public function tutor()
     {
         return $this->belongsTo(Tutor::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Parents::class, 'parent_id');
     }
 
     public function notes()

@@ -427,8 +427,6 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
                 <p>Parents</p>
             </a>
         </li>
-
-
     </ul>
 </li>
 
@@ -466,7 +464,31 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
                 <p>Featured Tutors</p>
             </a>
         </li>
+    </ul>
+</li>
 
+{{-- Consultations --}}
+<li class="nav-item {{ Request::is('admin/consultation-requests*') ? 'menu-is-opening menu-open active' : '' }}">
+    <a href="#" class="nav-link" style="background-color: #343A40">
+        <i class="fas fa-comments"></i>
+        <p>
+            Consultation
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{{ route('admin.consultation-requests.parents.index') }}" class="nav-link {{ Request::is('admin/consultation-requests/parents*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Parent Consultation</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.consultation-requests.index') }}" class="nav-link {{ Request::is('admin/consultation-requests') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tutor Consultation</p>
+            </a>
+        </li>
     </ul>
 </li>
 {{-- Request Management --}}
@@ -800,16 +822,6 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
     </a>
 
 </li>
-<li class="nav-item">
-    <a href="{{ route('admin.consultation-requests.index') }}" class="nav-link" style="background-color: #343A40">
-        <i class="fas fa-comments"></i>
-        <p>
-            Teacher Consultations
-        </p>
-    </a>
-</li>
-
-
 {{-- Marketting --}}
 
 <li class="nav-item">

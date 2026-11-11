@@ -11,6 +11,7 @@ class Invoice extends Model
     use HasFactory;
     protected $fillable = [
         'tutor_id',
+        'parent_id',
         'invoice_number',
         'amount',
         'currency',
@@ -45,6 +46,11 @@ class Invoice extends Model
     public function tutor()
     {
         return $this->belongsTo(Tutor::class, 'tutor_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Parents::class, 'parent_id');
     }
     public function owner()
     {

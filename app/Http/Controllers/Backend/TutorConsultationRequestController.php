@@ -17,6 +17,16 @@ class TutorConsultationRequestController extends Controller
 {
     public function index(Request $request)
     {
+        return $this->consultationIndex($request, 'tutor');
+    }
+
+    public function parentIndex(Request $request)
+    {
+        return $this->consultationIndex($request, 'parent');
+    }
+
+    private function consultationIndex(Request $request, $consultationType)
+    {
         $validated = $request->validate([
             'status' => ['nullable', Rule::in(TutorConsultationRequest::STATUSES)],
             'scheduled_date' => ['nullable', 'date_format:Y-m-d'],
@@ -25,9 +35,11 @@ class TutorConsultationRequestController extends Controller
 
         $consultationRequests = TutorConsultationRequest::with([
             'tutor:id,name,email,phone,is_sms',
+            'parent:id,name,email,phone,unique_id',
             'notes.user:id,name',
             'invoice',
         ])
+            ->whereNotNull($consultationType === 'parent' ? 'parent_id' : 'tutor_id')
             ->when(!empty($validated['status']), function ($query) use ($validated) {
                 $query->where('status', $validated['status']);
             })
@@ -35,9 +47,14 @@ class TutorConsultationRequestController extends Controller
                 $query->whereDate('scheduled_at', $validated['scheduled_date']);
             })
             ->when(!empty($validated['tutor_phone']), function ($query) use ($validated) {
-                $query->whereHas('tutor', function ($tutorQuery) use ($validated) {
-                    $tutorQuery->where('phone', 'like', '%' . $validated['tutor_phone'] . '%');
+                $query->whereHas($consultationType, function ($ownerQuery) use ($validated) {
+                    $ownerQuery->where('phone', 'like', '%' . $validated['tutor_phone'] . '%');
                 });
+            })
+            ->when($consultationType === 'parent', function ($query) {
+                $query->whereNull('tutor_id');
+            }, function ($query) {
+                $query->whereNull('parent_id');
             })
             ->latest()
             ->paginate(20)
@@ -45,6 +62,7 @@ class TutorConsultationRequestController extends Controller
 
         return view('backend.consultation_requests.index', [
             'consultationRequests' => $consultationRequests,
+            'consultationType' => $consultationType,
             'statuses' => TutorConsultationRequest::STATUSES,
             'selectedStatus' => $validated['status'] ?? '',
             'selectedScheduledDate' => $validated['scheduled_date'] ?? '',
@@ -71,24 +89,27 @@ class TutorConsultationRequestController extends Controller
 
         $packageAmount = PackageAmount::findOrFail($validated['package_amount_id']);
         $tutor = $consultationRequest->tutor;
-        abort_unless($tutor, 422, 'The tutor account for this request is unavailable.');
+        $parent = $consultationRequest->parent;
+        $owner = $tutor ?: $parent;
+        abort_unless($owner, 422, 'The account for this request is unavailable.');
 
-        $invoice = DB::transaction(function () use ($request, $consultationRequest, $packageAmount, $tutor) {
+        $invoice = DB::transaction(function () use ($request, $consultationRequest, $packageAmount, $tutor, $parent, $owner) {
             do {
                 $invoiceNumber = 'TC-' . Str::upper(Str::random(6));
             } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
             $invoice = Invoice::create([
-                'tutor_id' => $tutor->id,
+                'tutor_id' => $tutor ? $tutor->id : null,
+                'parent_id' => $parent ? $parent->id : null,
                 'invoice_number' => $invoiceNumber,
                 'amount' => $packageAmount->amount,
                 'currency' => $packageAmount->currency ?: 'BDT',
                 'status' => 'pending',
                 'issued_at' => now(),
-                'tutor_email' => $tutor->email,
-                'tutor_name' => $tutor->name,
-                'tutor_phone' => $tutor->phone,
-                'unique_id' => $tutor->unique_id,
+                'tutor_email' => $owner->email,
+                'tutor_name' => $owner->name,
+                'tutor_phone' => $owner->phone,
+                'unique_id' => $owner->unique_id,
                 'payment_date' => now()->addDays(7)->toDateString(),
                 'issued_by' => $request->user()->id,
                 'owned_by' => $request->user()->id,
@@ -353,7 +374,7 @@ class TutorConsultationRequestController extends Controller
     public function updateDetails(Request $request, TutorConsultationRequest $consultationRequest)
     {
         $validated = $request->validate([
-            'message' => ['required', 'string', 'max:5000'],
+            'message' => ['nullable', 'string', 'max:5000'],
             'status' => ['required', Rule::in(TutorConsultationRequest::STATUSES)],
             'scheduled_at' => [
                 Rule::requiredIf($request->input('status') === 'scheduled'),
@@ -363,7 +384,7 @@ class TutorConsultationRequestController extends Controller
         ]);
 
         $consultationRequest->update([
-            'message' => trim($validated['message']),
+            'message' => trim($validated['message'] ?? ''),
             'status' => $validated['status'],
             'scheduled_at' => $validated['status'] === 'scheduled'
                 ? $validated['scheduled_at']
