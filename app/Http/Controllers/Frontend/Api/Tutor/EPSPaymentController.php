@@ -12,6 +12,7 @@ use App\Models\PremiumMembership;
 use App\Models\SmsBalance;
 use App\Models\SmsRecharge;
 use App\Models\Tutor;
+use App\Models\TutorConsultationRequest;
 use App\Models\VerificationRequest;
 use App\Services\EPSPaymentService;
 use Illuminate\Http\Request;
@@ -623,6 +624,9 @@ class EPSPaymentController extends Controller
                         'payment_method' => ($verification['FinancialEntity'] ?? null),
                     ]);
                 }
+
+                TutorConsultationRequest::where('invoice_id', $invoice->id)
+                    ->update(['payment_status' => 'paid']);
 
                 return $this->redirectToFrontend(
                     'success',
