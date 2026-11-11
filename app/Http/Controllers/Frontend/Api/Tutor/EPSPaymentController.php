@@ -13,6 +13,7 @@ use App\Models\SmsBalance;
 use App\Models\SmsRecharge;
 use App\Models\Tutor;
 use App\Models\TutorConsultationRequest;
+use App\Models\AdvanceSearchSms;
 use App\Models\VerificationRequest;
 use App\Services\EPSPaymentService;
 use Illuminate\Http\Request;
@@ -614,6 +615,34 @@ class EPSPaymentController extends Controller
                         'payment_method' =>($verification['FinancialEntity'] ?? null),
                     ]);
 
+                    $recipientPhone = $this->normalizeSmsPhone($invoice->tutor_phone);
+                    if ($recipientPhone) {
+                        $transactionId = $verification['EPSTransactionId']
+                            ?? $payment->eps_transaction_id
+                            ?? $payment->transaction_id;
+                        $sms = new AdvanceSearchSms();
+                        $sms->send_by = null;
+                        $sms->body = sprintf(
+                            'Payment of Tk %s to TuitionHome has been successful. Thanks for the payment. TrxID %s at %s',
+                            number_format((float) $invoice->amount, 2, '.', ''),
+                            $transactionId,
+                            now()->format('d/m/Y h:i A')
+                        );
+                        $sms->phone = $recipientPhone;
+                        $sms->is_send = 0;
+                        $sms->save();
+
+                        if ($invoice->tutor_id) {
+                            $balance = SmsBalance::firstOrNew(['tutor_id' => $invoice->tutor_id]);
+                            $balance->unpaid_sms = (int) $balance->unpaid_sms + 1;
+                            $balance->save();
+                        }
+                    } else {
+                        Log::warning('EPS payment confirmation SMS was not queued: invalid recipient phone.', [
+                            'invoice_id' => $invoice->id,
+                        ]);
+                    }
+
                     DB::commit();
                 } elseif ($invoice->status !== 'paid') {
                     $invoice->update([
@@ -679,6 +708,25 @@ class EPSPaymentController extends Controller
         }
     }
 
+
+    private function normalizeSmsPhone($phone)
+    {
+        $phone = preg_replace('/\D+/', '', (string) $phone);
+
+        if (preg_match('/^8801[3-9]\d{8}$/', $phone)) {
+            return substr($phone, 2);
+        }
+
+        if (preg_match('/^01[3-9]\d{8}$/', $phone)) {
+            return $phone;
+        }
+
+        if (preg_match('/^1[3-9]\d{8}$/', $phone)) {
+            return '0' . $phone;
+        }
+
+        return null;
+    }
 
     /**
      * Redirect customer to React
