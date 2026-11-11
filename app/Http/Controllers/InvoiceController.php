@@ -9,6 +9,7 @@ use App\Models\JobApplication;
 use App\Models\JobOffer;
 use App\Models\PackageAmount;
 use App\Models\Tutor;
+use App\Models\TutorConsultationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -374,6 +375,9 @@ class InvoiceController extends Controller
             $invoice->status = $newStatus;
             $invoice->paid_at = $newStatus === 'paid' ? ($invoice->paid_at ?? now()) : null;
             $invoice->save();
+
+            TutorConsultationRequest::where('invoice_id', $invoice->id)
+                ->update(['payment_status' => $newStatus === 'paid' ? 'paid' : 'unpaid']);
         });
 
         $redirect = ($validated['listing'] ?? 'tutor') === 'global'

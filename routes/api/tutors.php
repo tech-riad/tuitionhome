@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\Api\CategoryCourseSubjectController;
 use App\Http\Controllers\Frontend\Api\Tutor\EPSPaymentController;
 use App\Http\Controllers\Frontend\Api\Tutor\TutorLoginRegisterController;
 use App\Http\Controllers\Frontend\Api\Tutor\TutorController;
+use App\Http\Controllers\Frontend\Api\Tutor\TutorConsultationRequestController;
 use App\Http\Controllers\Frontend\Tutor\TutorController as TutorTutorController;
 
 
@@ -44,6 +45,9 @@ Route::get('/tutor/get-tutoring-platform-status/{unique_id}',[TutorController::c
 
 //Route::prefix('api-tutor.')->group(function (){
     Route::group( ['middleware' => ['auth:t-api','scopes:tutors'] ],function(){
+
+        Route::get('/tutor/consultation-requests', [TutorConsultationRequestController::class, 'index']);
+        Route::post('/tutor/send-consultation-requests', [TutorConsultationRequestController::class, 'store']);
 
         Route::get('/tutor/tutor-package-status',[TutorController::class,'profileStatus']);
 

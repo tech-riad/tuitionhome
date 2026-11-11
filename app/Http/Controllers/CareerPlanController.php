@@ -208,6 +208,8 @@ class CareerPlanController extends Controller
         ]);
     }
 
+
+
     public function selectApplicationSmsRecipients(Request $request, CareerPlan $careerPlan)
     {
         $validated = $this->validateSelectedApplicationIds($request);
@@ -341,7 +343,7 @@ class CareerPlanController extends Controller
 
     public function create()
     {
-        
+
         $districtDivisions = [];
         foreach (self::DIVISION_DISTRICTS as $division => $districts) {
             foreach ($districts as $district) {

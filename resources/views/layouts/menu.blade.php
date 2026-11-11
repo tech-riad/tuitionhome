@@ -800,6 +800,14 @@ Request::is('departments*')||Request::is('subjects*')||Request::is('institutes*'
     </a>
 
 </li>
+<li class="nav-item">
+    <a href="{{ route('admin.consultation-requests.index') }}" class="nav-link" style="background-color: #343A40">
+        <i class="fas fa-comments"></i>
+        <p>
+            Teacher Consultations
+        </p>
+    </a>
+</li>
 
 
 {{-- Marketting --}}

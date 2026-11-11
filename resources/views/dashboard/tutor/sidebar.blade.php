@@ -66,6 +66,18 @@
                     </p>
                 </div>
             </div>
+            <div class="t-sidebar-item">
+                <div class="t-logo-container-gray">
+                    <img
+                        style="margin-left: 1px"
+                        src="{{ asset('/dashboard/tutor') }}/assets/user-profile-icon.svg"
+                        alt="consultation"
+                    />
+                    <p class="t-sidebar-item-text">
+                        <a class="t-link" href="{{ route('tutor.consultation-requests.index') }}">Teacher Consultation</a>
+                    </p>
+                </div>
+            </div>
             <!-- collaps -->
             <div>
                 <div class="t-sidebar-item">

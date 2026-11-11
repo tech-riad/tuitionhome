@@ -25,6 +25,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CourseSubjectController;
 use App\Http\Controllers\Frontend\Api\Tutor\TutorController;
+use App\Http\Controllers\Frontend\Api\Tutor\TutorConsultationRequestController;
 use App\Http\Controllers\Frontend\Tutor\TutorDashboardController;
 use App\Http\Controllers\Frontend\Tutor\TutorLoginController;
 use App\Http\Controllers\Frontend\Tutor\TutorRegisterController;
@@ -221,6 +222,8 @@ Route::prefix('tutor')->name('tutor.')->group(function (){
 
     Route::middleware('tutor')->group(function (){
         Route::get('/dashboard',[TutorDashboardController::class,'index'])->name('dashboard');
+        Route::get('/consultation-requests', [TutorConsultationRequestController::class, 'webIndex'])->name('consultation-requests.index');
+        Route::post('/consultation-requests', [TutorConsultationRequestController::class, 'webStore'])->name('consultation-requests.store');
         Route::get('/personal/info',[TutorController::class,'index'])->name('personal.info');
         Route::post('/personal/info/store',[TutorController::class,'store'])->name('personal.info.store');
         Route::get('/tutor/update',[TutorDashboardController::class,'profileUpdateView'])->name('profile.update');
@@ -773,6 +776,7 @@ include("takenoffer.php");
 include("cprequesthandle.php");
 include("corporatepartner.php");
 include("career.php");
+include("consultation.php");
 
 require __DIR__.'/notice.php';
 

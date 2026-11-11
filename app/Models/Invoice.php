@@ -32,6 +32,9 @@ class Invoice extends Model
         'merchanttrx_id',
         'payment_method',
         'invoice_type',
+        'package_name',
+        'package_duration',
+        'package_id',
     ];
     protected $casts = [
     'issued_at' => 'datetime',
