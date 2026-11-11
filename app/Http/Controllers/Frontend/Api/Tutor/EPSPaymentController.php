@@ -73,14 +73,11 @@ class EPSPaymentController extends Controller
                 ], 404);
             }
             if ($invoice->job_id !== null) {
-                $invoices = Invoice::where('job_id', $invoice->job_id)
+                $unpaidPreviousInvoice = Invoice::where('job_id', $invoice->job_id)
+                    ->where('id', '<', $invoice->id)
+                    ->whereRaw('LOWER(status) NOT IN (?, ?, ?)', ['paid', 'cancel', 'cancelled'])
                     ->orderBy('id', 'asc')
-                    ->get();
-
-                $previousInvoices = $invoices->where('id', '<', $invoice->id);
-                $unpaidPreviousInvoice = $previousInvoices->first(function ($item) {
-                    return $item->status != 'paid';
-                });
+                    ->first();
 
                 if ($unpaidPreviousInvoice) {
                     return response()->json([

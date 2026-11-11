@@ -209,13 +209,14 @@ class InvoiceController extends Controller
             ->orderBy('issued_at', 'desc')
             ->paginate(10)
             ->withQueryString();
-        $invoiceTypes = PackageAmount::query()
+        $packageAmounts = PackageAmount::query()
             ->whereNotNull('type')
-            ->distinct()
+            ->where('type', '!=', 'consultation')
             ->orderBy('type')
-            ->pluck('type');
+            ->orderBy('package_name')
+            ->get();
 
-        return view('backend.tutor.tutor_invoice_list', compact('invoices', 'tutor', 'counts', 'status', 'invoiceTypes'));
+        return view('backend.tutor.tutor_invoice_list', compact('invoices', 'tutor', 'counts', 'status', 'packageAmounts'));
     }
 
     public function invoiceNotes(Invoice $invoice)
@@ -263,30 +264,22 @@ class InvoiceController extends Controller
 
     public function storeForTutor(Request $request, $tutorId)
     {
-        $invoiceTypes = PackageAmount::query()
-            ->whereNotNull('type')
-            ->distinct()
-            ->pluck('type')
-            ->all();
-        $allowedTypes = array_merge($invoiceTypes, ['random']);
-
         $validated = $request->validate([
-            'amount' => ['required', 'numeric', 'min:0.01', 'max:9999999999.99'],
+            'package_amount_id' => ['required', 'integer', Rule::exists('package_amounts', 'id')->where(function ($query) {
+                $query->whereNotNull('type')->where('type', '!=', 'consultation');
+            })],
             'payment_date' => ['required', 'date'],
-            'invoice_type' => ['required', Rule::in($allowedTypes)],
         ]);
 
         $tutor = Tutor::findOrFail($tutorId);
-        $type = $validated['invoice_type'] === 'random'
-            ? 'Random'
-            : $validated['invoice_type'];
+        $packageAmount = PackageAmount::query()->findOrFail($validated['package_amount_id']);
+        $type = $packageAmount->type;
 
         $prefixes = [
             'premium' => 'PR',
             'boost' => 'BS',
             'sms' => 'SMS',
             'profile_verify' => 'VR',
-            'random' => 'RAN',
         ];
         $prefix = $prefixes[strtolower($type)] ?? 'INV';
 
@@ -297,8 +290,8 @@ class InvoiceController extends Controller
         Invoice::create([
             'tutor_id' => $tutor->id,
             'invoice_number' => $invoiceNumber,
-            'amount' => $validated['amount'],
-            'currency' => 'BDT',
+            'amount' => $packageAmount->amount,
+            'currency' => $packageAmount->currency ?: 'BDT',
             'status' => 'pending',
             'issued_at' => now(),
             'tutor_email' => $tutor->email,
@@ -309,6 +302,9 @@ class InvoiceController extends Controller
             'issued_by' => Auth::id(),
             'owned_by' => Auth::id(),
             'invoice_type' => $type,
+            'package_name' => $packageAmount->package_name,
+            'package_duration' => $packageAmount->duration,
+            'package_id' => $packageAmount->id,
         ]);
 
         return redirect()

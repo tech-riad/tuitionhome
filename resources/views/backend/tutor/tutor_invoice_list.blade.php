@@ -125,22 +125,20 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="tutor-invoice-type" class="form-label">Invoice Type <span class="text-danger">*</span></label>
-                        <select id="tutor-invoice-type" name="invoice_type" class="form-select" required>
-                            <option value="">Select type</option>
-                            @foreach ($invoiceTypes as $invoiceType)
-                                <option value="{{ $invoiceType }}" @if (old('invoice_type') === $invoiceType) selected @endif>
-                                    {{ ucfirst(str_replace('_', ' ', $invoiceType)) }}
+                        <label for="tutor-invoice-package" class="form-label">Package Amount <span class="text-danger">*</span></label>
+                        <select id="tutor-invoice-package" name="package_amount_id" class="form-select" required>
+                            <option value="">Select a package amount</option>
+                            @foreach ($packageAmounts as $packageAmount)
+                                <option value="{{ $packageAmount->id }}" @if ((string) old('package_amount_id') === (string) $packageAmount->id) selected @endif>
+                                    {{ ucfirst(str_replace('_', ' ', $packageAmount->type)) }} ·
+                                    {{ ucfirst(str_replace('_', ' ', $packageAmount->package_name)) }} ·
+                                    {{ $packageAmount->currency }} {{ number_format((float) $packageAmount->amount, 2) }}
+                                    @if($packageAmount->duration) · {{ $packageAmount->duration }} @endif
                                 </option>
                             @endforeach
-                            <option value="random" @if (old('invoice_type') === 'random') selected @endif>Random</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="tutor-invoice-amount" class="form-label">Amount (BDT) <span class="text-danger">*</span></label>
-                        <input id="tutor-invoice-amount" type="number" name="amount" class="form-control"
-                            value="{{ old('amount') }}" min="0.01" step="0.01" required>
-                    </div>
+                    <p class="text-muted">Invoice amount and type will be taken from the selected package amount.</p>
                     <div class="mb-3">
                         <label for="tutor-invoice-payment-date" class="form-label">Payment Date <span class="text-danger">*</span></label>
                         <input id="tutor-invoice-payment-date" type="date" name="payment_date" class="form-control"
