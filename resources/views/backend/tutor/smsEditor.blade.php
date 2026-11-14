@@ -31,13 +31,13 @@
                     <input type="hidden" name="tutor_id" value="{{ isset($tutor_id) ? $tutor_id : '' }}">
                     <div class="form-group">
                         <label for="SMS_body">SMS Body</label>
-                        <textarea id="SMS_body" name="body" maxlength="300" cols="30" rows="6" class="form-control" required=""></textarea>
+                        <textarea id="SMS_body" name="body" maxlength="150" cols="30" rows="6" class="form-control" required=""></textarea>
                     </div>
                     <div id="char-left-message" class="text-danger"></div>
 
                     <div class="">
-                        <div id="char">0/300</div>
-                        <div>Remaining:<span id="rem">300</span></div>
+                        <div id="char">0/150</div>
+                        <div>Remaining:<span id="rem">150</span></div>
                         <div>Message:<span id="msg">0</span></div>
                     </div>
                     <div class="form-group">
@@ -66,7 +66,7 @@
 
             smsBody.addEventListener("input", function () {
                 var currentLength = smsBody.value.length;
-                var maxCharacters = 300;
+                var maxCharacters = 150;
                 var remaining = maxCharacters - currentLength;
                 var messages = Math.ceil(currentLength / 150);
 
