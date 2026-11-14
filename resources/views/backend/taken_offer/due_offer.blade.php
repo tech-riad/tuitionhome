@@ -257,7 +257,7 @@
                                     </button>
                                     </li> --}}
 
-                                    {{-- <li>
+                                    <li>
                                         <button type="button" class="dropdown-item"
                                             id="{{ $due_application->id }}"
                                             onclick="stageJobId(this.id, 2,4,{{$due_application->due_amount}})"
@@ -265,7 +265,7 @@
                                             data-bs-target="#dueTabPaymentModal">
                                             Payment
                                         </button>
-                                    </li> --}}
+                                    </li>
                                     {{-- <li>
                                             <button type="button" class="dropdown-item"
                                             id="{{ $due_application->id }}"
