@@ -106,7 +106,7 @@
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
                         <i class="bi bi-sliders2 me-1"></i>Filter
                     </button>
-                    <button class="btn btn-outline-ndark">Send Bulk SMS</button>
+                    <button class="btn btn-outline-ndark" id="sendSms">Send Bulk SMS</button>
                     <a href="{{route('admin.inactive.parent')}}" class="btn btn-warning grayed">Inactive Profile</a>
                 </div>
                 <div class="d-flex flex-wrap flex-md-nowrap gap-3">
@@ -139,7 +139,7 @@
                                 <tr>
                                     <th scope="col" class="text-nowrap">
                                         <input class="form-check-input ms-3 ms-xxl-4" type="checkbox" value=""
-                                            id="flexCheckDefault" style="margin-right: 12px" />#SL
+                                            id="select_all" style="margin-right: 12px" />#SL
                                     </th>
                                     <th scope="col" class="text-nowrap">Date</th>
                                     <th scope="col" class="text-nowrap">Parents ID</th>

@@ -125,8 +125,9 @@
 
 
     $(function (e) {
-        $("#select_all").click(function () {
-            $('.checkboxx').prop('checked', $(this).prop('checked'));
+        $("#select_all, #flexCheckDefault").on("click", function () {
+            const isChecked = $(this).prop('checked');
+            $('.checkboxx').prop('checked', isChecked);
         });
 
         $("#sendSms").click(function (e) {
