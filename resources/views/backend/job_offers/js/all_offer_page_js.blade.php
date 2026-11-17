@@ -787,4 +787,18 @@ $('#country_id').change(function (){
             }
         });
     });
+
+    function copyToClipboard(text, button) {
+    navigator.clipboard.writeText(text).then(function () {
+        button.innerHTML = '<i class="fas fa-check text-success"></i>';
+        button.title = 'Copied!';
+
+        setTimeout(function () {
+            button.innerHTML = '<i class="fas fa-copy"></i>';
+            button.title = 'Copy Invoice Link';
+        }, 1500);
+    }).catch(function () {
+        alert('Copy failed!');
+    });
+    }
 </script>

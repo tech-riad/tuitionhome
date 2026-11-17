@@ -453,6 +453,8 @@
                             </th>
                             <th scope="col" class="text-nowrap" width="5%">Parents ID</th>
                             <th scope="col" class="text-nowrap" width="5%">Job ID</th>
+                            <th scope="col" class="text-nowrap" width="5%">Link</th>
+
                             <th scope="col" class="text-nowrap" width="10%">Course</th>
                             <th scope="col" class="text-nowrap" width="15%">Location</th>
                             <th scope="col" class="text-nowrap" width="10%">Salary</th>
@@ -497,6 +499,12 @@
                                 <a target="_blank" href="{{ route('admin.job-details', ['job' => $job->id]) }}"
                                     class="p-1 rounded text-info text-decoration-none"
                                     style="background-color: #e6eef7">{{ $job->id }}</a>
+                            </td>
+                            <td class="text-nowrap">
+                                <button class="btn btn-sm btn-outline-secondary" title="Copy Job Link"
+                                    onclick="copyToClipboard('https://tuitionhome.xyz/job-board/job-details/{{ $job->id }}', this)">
+                                    <i class="fas fa-copy"></i>
+                                </button>
                             </td>
                             <td class="">{{ $job->course->name ?? 'N/A' }}
                                 @if ($job->additionalChild)
@@ -626,7 +634,7 @@
                                     data-bs-target="#JobNoteModal">
                                     Job Note
                                 </button>
-                                
+
                                 <!--Note model ends here-->
                             </td>
                             <td>
@@ -665,7 +673,7 @@
                                     </div>
                                 </div>
                                 <!--Action model ends here-->
-                                
+
 
                                 <button class="btn btn-primary py-1" data-bs-toggle="modal"
                                     data-bs-target="#allOfferAction_{{$job->id}}">

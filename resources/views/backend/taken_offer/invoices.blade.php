@@ -161,7 +161,8 @@
                         target="_blank">
                             {{ $invoice->invoice_number ?? 'n/a' }}
                         </a>
-                    </td>                    <td> {{$invoice->render->name ?? 'n/a'}}</td>
+                    </td>
+                    <td> {{$invoice->render->name ?? 'n/a'}}</td>
                     <td> {{$invoice->owner->name ?? 'n/a'}}</td>
                     <td> {{$invoice->job_number ?? 'n/a'}}</td>
                     <td> {{$invoice->invoice_type ?? 'n/a'}}</td>
@@ -390,7 +391,7 @@
     }).catch(function () {
         alert('Copy failed!');
     });
-}
+    }
 
     (function () {
         var modal = document.getElementById('invoiceNotesModal');
