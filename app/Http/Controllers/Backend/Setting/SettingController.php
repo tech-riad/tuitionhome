@@ -312,8 +312,16 @@ class SettingController extends Controller
 
     public function socialMedia()
     {
-
         $socialmedia = SocialMedia::all();
+        $userRoleId = (string) Auth::user()->role_id;
+
+        if (!in_array((int) $userRoleId, [1, 6], true)) {
+            $socialmedia = $socialmedia->filter(function ($item) use ($userRoleId) {
+                $assignedRoles = array_map('trim', explode(',', (string) $item->roles));
+
+                return in_array($userRoleId, $assignedRoles, true);
+            })->values();
+        }
 
         $roles = Role::all();
         return view('backend.setting.social_media',compact('socialmedia','roles'));
