@@ -155,8 +155,13 @@
                         @endif
                     </td>
                     <td> {{$invoice->payment_date ?? $invoice->new_payment_date ?? 'n/a'}}</td>
-                    <td> {{$invoice->invoice_number ?? 'n/a'}}</td>
-                    <td> {{$invoice->render->name ?? 'n/a'}}</td>
+
+                    <td>
+                        <a href="https://tuitionhome.xyz/invoices/{{ $invoice->tutor_id }}/{{ $invoice->id }}"
+                        target="_blank">
+                            {{ $invoice->invoice_number ?? 'n/a' }}
+                        </a>
+                    </td>                    <td> {{$invoice->render->name ?? 'n/a'}}</td>
                     <td> {{$invoice->owner->name ?? 'n/a'}}</td>
                     <td> {{$invoice->job_number ?? 'n/a'}}</td>
                     <td> {{$invoice->invoice_type ?? 'n/a'}}</td>
