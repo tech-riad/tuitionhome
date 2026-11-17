@@ -184,12 +184,14 @@ class NoticeController extends Controller
 
         $rawSql = $query->toSql();
         $bindings = $query->getBindings();
+        $count = (clone $query)->count();
 
 
 
         return response()->json([
             'status' => 'success',
             'raw_sql' => vsprintf(str_replace('?', '"%s"', $rawSql), $bindings),
+            'count' => $count,
             'userType' => request('userType')
         ]);
 
@@ -243,12 +245,12 @@ class NoticeController extends Controller
             $parentsQuery->getBindings()
         );
 
-        $parents = $parentsQuery->get();
-        $count = $parents->count();
+        $count = (clone $parentsQuery)->count();
 
         return response()->json([
             'status' => 'success',
             'raw_sql' => $rawSql,
+            'count' => $count,
             'userType' => $request->input('userType'),
         ]);
     }

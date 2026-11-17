@@ -50,7 +50,7 @@
                         Image</a>
                 </div>
                 <div class="bg-white shadow-lg rounded-3 px-3 py-2 mx-3">
-                    <p class="mb-0" style="font-weight: 500">Audience : 000</p>
+                    <p class="mb-0" id="audience" style="font-weight: 500">Audience : 000</p>
                 </div>
             </div>
             <!-- mini nav ends here -->

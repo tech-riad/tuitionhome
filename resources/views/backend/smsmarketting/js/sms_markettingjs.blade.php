@@ -108,6 +108,7 @@
                     userType: selectedUser,
                     country_id: country,
                     city_id: city,
+                    location_id: location,
                     verified: verified,
                     _token: "{{ csrf_token() }}"
                 },
@@ -182,6 +183,8 @@
         // Get City Tutor
         $('#country_id').change(function () {
             let c_id = $(this).val();
+            updateDropdown('#city_id', []);
+            updateDropdown('#location_id', []);
             $.ajax({
                 url: '{{route("get_city")}}',
                 type: 'post',
@@ -198,6 +201,7 @@
         // Get Location Tutor
         $('#city_id').change(function () {
             let city_id = $(this).val();
+            updateDropdown('#location_id', []);
             $.ajax({
                 url: '{{route("get_location")}}',
                 type: 'post',
@@ -213,6 +217,8 @@
         // Get City Parent
         $('#country_id_2').change(function () {
             let c_id = $(this).val();
+            updateDropdown('#city_id_2', []);
+            updateDropdown('#location_id_2', []);
             $.ajax({
                 url: '{{route("get_city")}}',
                 type: 'post',
@@ -229,6 +235,7 @@
         // Get Location Parent
         $('#city_id_2').change(function () {
             let city_id = $(this).val();
+            updateDropdown('#location_id_2', []);
             $.ajax({
                 url: '{{route("get_location")}}',
                 type: 'post',
