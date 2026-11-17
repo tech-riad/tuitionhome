@@ -98,9 +98,13 @@ class InvoiceController extends Controller
         ]);
 
         $invoice = Invoice::findOrFail($id);
-        $application = $invoice->job_id
-            ? JobApplication::findOrFail($invoice->job_id)
-            : null;
+        if (!$invoice->job_id) {
+            return back()
+                ->withErrors(['invoice' => 'Only job-related invoices can be duplicated.'])
+                ->withInput();
+        }
+
+        $application = JobApplication::findOrFail($invoice->job_id);
 
         if ($application && (float) $validated['new_amount'] > (float) $invoice->amount) {
             return back()

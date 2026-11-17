@@ -193,12 +193,14 @@
                     </td>
                     {{-- {{ route('admin.invoice.show', $invoice->id) }} --}}
                     <td>
-                        <button type="button"
-                                class="btn btn-sm btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#duplicateInvoiceModal{{ $invoice->id }}">
-                            Duplicate
-                        </button>
+                        @if ($invoice->job_id)
+                            <button type="button"
+                                    class="btn btn-sm btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#duplicateInvoiceModal{{ $invoice->id }}">
+                                Duplicate
+                            </button>
+                        @endif
 
                     </td>
                     <td>
@@ -253,75 +255,76 @@
                     </td>
 
                 </tr>
-                <div class="modal fade" id="duplicateInvoiceModal{{ $invoice->id }}" tabindex="-1"
-                    aria-labelledby="duplicateInvoiceModalLabel{{ $invoice->id }}" aria-hidden="true">
+                @if ($invoice->job_id)
+                    <div class="modal fade" id="duplicateInvoiceModal{{ $invoice->id }}" tabindex="-1"
+                        aria-labelledby="duplicateInvoiceModalLabel{{ $invoice->id }}" aria-hidden="true">
 
-                    <div class="modal-dialog">
-                        <div class="modal-content">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
 
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="duplicateInvoiceModalLabel{{ $invoice->id }}">
-                                    Duplicate Invoice
-                                </h5>
-
-                                <button type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-
-                            <form action="{{ route('admin.taken_offer.invoice.duplicate', $invoice->id) }}"
-                                method="POST">
-
-                                @csrf
-
-                                <div class="modal-body">
-
-                                    <div class="mb-3">
-                                        <label class="form-label">
-                                            Amount <span class="text-danger">*</span>
-                                        </label>
-
-                                        <input type="number"
-                                            name="new_amount"
-                                            class="form-control"
-                                            value=""
-                                            min="0"
-                                            step="0.01"
-                                            required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">
-                                           Due Payment Date <span class="text-danger">*</span>
-                                        </label>
-
-                                        <input type="date"
-                                            name="new_payment_date"
-                                            class="form-control"
-                                            value="{{ $invoice->payment_date ? \Carbon\Carbon::parse($invoice->payment_date)->format('Y-m-d') : now()->format('Y-m-d') }}"
-                                            required>
-                                    </div>
-
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button"
-                                            class="btn btn-secondary"
-                                            data-bs-dismiss="modal">
-                                        Cancel
-                                    </button>
-
-                                    <button type="submit" class="btn btn-primary">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="duplicateInvoiceModalLabel{{ $invoice->id }}">
                                         Duplicate Invoice
-                                    </button>
+                                    </h5>
+
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
 
-                            </form>
+                                <form action="{{ route('admin.taken_offer.invoice.duplicate', $invoice->id) }}"
+                                    method="POST">
 
+                                    @csrf
+
+                                    <div class="modal-body">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Amount <span class="text-danger">*</span>
+                                            </label>
+
+                                            <input type="number"
+                                                name="new_amount"
+                                                class="form-control"
+                                                value=""
+                                                min="0"
+                                                step="0.01"
+                                                required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Due Payment Date <span class="text-danger">*</span>
+                                            </label>
+
+                                            <input type="date"
+                                                name="new_payment_date"
+                                                class="form-control"
+                                                value="{{ $invoice->payment_date ? \Carbon\Carbon::parse($invoice->payment_date)->format('Y-m-d') : now()->format('Y-m-d') }}"
+                                                required>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button"
+                                                class="btn btn-secondary"
+                                                data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+
+                                        <button type="submit" class="btn btn-primary">
+                                            Duplicate Invoice
+                                        </button>
+                                    </div>
+
+                                </form>
+
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
                 @endforeach
 
             </tbody>
