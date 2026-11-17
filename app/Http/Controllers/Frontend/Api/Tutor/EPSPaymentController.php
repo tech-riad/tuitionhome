@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Counting;
+use App\Models\ConsultationRequestCheckout;
 use App\Models\Invoice;
 use App\Models\JobApplication;
 use App\Models\PackageAmount;
@@ -71,6 +72,12 @@ class EPSPaymentController extends Controller
                     'success' => false,
                     'message' => 'Invoice not found.',
                 ], 404);
+            }
+            if (in_array(strtolower($invoice->status), ['cancel', 'cancelled'], true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This invoice has been cancelled and cannot be paid.',
+                ], 422);
             }
             if ($invoice->job_id !== null) {
                 $unpaidPreviousInvoice = Invoice::where('job_id', $invoice->job_id)
@@ -654,6 +661,8 @@ class EPSPaymentController extends Controller
                 TutorConsultationRequest::where('invoice_id', $invoice->id)
                     ->update(['payment_status' => 'paid']);
 
+                $this->completeConsultationRequestCheckout($invoice);
+
                 return $this->redirectToFrontend(
                     'success',
                     $payment,
@@ -723,6 +732,34 @@ class EPSPaymentController extends Controller
         }
 
         return null;
+    }
+
+    private function completeConsultationRequestCheckout(Invoice $invoice)
+    {
+        DB::transaction(function () use ($invoice) {
+            $checkout = ConsultationRequestCheckout::where('invoice_id', $invoice->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$checkout) {
+                return;
+            }
+
+            if (!TutorConsultationRequest::where('invoice_id', $invoice->id)->exists()) {
+                TutorConsultationRequest::create([
+                    'tutor_id' => $checkout->tutor_id,
+                    'parent_id' => $checkout->parent_id,
+                    'message' => $checkout->message,
+                    'mode' => $checkout->mode,
+                    'preferred_date' => $checkout->preferred_date,
+                    'invoice_id' => $invoice->id,
+                    'payment_status' => 'paid',
+                    'status' => 'pending',
+                ]);
+            }
+
+            $checkout->delete();
+        });
     }
 
     /**
