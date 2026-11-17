@@ -195,6 +195,26 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
+                                        <label for="mode-{{ $consultationRequest->id }}">Mode</label>
+                                        <select class="form-control" id="mode-{{ $consultationRequest->id }}" name="mode">
+                                            <option value="">Not specified</option>
+                                            <option value="offline" {{ $consultationRequest->mode === 'offline' ? 'selected' : '' }}>Offline</option>
+                                            <option value="online" {{ $consultationRequest->mode === 'online' ? 'selected' : '' }}>Online</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="preferred-date-{{ $consultationRequest->id }}">Preferred date</label>
+                                        <input
+                                            class="form-control"
+                                            id="preferred-date-{{ $consultationRequest->id }}"
+                                            name="preferred_date"
+                                            type="date"
+                                            value="{{ $consultationRequest->preferred_date ? \Illuminate\Support\Carbon::parse($consultationRequest->preferred_date)->format('Y-m-d') : '' }}"
+                                        >
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
                                         <label for="status-{{ $consultationRequest->id }}">Status</label>
                                         <select class="form-control" id="status-{{ $consultationRequest->id }}" name="status">
                                             @foreach($statuses as $status)

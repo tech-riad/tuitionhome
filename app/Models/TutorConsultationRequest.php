@@ -18,6 +18,8 @@ class TutorConsultationRequest extends Model
         'parent_id',
         'topic',
         'message',
+        'mode',
+        'preferred_date',
         'status',
         'scheduled_at',
         'invoice_id',

@@ -151,6 +151,8 @@ class TutorConsultationRequestController extends Controller
     {
         return [
             'message' => 'nullable|string|max:5000',
+            'mode' => 'required|in:offline,online',
+            'preferred_date' => 'required|date_format:Y-m-d',
         ];
     }
 
@@ -161,6 +163,8 @@ class TutorConsultationRequestController extends Controller
             'tutor_id' => $consultationRequest->tutor_id,
             'parent_id' => $consultationRequest->parent_id,
             'message' => $consultationRequest->message,
+            'mode' => $consultationRequest->mode,
+            'preferred_date' => $consultationRequest->preferred_date,
             'status' => $consultationRequest->status,
             'scheduled_at' => $consultationRequest->scheduled_at,
             'payment_status' => $consultationRequest->payment_status,

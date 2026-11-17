@@ -375,6 +375,8 @@ class TutorConsultationRequestController extends Controller
     {
         $validated = $request->validate([
             'message' => ['nullable', 'string', 'max:5000'],
+            'mode' => ['nullable', Rule::in(['offline', 'online'])],
+            'preferred_date' => ['nullable', 'date_format:Y-m-d'],
             'status' => ['required', Rule::in(TutorConsultationRequest::STATUSES)],
             'scheduled_at' => [
                 Rule::requiredIf($request->input('status') === 'scheduled'),
@@ -385,6 +387,8 @@ class TutorConsultationRequestController extends Controller
 
         $consultationRequest->update([
             'message' => trim($validated['message'] ?? ''),
+            'mode' => $validated['mode'] ?? null,
+            'preferred_date' => $validated['preferred_date'] ?? null,
             'status' => $validated['status'],
             'scheduled_at' => $validated['status'] === 'scheduled'
                 ? $validated['scheduled_at']
@@ -398,6 +402,8 @@ class TutorConsultationRequestController extends Controller
                 'request' => [
                     'id' => $consultationRequest->id,
                     'message' => $consultationRequest->message,
+                    'mode' => $consultationRequest->mode,
+                    'preferred_date' => $consultationRequest->preferred_date,
                     'status' => $consultationRequest->status,
                     'scheduled_at' => optional($consultationRequest->scheduled_at)->format('M d, Y g:i A'),
                 ],

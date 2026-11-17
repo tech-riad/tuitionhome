@@ -59,6 +59,26 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="consultation-mode">Mode</label>
+                                <select id="consultation-mode" name="mode" class="form-control @error('mode') is-invalid @enderror" required>
+                                    <option value="">Select mode</option>
+                                    <option value="offline" {{ old('mode') === 'offline' ? 'selected' : '' }}>Offline</option>
+                                    <option value="online" {{ old('mode') === 'online' ? 'selected' : '' }}>Online</option>
+                                </select>
+                                @error('mode')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="preferred-date">Preferred date</label>
+                                <input id="preferred-date" name="preferred_date" type="date" class="form-control @error('preferred_date') is-invalid @enderror" value="{{ old('preferred_date') }}" required>
+                                @error('preferred_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
 
                         <button type="submit" class="btn btn-success">Submit request</button>
                     </form>
@@ -82,6 +102,12 @@
                                 <span class="badge badge-secondary">{{ ucfirst($consultationRequest->status) }}</span>
                             </div>
                             <p class="mb-2">{{ $consultationRequest->message }}</p>
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    {{ ucfirst($consultationRequest->mode ?? 'Not specified') }}
+                                    · Preferred date: {{ $consultationRequest->preferred_date ? \Illuminate\Support\Carbon::parse($consultationRequest->preferred_date)->format('M d, Y') : 'Not specified' }}
+                                </small>
+                            </div>
                             @if($consultationRequest->scheduled_at)
                                 <div><small class="text-muted">Scheduled for {{ $consultationRequest->scheduled_at->format('M d, Y g:i A') }}</small></div>
                             @endif
