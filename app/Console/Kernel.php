@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('tutor:deactive')->everyThirtyMinutes();
         $schedule->command('database:backup')->weekly();
+        // $schedule->command('tutors:process-imports')->everyMinute()->withoutOverlapping();
 
         $schedule->command('log:clear')->everyMinute();
         $schedule->command('recuring:sms')->dailyAt('00:00');

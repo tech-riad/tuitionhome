@@ -9,7 +9,21 @@ class TutorEducation extends Model
 {
     use HasFactory;
     public $table = 'tutor_educations';
-    protected $fillable = ['tutor_id', 'degree_name', 'curriculum_id','institute_id','department_id','university_type','passing_year','result','result_type','cgpa_scale','certificate_image'];
+    protected $fillable = [
+        'tutor_id',
+        'degree_name',
+        'curriculum_id',
+        'institute_id',
+        'department',
+        'department_id',
+        'education_board',
+        'university_type',
+        'passing_year',
+        'result',
+        'result_type',
+        'cgpa_scale',
+        'certificate_image',
+    ];
 
     public function institutes()
     {

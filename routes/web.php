@@ -363,6 +363,9 @@ Route::get('/admin/parent/get/note',[BackendParentController::class,'getNote'])-
 
 
 Route::resource('admin/tutor', BackendTutorController::class)->except(['show'])->middleware('permission:tutor-page');
+Route::post('/admin/tutor/import', [BackendTutorController::class, 'importTutors'])
+    ->name('admin.tutor.import')
+    ->middleware('permission:tutor-page');
 Route::post('/update-tutor-status/{id}',[BackendTutorController::class,'updateStatus'])->name('update-tutor-status');
 
 // Route::get('/admin/tutor/paginate', [BackendTutorController::class, 'paginateInput']);

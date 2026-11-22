@@ -67,6 +67,8 @@ use Illuminate\Support\Facades\Queue;
 use App\Models\Invoice;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use App\Models\TutorImport;
 
 
 class BackendTutorController extends Controller
@@ -1486,6 +1488,42 @@ class BackendTutorController extends Controller
 
 
 
+    public function importTutors(Request $request)
+    {
+        $request->validate([
+            'tutor_file' => 'required|file|mimes:xlsx,xls,csv|max:102400',
+        ]);
+
+        $file = $request->file('tutor_file');
+        $storagePath = 'tutor-imports/' . Str::uuid() . '.' . strtolower($file->getClientOriginalExtension());
+        $storedPath = Storage::disk('r2')->putFileAs(
+            'tutor-imports',
+            $file,
+            basename($storagePath)
+        );
+
+        if (!$storedPath) {
+            throw new \RuntimeException('Tutor spreadsheet could not be uploaded to Cloudflare R2.');
+        }
+
+        try {
+            TutorImport::create([
+                'storage_path' => $storedPath,
+                'original_filename' => $file->getClientOriginalName(),
+                'uploaded_by' => Auth::id(),
+                'status' => 'pending',
+            ]);
+        } catch (\Throwable $e) {
+            Storage::disk('r2')->delete($storedPath);
+            throw $e;
+        }
+
+        return redirect()->route('tutor.index')->with(
+            'message',
+            'Spreadsheet uploaded to Cloudflare R2. Tutor import is queued and will run automatically.'
+        );
+    }
+
     public function index(Request $request)
     {
         $input = $request->input('pagination_limit') ?? 50;
@@ -1531,7 +1569,9 @@ class BackendTutorController extends Controller
             return $tutor;
         });
 
-        return view('backend.tutor.index', compact('input', 'tutors'));
+        $tutorImports = TutorImport::orderBy('id', 'desc')->limit(5)->get();
+
+        return view('backend.tutor.index', compact('input', 'tutors', 'tutorImports'));
     }
 
 
@@ -1844,6 +1884,7 @@ class BackendTutorController extends Controller
             ->groupBy('tutors.is_sms','tutors.id', 'tutors.name', 'tutors.phone', 'tutors.unique_id', 'tutors.gender', 'tutors.is_active', 'tutors.is_premium', 'tutors.is_featured') // Include all selected columns in GROUP BY
             ->paginate($input);
 
+        $tutorImports = TutorImport::orderBy('id', 'desc')->limit(5)->get();
 
         return view('backend.tutor.index', compact(
             'tutors',
@@ -1853,7 +1894,8 @@ class BackendTutorController extends Controller
             'premium_tutor_count',
             'featured_tutor_count',
             'input',
-            'unique_tutors_confirmed'
+            'unique_tutors_confirmed',
+            'tutorImports'
         ));
     }
 

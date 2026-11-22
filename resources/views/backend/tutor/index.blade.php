@@ -38,6 +38,65 @@
         <p class="alert alert-success">{{ session('message') }}</p>
         @endif
 
+        <div class="modal fade" id="tutorImportModal" tabindex="-1" role="dialog" aria-labelledby="tutorImportModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="{{ route('admin.tutor.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tutorImportModalLabel">Import Tutor Excel / CSV</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    {{ $errors->first() }}
+                                </div>
+                            @endif
+                            <div class="form-group">
+                                <label for="tutor_file">Tutor data file</label>
+                                <input type="file" name="tutor_file" id="tutor_file" class="form-control" accept=".xlsx,.xls,.csv" required>
+                                <small class="text-muted">Accepted: XLSX, XLS, CSV. Maximum size: 100 MB. Import starts automatically after upload.</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Upload & Import</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- @if($tutorImports->isNotEmpty())
+        <div class="table-responsive mb-4">
+            <table class="table table-sm bg-white border">
+                <thead>
+                    <tr>
+                        <th>Recent Tutor Imports</th>
+                        <th>Status</th>
+                        <th>Inserted</th>
+                        <th>Skipped</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($tutorImports as $tutorImport)
+                    <tr>
+                        <td>{{ $tutorImport->original_filename }}</td>
+                        <td>{{ ucfirst($tutorImport->status) }}</td>
+                        <td>{{ $tutorImport->inserted }}</td>
+                        <td>{{ $tutorImport->skipped }}</td>
+                        <td>{{ $tutorImport->error_message ?: ($tutorImport->row_errors ? $tutorImport->row_errors . ' row errors; duplicate phone: ' . $tutorImport->duplicate_phone . ', duplicate email: ' . $tutorImport->duplicate_email . ', invalid phone: ' . $tutorImport->invalid_phone : '-') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @endif --}}
+
         <!-- mini nav ends here -->
         <!-- main content section starts here -->
         <div class="ps-3" style="padding-right: 13px">
@@ -54,6 +113,10 @@
                     <button class="btn btn-outline-ndark" id="sendSms">Send Bulk SMS</button>
 
                     <a href="{{ route('tutor.create') }}" class="btn btn-outline-ndark">Add New Tutor</a>
+
+                    <button type="button" class="btn btn-outline-ndark" data-toggle="modal" data-target="#tutorImportModal">
+                        Import Tutors
+                    </button>
 
                     <a href="{{ route('admin.tutors.trash') }}" class="btn btn-outline btn-warning">Trash List</a>
 
@@ -404,7 +467,7 @@
                                     data-bs-target="#tutorNoteModalNew">
                                     Note
                                 </button>
-                                
+
                                 <!--Note model ends here-->
                             </td>
 
@@ -672,7 +735,7 @@
                     <div class="mb-4" id="allNote">
 
                     </div>
-                    
+
                 </div>
             </div>
         </div>
