@@ -73,6 +73,14 @@ use App\Models\TutorImport;
 
 class BackendTutorController extends Controller
 {
+    private function getTutorPaginationLimit(Request $request, $default = 50)
+    {
+        $allowedLimits = [25, 50, 100, 150, 200, 250, 300, 350, 400];
+        $limit = (int) $request->input('pagination_limit', $default);
+
+        return in_array($limit, $allowedLimits, true) ? $limit : $default;
+    }
+
     public function refferAdd(Request $request, $id)
     {
         $request->validate([
@@ -452,7 +460,7 @@ class BackendTutorController extends Controller
 
         // dd($request->all());
 
-        $input = $request->input('pagination_limit') ?? 200;
+        $input = $this->getTutorPaginationLimit($request, 200);
 
 
 
@@ -666,7 +674,7 @@ class BackendTutorController extends Controller
     {
 
 
-        $input = $request->input('pagination_limit') ?? 200;
+        $input = $this->getTutorPaginationLimit($request, 200);
 
 
 
@@ -1526,7 +1534,7 @@ class BackendTutorController extends Controller
 
     public function index(Request $request)
     {
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         // Cache the average ratings for 12 hours (720 minutes)
         $ratings = Cache::remember('tutor_average_ratings', 60 * 12, function () {
@@ -1584,7 +1592,7 @@ class BackendTutorController extends Controller
     {
 
 
-        $input = $request->pagination_limit;
+        $input = $this->getTutorPaginationLimit($request);
         // dd($input);
 
         $all_tutor_count       = DB::table('tutors')->count();
@@ -1842,7 +1850,7 @@ class BackendTutorController extends Controller
     }
     public function search(Request $request)
     {
-        $input = 50;
+        $input = $this->getTutorPaginationLimit($request);
         $inputt = $request['search'];
 
         $all_tutor_count       = DB::table('tutors')->count();
@@ -1902,7 +1910,7 @@ class BackendTutorController extends Controller
     public function premiumTutor(Request $request)
     {
         // dd($request->all());
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         $tutors = Tutor::with([
             'tutor_personal_info',
@@ -1917,7 +1925,7 @@ class BackendTutorController extends Controller
         ->where('is_premium', '=', 1)
         ->orWhere('is_premium_pro', 1)
         ->orWhere('is_premium_advance', 1)
-        ->orderBy('id', 'desc')->paginate(50);
+        ->orderBy('id', 'desc')->paginate($input);
 
         return view('backend.tutor.premium_tutor', compact('tutors','input'));
 
@@ -1925,7 +1933,7 @@ class BackendTutorController extends Controller
     public function verifiedTutor(Request $request)
     {
         // dd($request->all());
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         $tutors = Tutor::with([
             'tutor_personal_info',
@@ -1938,7 +1946,7 @@ class BackendTutorController extends Controller
             'teaching_method',
         ])->where('is_active',1)
         ->where('is_verified', '=', 1)
-        ->orderBy('id', 'desc')->paginate(50);
+        ->orderBy('id', 'desc')->paginate($input);
 
 
 
@@ -1949,7 +1957,7 @@ class BackendTutorController extends Controller
     public function boostTutor(Request $request)
     {
         // dd($request->all());
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         $tutors = Tutor::with([
             'tutor_personal_info',
@@ -1971,8 +1979,9 @@ class BackendTutorController extends Controller
 
     }
 
-    public function featuredTutor()
+    public function featuredTutor(Request $request)
     {
+        $input = $this->getTutorPaginationLimit($request);
         $all_tutor_count       = DB::table('tutors')->count();
         $male_verified_tutor_count      = Tutor::where('gender', 'male')->where('is_verified',1)->count();
         $female_verified_tutor_count      = Tutor::where('gender', 'female')->where('is_verified',1)->count();
@@ -1994,10 +2003,10 @@ class BackendTutorController extends Controller
             'tutor_categories',
             'tutor_days',
             'teaching_method',
-        ])->orderBy('id', 'desc')->where('is_featured', '=', 1)->paginate(20);
+        ])->orderBy('id', 'desc')->where('is_featured', '=', 1)->paginate($input);
 
         return view('backend.tutor.featured_tutor', compact('tutors','all_tutor_count','male_featured_tutor_count',
-        'female_featured__tutor_count','verified_tutor_count','unique_tutors_confirmed','female_verified_tutor_count','male_verified_tutor_count'));
+        'female_featured__tutor_count','verified_tutor_count','unique_tutors_confirmed','female_verified_tutor_count','male_verified_tutor_count','input'));
 
     }
     public function memberCount()
@@ -2080,7 +2089,7 @@ class BackendTutorController extends Controller
 
     public function verifiedJobTutor(Request $request)
     {
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         $tutorIds = Tutor::where('is_active', 1)
                  ->where('is_verified', 1)
@@ -2128,7 +2137,7 @@ class BackendTutorController extends Controller
     }
     public function premiumJobTutor(Request $request)
     {
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         $tutorIds = Tutor::where('is_active', 1)
                 ->where('is_premium', '=', 1)
@@ -2177,7 +2186,7 @@ class BackendTutorController extends Controller
     }
     public function boostJobTutor(Request $request)
     {
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         $tutorIds = Tutor::where('is_active', 1)
                 ->where('is_boost', '=', 1)
@@ -2472,7 +2481,7 @@ class BackendTutorController extends Controller
         ->count();
 
 
-        $input = $request->input('pagination_limit') ?? 50;
+        $input = $this->getTutorPaginationLimit($request);
 
         $tutors = Tutor::with([
             'tutor_personal_info',
@@ -2484,7 +2493,7 @@ class BackendTutorController extends Controller
             'tutor_days',
             'teaching_method',
         ])->where('is_active',0)
-        ->orderBy('id', 'desc')->paginate(50);
+        ->orderBy('id', 'desc')->paginate($input);
 
         return view('backend.tutor.trash', compact('tutors', 'all_tutor_count', 'male_tutor_count',
             'female_tutor_count', 'premium_tutor_count', 'featured_tutor_count', 'input','uniqueTutorsShortlistedToday','uniqueTutorsTakenToday'

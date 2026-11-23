@@ -40,7 +40,9 @@ class InactiveTutorController extends Controller
         ->count();
 
 
-        $input = $request->input('pagination_limit') ?? 50;
+        $allowedLimits = [25, 50, 100, 150, 200, 250, 300, 350, 400];
+        $requestedLimit = (int) $request->input('pagination_limit', 50);
+        $input = in_array($requestedLimit, $allowedLimits, true) ? $requestedLimit : 50;
 
         $tutors = InactiveTutor::with([
             'tutor_personal_info',
@@ -51,7 +53,7 @@ class InactiveTutorController extends Controller
             'tutor_categories',
             'tutor_days',
             'teaching_method',
-        ])->orderBy('id', 'desc')->paginate(50);
+        ])->orderBy('id', 'desc')->paginate($input);
 
         return view('backend.tutor.inactivetutor', compact('tutors', 'all_tutor_count', 'male_tutor_count',
             'female_tutor_count', 'premium_tutor_count', 'featured_tutor_count', 'input','uniqueTutorsShortlistedToday','uniqueTutorsTakenToday'

@@ -88,8 +88,7 @@
                         </button>
                         <button class="btn btn-outline-ndark" id="sendSms">Send Bulk SMS</button>
 
-                        <form action="{{route('admin.tutor.search')}}" method="POST">
-                            @csrf
+                        <form action="{{route('admin.tutor.search')}}" method="GET">
                       </div>
 
 
@@ -98,7 +97,7 @@
                         <div class="d-flex justify-content-center align-items-center px-2 rounded-3"
                         style="border: 1px solid #cfdfdb">
                         {{-- <i class="bi bi-search text-muted ms-1"></i> --}}
-                        <input name="search" type="text" class="form-control shadow-none rounded-3 border-0"
+                        <input name="search" type="text" value="{{ request('search') }}" class="form-control shadow-none rounded-3 border-0"
                             placeholder="Search" style="padding: 12px 18px" id="parentsSearch" />
                       <button type="submit" class="btn btn-link"><i class="bi bi-search text-muted ms-1"></i></button>
 
@@ -106,13 +105,11 @@
             </form>
 
 
-                        <select class="form-select rounded" style="width: 100px">
-                            <option selected>50</option>
-                            <option value="100">100</option>
-                            <option value="200">200</option>
-                            <option value="400">400</option>
-                            <option value="500">500</option>
-                        </select>
+                        <form action="{{ route('admin.tutor.featured') }}" method="GET">
+                            <select id="paginationLimit" name="pagination_limit" class="form-select rounded" style="width: 100px" onchange="this.form.submit()">
+                                @include('backend.tutor.partials.pagination_limit_options')
+                            </select>
+                        </form>
                     </div>
                 </div>
                 <div class="bg-white shadow-lg rounded-3 p-2 my-4">
@@ -338,8 +335,7 @@
 
         </div>
              <!-- Filter model starts here -->
-             <form action="{{route('admin.tutor.filter')}}" method="post">
-                @csrf
+             <form action="{{route('admin.tutor.filter')}}" method="GET">
                 <!-- Filter model starts here -->
                 <div class="modal fade font-pop" id="exampleModal" tabindex="" aria-labelledby="">
                     <div class="modal-dialog modal-dialog-centered px-3" style="max-width: 1100px">

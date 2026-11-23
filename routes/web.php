@@ -384,7 +384,7 @@ Route::get('/admin/tutor/delete/note/{id}', [BackendTutorController::class, 'tut
 
 Route::get('/admin/tutor/get-tutor/{tutor}',[BackendTutorController::class,'showTutor'])->name('admin.tutor.tutorshow')->middleware('permission:tutor-show');
 Route::post('/admin/tutor/update/{tutor}',[BackendTutorController::class,'tutorUpdate'])->name('admin.tutor.update')->middleware('permission:tutor-edit');
-Route::post('/admin/tutor/search',[BackendTutorController::class,'search'])->name('admin.tutor.search')->middleware('permission:tutor-page');
+Route::match(['get', 'post'], '/admin/tutor/search',[BackendTutorController::class,'search'])->name('admin.tutor.search')->middleware('permission:tutor-page');
 Route::any('/admin/premium/tutors',[BackendTutorController::class,'premiumTutor'])->name('admin.tutor.premium')->middleware('permission:tutor-page');
 Route::any('/admin/member/count',[BackendTutorController::class,'memberCount'])->name('admin.tutor.member.count')->middleware('permission:tutor-page');
 Route::any('/admin/verified/tutors',[BackendTutorController::class,'verifiedTutor'])->name('admin.tutor.verified')->middleware('permission:tutor-page');

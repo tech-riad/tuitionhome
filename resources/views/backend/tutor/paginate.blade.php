@@ -150,8 +150,7 @@
                     <a href="{{ route('admin.tutors.trash') }}" class="btn btn-outline btn-warning">Trash List</a>
                     @endif
 
-                    <form action="{{route('admin.tutor.search')}}" method="POST">
-                        @csrf
+                    <form action="{{route('admin.tutor.search')}}" method="GET">
                 </div>
 
 
@@ -159,7 +158,7 @@
                     <div class="d-flex justify-content-center align-items-center px-2 rounded-3"
                         style="border: 1px solid #cfdfdb">
                         {{-- <i class="bi bi-search text-muted ms-1"></i> --}}
-                        <input name="search" type="text" class="form-control shadow-none rounded-3 border-0"
+                        <input name="search" type="text" value="{{ request('search') }}" class="form-control shadow-none rounded-3 border-0"
                             placeholder="Search" style="padding: 12px 18px" id="" />
                         <button type="submit" class="btn btn-link"><i class="bi bi-search text-muted ms-1"></i></button>
                         </form>
@@ -167,11 +166,7 @@
                     <form id="paginationLimitForm" action="{{ route('tutor.index') }}" method="GET">
                         <input type="hidden" name="pagination_limit" id="paginationLimitInput" value="{{ $input }}">
                         <select id="paginationLimit" class="form-select rounded" style="width: 100px">
-                            <option value="50" {{ $input == 50 ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ $input == 100 ? 'selected' : '' }}>100</option>
-                            <option value="200" {{ $input == 200 ? 'selected' : '' }}>200</option>
-                            <option value="300" {{ $input == 300 ? 'selected' : '' }}>300</option>
-                            {{-- <option value="500" {{ $input == 500 ? 'selected' : '' }}>500</option> --}}
+                            @include('backend.tutor.partials.pagination_limit_options')
                         </select>
                     </form>
 
@@ -775,8 +770,7 @@
     </div>
 
 
-    <form action="{{route('admin.tutor.filter')}}" method="post">
-        @csrf
+    <form action="{{route('admin.tutor.filter')}}" method="GET">
         <!-- Filter model starts here -->
         <div class="modal fade font-pop" id="exampleModal" tabindex="" aria-labelledby="">
             <div class="modal-dialog modal-dialog-centered px-3" style="max-width: 1100px">
