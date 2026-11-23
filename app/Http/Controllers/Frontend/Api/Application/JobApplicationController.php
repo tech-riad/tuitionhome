@@ -19,9 +19,23 @@ class JobApplicationController extends Controller
     public function apply(Request $request)
     {
         try {
-            $tutor = Tutor::where('id', $request->tutor_id)->first();
-            $dubliChecker = $tutor->job_applications()->where('job_offer_id', '=', $request->job_id)->first();
+            $tutor = Tutor::with(['tutor_personal_info', 'tutor_education'])
+                ->where('id', $request->tutor_id)
+                ->first();
+
+            if (!$tutor) {
+                return $this->resposeError('Tutor not found.', '');
+            }
+
             $job_offer = JobOffer::where('id', $request->job_id)->first();
+
+            if (!$job_offer) {
+                return $this->resposeError('Job offer not found.', '');
+            }
+
+            $dubliChecker = $tutor->job_applications()
+                ->where('job_offer_id', $job_offer->id)
+                ->first();
 
             if ($dubliChecker != null) {
                 return $this->resposeError('Already applied to the job offer', '');
@@ -36,8 +50,66 @@ class JobApplicationController extends Controller
                     return $this->resposeError('Tutor Gender Mismatch!', '');
                 }
 
-                if ($job_offer->teaching_method_id != 2 && $job_offer->city_id != $tutor->tutor_personal_info->city_id) {
+                if ($job_offer->teaching_method_id != 2
+                    && (!$tutor->tutor_personal_info || $job_offer->city_id != $tutor->tutor_personal_info->city_id)) {
                     return $this->resposeError('Tutor City Mismatch!', '');
+                }
+
+                $honoursEducation = $tutor->tutor_education->firstWhere('degree_name', 'honours');
+                $schoolEducation = $tutor->tutor_education->whereIn('degree_name', ['ssc', 'hsc']);
+
+                if ($job_offer->tutor_university_type
+                    && !$this->matchesCommaSeparatedRequirement(
+                        $job_offer->tutor_university_type,
+                        optional($honoursEducation)->university_type
+                    )) {
+                    return $this->resposeError(
+                        'Your University Type does not match this job requirement.',
+                        ''
+                    );
+                }
+
+                $requiredStudyTypeIds = $job_offer->job_offer_tutor_study_types->pluck('id')->map(function ($id) {
+                    return (string) $id;
+                })->all();
+
+                if ($requiredStudyTypeIds
+                    && (!$honoursEducation
+                        || !in_array((string) $honoursEducation->study_type_id, $requiredStudyTypeIds, true))) {
+                    return $this->resposeError(
+                        'Your Study Type does not match this job requirement.',
+                        ''
+                    );
+                }
+
+                if ($job_offer->tutor_curriculam_id
+                    && !$tutor->tutor_education->contains(function ($education) use ($job_offer) {
+                        return (string) $education->curriculum_id === (string) $job_offer->tutor_curriculam_id;
+                    })) {
+                    return $this->resposeError(
+                        'Your Background Curriculum does not match this job requirement. ',
+                        ''
+                    );
+                }
+
+                if ($job_offer->tutor_religion
+                    && strtolower(trim((string) optional($tutor->tutor_personal_info)->religion))
+                        !== strtolower(trim($job_offer->tutor_religion))) {
+                    return $this->resposeError(
+                        'Your Religion does not match this job requirement.',
+                        ''
+                    );
+                }
+
+                if ($job_offer->tutor_group
+                    && !$schoolEducation->contains(function ($education) use ($job_offer) {
+                        return strtolower(trim((string) $education->group_or_major))
+                            === strtolower(trim($job_offer->tutor_group));
+                    })) {
+                    return $this->resposeError(
+                        'Your Group does not match this job requirement.',
+                        ''
+                    );
                 }
 
             } else {
@@ -64,6 +136,21 @@ class JobApplicationController extends Controller
         }
 
 
+    }
+
+    private function matchesCommaSeparatedRequirement($requiredValues, $tutorValue)
+    {
+        if ($tutorValue === null || trim((string) $tutorValue) === '') {
+            return false;
+        }
+
+        $requiredValues = array_map('trim', explode(',', $requiredValues));
+
+        return in_array(
+            strtolower(trim((string) $tutorValue)),
+            array_map('strtolower', $requiredValues),
+            true
+        );
     }
 
     public function counting()
