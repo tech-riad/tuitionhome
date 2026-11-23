@@ -416,11 +416,11 @@ Route::post('/admin/tutor/note/create',[BackendTutorController::class,'createNot
 
 Route::post('/admin/tutor/note/add', [BackendTutorController::class, 'tutorNote'])
     ->name('admin.tutor.note')
-    ->middleware('permission:tutor-trash-page');
+    ->middleware('permission:tutor-page|tutor-show|tutor-trash-page');
 
 Route::get('/admin/note/tutor/get', [BackendTutorController::class, 'getNote'])
     ->name('admin.tutor.getnote')
-    ->middleware('permission:tutor-trash-page');
+    ->middleware('permission:tutor-page|tutor-show|tutor-trash-page');
 
 
 Route::get('/admin/tutor/edit-info/{tutor}',[BackendTutorController::class,'editInfo'])->name('admin.tutor.edit-info')->middleware('permission:edit-info');

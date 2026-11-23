@@ -235,17 +235,13 @@
                 </div>
             </div>
 
-            <!-- Note Button -->
-            {{-- <button type="button"
-                    class="btn btn-md btn-danger btn-note mb-4"
+            <button type="button"
+                    class="btn btn-md btn-primary btn-note mb-4"
                     data-tutor-id="{{ $tutor->id }}"
                     data-bs-toggle="modal"
                     data-bs-target="#tutorNoteModal_{{ $tutor->id }}">
-                Note Add
-            </button> --}}
-
-
-            <br>
+                Note
+            </button>
 
 
 
@@ -295,7 +291,7 @@
                                     @csrf
 
                                     <input type="hidden"
-                                        name="tutor_id"
+                                        name="note_tutor_id"
                                         class="note-tutor-id"
                                         value="{{ $tutor->id }}">
 
@@ -2753,7 +2749,7 @@ $(document).ready(function () {
             type: "GET",
 
             data: {
-                id: tutorId
+                tutor_id: tutorId
             },
 
             success: function (response) {
@@ -2867,7 +2863,7 @@ $(document).ready(function () {
             type: "POST",
 
             data: {
-                tutor_id: tutorId,
+                note_tutor_id: tutorId,
                 note: note
             },
 
@@ -2978,7 +2974,7 @@ $(document).ready(function () {
             type: "GET",
 
             data: {
-                id: tutorId
+                tutor_id: tutorId
             },
 
             success: function (response) {
