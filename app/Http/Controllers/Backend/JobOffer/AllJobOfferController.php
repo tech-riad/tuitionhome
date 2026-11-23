@@ -1535,6 +1535,208 @@ class AllJobOfferController extends Controller
 
 
     }
+    public function searchTutorByArea(Request $request)
+    {
+        $validated = $request->validate([
+            'job_id' => 'required|integer|exists:job_offers,id',
+            'radius' => 'required|integer|between:1,10',
+            'types' => 'nullable|in:All_tutor,Latest_created_tutor,2nd_latest_created_tutor,Random_tutor,Bottom_tutor,Premium_tutor,2nd_bottom_tutor',
+        ]);
+
+        $jobOffer = JobOffer::with([
+            'job_offer_tutor_universities',
+            'job_offer_tutor_departments',
+            'job_offer_tutor_study_types',
+        ])->findOrFail($validated['job_id']);
+
+        if (!is_numeric($jobOffer->lat) || !is_numeric($jobOffer->long)
+            || $jobOffer->lat < -90 || $jobOffer->lat > 90
+            || $jobOffer->long < -180 || $jobOffer->long > 180) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This job offer does not have valid map coordinates.',
+            ]);
+        }
+
+        $latitude = (float) $jobOffer->lat;
+        $longitude = (float) $jobOffer->long;
+        $radiusKm = (int) $validated['radius'];
+        $distanceExpression = '(6371 * 2 * ASIN(SQRT(POWER(SIN(RADIANS(tutors.`lat` - ?) / 2), 2) + COS(RADIANS(?)) * COS(RADIANS(tutors.`lat`)) * POWER(SIN(RADIANS(tutors.`long` - ?) / 2), 2))))';
+        $distanceBindings = [$latitude, $latitude, $longitude];
+        $latitudeDelta = $radiusKm / 110.574;
+        $minimumLatitude = max(-90, $latitude - $latitudeDelta);
+        $maximumLatitude = min(90, $latitude + $latitudeDelta);
+        $maximumAbsoluteLatitude = max(abs($minimumLatitude), abs($maximumLatitude));
+
+        $tutorUniversities = $jobOffer->job_offer_tutor_universities->pluck('id')->all();
+        $tutorDepartments = $jobOffer->job_offer_tutor_departments->pluck('id')->all();
+        $tutorStudyTypes = $jobOffer->job_offer_tutor_study_types->pluck('id')->all();
+        $smsLimit = SmsLimit::first();
+        $tutorType = $validated['types'] ?? 'All_tutor';
+
+        $tutorQuery = Tutor::with([
+            'tutor_education:id,tutor_id,degree_name,institute_id,department_id',
+            'tutor_education.institutes:id,title',
+            'tutor_education.departments:id,title',
+            'tutor_personal_info.location',
+            'tutor_personal_info.city',
+        ])
+            ->select([
+                'tutors.id',
+                'tutors.name',
+                'tutors.phone',
+                'tutors.is_premium',
+                'tutors.is_verified',
+                'tutors.lat',
+                'tutors.long',
+            ])
+            ->selectRaw($distanceExpression . ' AS distance_km', $distanceBindings)
+            ->whereNotNull('tutors.lat')
+            ->whereNotNull('tutors.long')
+            ->whereBetween('tutors.lat', [$minimumLatitude, $maximumLatitude]);
+
+        if ($minimumLatitude > -90 && $maximumLatitude < 90) {
+            $longitudeDelta = $radiusKm / (111.320 * cos(deg2rad($maximumAbsoluteLatitude)));
+
+            if ($longitudeDelta < 180) {
+                $minimumLongitude = $longitude - $longitudeDelta;
+                $maximumLongitude = $longitude + $longitudeDelta;
+
+                if ($minimumLongitude < -180) {
+                    $tutorQuery->where(function ($query) use ($minimumLongitude, $maximumLongitude) {
+                        $query->where('tutors.long', '>=', $minimumLongitude + 360)
+                            ->orWhere('tutors.long', '<=', $maximumLongitude);
+                    });
+                } elseif ($maximumLongitude > 180) {
+                    $tutorQuery->where(function ($query) use ($minimumLongitude, $maximumLongitude) {
+                        $query->where('tutors.long', '>=', $minimumLongitude)
+                            ->orWhere('tutors.long', '<=', $maximumLongitude - 360);
+                    });
+                } else {
+                    $tutorQuery->whereBetween('tutors.long', [$minimumLongitude, $maximumLongitude]);
+                }
+            }
+        }
+
+        $tutorQuery
+            ->whereRaw($distanceExpression . ' <= ?', array_merge($distanceBindings, [$radiusKm]))
+            ->where('is_active', 1)
+            ->when($jobOffer->tutor_gender !== 'any', function ($query) use ($jobOffer) {
+                $query->where('gender', $jobOffer->tutor_gender);
+            })
+            ->whereHas('tutor_personal_info', function ($query) use ($jobOffer) {
+                $query->where('country_id', $jobOffer->country_id)
+                    ->when(!empty($jobOffer->tutor_religion), function ($query) use ($jobOffer) {
+                        $query->where('religion', $jobOffer->tutor_religion);
+                    });
+            })
+            ->when(!empty($jobOffer->tutor_group), function ($query) use ($jobOffer) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($jobOffer) {
+                    $subQuery->where('group_or_major', $jobOffer->tutor_group)
+                        ->whereIn('degree_name', ['ssc', 'hsc']);
+                });
+            })
+            ->when($tutorUniversities, function ($query) use ($tutorUniversities) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($tutorUniversities) {
+                    $subQuery->whereIn('institute_id', $tutorUniversities)
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when(!empty($jobOffer->tutor_university_type), function ($query) use ($jobOffer) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($jobOffer) {
+                    $subQuery->whereIn('university_type', explode(',', $jobOffer->tutor_university_type))
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when($tutorDepartments, function ($query) use ($tutorDepartments) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($tutorDepartments) {
+                    $subQuery->whereIn('department_id', $tutorDepartments)
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when($tutorStudyTypes, function ($query) use ($tutorStudyTypes) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($tutorStudyTypes) {
+                    $subQuery->whereIn('study_type_id', $tutorStudyTypes)
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when(!empty($jobOffer->tutor_curriculam_id), function ($query) use ($jobOffer) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($jobOffer) {
+                    $subQuery->where('curriculum_id', $jobOffer->tutor_curriculam_id);
+                });
+            });
+
+        if ($tutorType === 'Premium_tutor') {
+            $tutorQuery->where('is_premium', 1)
+                ->take((int) optional($smsLimit)->premium);
+        } elseif ($tutorType === 'Latest_created_tutor') {
+            $tutorQuery->orderByDesc('created_at')
+                ->take((int) optional($smsLimit)->latest_created_input);
+        } elseif ($tutorType === '2nd_latest_created_tutor') {
+            $latestTutorIds = Tutor::orderByDesc('created_at')->take(30)->pluck('id');
+            $tutorQuery->where('is_sms', 1)
+                ->whereNotIn('tutors.id', $latestTutorIds)
+                ->orderByDesc('created_at')
+                ->take((int) optional($smsLimit)->second_latest_created);
+        } elseif ($tutorType === 'Random_tutor') {
+            $tutorQuery->where('created_at', '>', '2023-01-01 00:00:00')
+                ->where('is_sms', 1)
+                ->inRandomOrder()
+                ->take((int) optional($smsLimit)->random);
+        } elseif ($tutorType === 'Bottom_tutor') {
+            $tutorQuery->orderBy('created_at')
+                ->take((int) optional($smsLimit)->second_bottom);
+        } elseif ($tutorType === '2nd_bottom_tutor') {
+            $tutorQuery->where('created_at', '<', '2022-01-01 00:00:00')
+                ->take((int) optional($smsLimit)->second_bottom);
+        } else {
+            $tutorQuery->orderBy('distance_km')
+                ->take(200);
+        }
+
+        $tutors = $tutorQuery->get();
+
+        if ($tutors->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No matching tutors were found within this radius.',
+            ]);
+        }
+
+        $tutorsWithDetails = $tutors->map(function ($tutor) {
+            $lastEducation = $tutor->tutor_education->last();
+
+            return [
+                'tutor_name' => $tutor->name,
+                'tutor_id' => $tutor->id,
+                'is_premium' => $tutor->is_premium,
+                'is_verified' => $tutor->is_verified,
+                'tutor_phone' => $tutor->phone,
+                'tutor_education' => optional(optional($lastEducation)->institutes)->title,
+                'tutor_dept' => optional(optional($lastEducation)->departments)->title,
+                'tutor_location' => optional(optional($tutor->tutor_personal_info)->location)->name,
+                'tutor_city' => optional(optional($tutor->tutor_personal_info)->city)->name,
+                'distance_km' => round((float) $tutor->distance_km, 1),
+            ];
+        });
+
+        $sentSmsPhones = Sms::where('job_id', $jobOffer->id)->pluck('phone');
+        $tutorSms = $sentSmsPhones
+            ->merge(JobSms::where('job_id', $jobOffer->id)->pluck('tutor_phone'))
+            ->unique()
+            ->values();
+
+        return response()->json([
+            'status' => true,
+            'tutors' => $tutorsWithDetails,
+            'tutor_sms' => $tutorSms,
+            'all_sms_number' => $sentSmsPhones->count(),
+            'job_id' => $jobOffer->id,
+            'count' => $tutorsWithDetails->count(),
+            'requestType' => $tutorType,
+        ]);
+    }
+
     public function smsView($id)
     {
 

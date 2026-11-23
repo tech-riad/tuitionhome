@@ -688,6 +688,7 @@
 
                                                     <a class="btn btn-ndark" onclick="searchTutor({{$job->id}})"
                                                         {{-- data-dismiss="actionModal" --}}> Search Tutor</a>
+                                                    <a class="btn btn-ndark" onclick="openAreaSearch({{$job->id}})">Area Search</a>
                                                     <a class="btn btn-ndark"
                                                         {{-- {{ route('admin.job.edit', ['id' => $job->id]) }} --}}
                                                         href="{{ route('admin.job.sms-log', ['job' => $job->id]) }}">SMS
@@ -1069,6 +1070,7 @@
 </form>
 <!-- add Search Model ends here -->
 
+@include('backend.job_offers.area_search_modal')
 
 @endsection
 

@@ -149,6 +149,110 @@ async function searchTutor(id) {
   });
 }
 
+function openAreaSearch(jobId) {
+  window.areaSearchJobId = jobId;
+  $('#sms_job_id').val(jobId);
+  $('#areaSmsJobId, #areaResetJobId').val(jobId);
+  $(".modal-backdrop").remove();
+  $(".modal.fade.show").hide();
+  $('body').attr("style", "overflow:auto");
+  $('#actionModal').hide();
+  $('#actionModal').modal('hide');
+  $('#areaSearchRadius').val('1');
+  $('#areaTutorType').val('All_tutor');
+  $('#areaTutorCount').text('0 tutors found');
+  $('#areaSendSmsCount').text('0');
+  $('#areaTutorsDiv').html('<p class="text-muted">Choose a radius and click Search Area.</p>');
+  $("#AreaSearchModal").modal('show');
+}
+
+function classifyAreaTutors(type) {
+  $('#areaTutorType').val(type);
+  runAreaSearch();
+}
+
+function runAreaSearch() {
+  const radius = $('#areaSearchRadius').val();
+  const tutorType = $('#areaTutorType').val();
+
+  $.ajax({
+    url: "{{ route('admin.job.search-tutor-area') }}",
+    type: 'post',
+    data: {
+      job_id: window.areaSearchJobId,
+      radius: radius,
+      types: tutorType,
+      _token: '{{ csrf_token() }}'
+    },
+    beforeSend: function () {
+      $('#areaTutorsDiv').html('<p class="text-muted">Searching tutors by profile location...</p>');
+      $('#areaTutorCount').text('Searching...');
+    },
+    success: function (response) {
+      if (!response.status) {
+        $('#areaTutorsDiv').html('<p class="text-danger">' + (response.message || 'No tutors found.') + '</p>');
+        $('#areaTutorCount').text('0 tutors found');
+        return;
+      }
+
+      const tutors = response.tutors || [];
+      const tutorSmsArray = Array.isArray(response.tutor_sms)
+        ? response.tutor_sms.map(function (phone) { return String(phone); })
+        : [];
+      $('#areaTutorCount').text((response.count || tutors.length) + ' tutors found');
+      $('#areaSendSmsCount').text(response.all_sms_number || 0);
+
+      let html = '';
+      for (let i = 0; i < tutors.length; i++) {
+        const tutor = tutors[i];
+        const distance = Number(tutor.distance_km || 0).toFixed(1);
+        const tutorPhone = String(tutor.tutor_phone || tutor.phone || '');
+        const alreadyInSmsList = tutorSmsArray.includes(tutorPhone);
+
+        html += `
+          <div class="d-flex justify-content-between align-items-start gap-3 gap-lg-0 align-items-lg-center border-bottom border-2 py-3">
+            <div>
+              <p class="text-info mb-0 fw-semibold">
+                <a href="{{ url('/admin/tutor/get-tutor') }}/${tutor.tutor_id}">
+                  ${tutor.tutor_name ? tutor.tutor_name.substring(0, 25) : ''}
+                </a>
+                ${tutor.is_verified == 1 ? '<i class="bi bi-patch-check ms-1"></i>' : ''}
+                ${tutor.is_premium == 1 ? '<i class="bi bi-star-fill ms-1 text-warning"></i>' : ''}
+              </p>
+              <p class="mb-0 text-muted">${tutor.tutor_education ? tutor.tutor_education.substring(0, 25) : ''}</p>
+              <p class="mb-0 text-muted"><b>${tutor.tutor_dept ? tutor.tutor_dept.substring(0, 25) : ''}</b></p>
+            </div>
+            <div>
+              <p class="text-muted mb-0">${tutor.tutor_location || ''}</p>
+              <p class="text-muted mb-0"><b>${tutor.tutor_city || ''}</b></p>
+              <p class="text-success mb-0">${distance} km from job</p>
+            </div>
+            <div class="checkbox-wrapper-13">
+              <input class="areaTutorCheckbox" type="checkbox" name="area_t_ids" value="${tutor.tutor_id}" ${alreadyInSmsList ? '' : 'checked'}>
+            </div>
+          </div>
+        `;
+      }
+
+      $('#areaTutorsDiv').html(html);
+      $('#areaSelectAll').prop('checked', true);
+    },
+    error: function (xhr) {
+      const message = xhr.responseJSON && xhr.responseJSON.message
+        ? xhr.responseJSON.message
+        : 'Area search failed. Please try again.';
+      $('#areaTutorsDiv').html('<p class="text-danger">' + message + '</p>');
+      $('#areaTutorCount').text('Search failed');
+    }
+  });
+}
+
+function clearAreaResults() {
+  $('#areaTutorsDiv').empty();
+  $('#areaTutorCount').text('0 tutors found');
+  $('#areaSelectAll').prop('checked', false);
+}
+
 
 function matchingRateBs(job_id, tutor_id) {
     var match_rate = 0;
@@ -281,6 +385,26 @@ $(function(e){
           $("#tutorSendSms").submit();
            }
 
+    });
+
+    $("#areaSelectAll").on('change', function(){
+        $('.areaTutorCheckbox').prop('checked', $(this).prop('checked'));
+    });
+
+    $("#areaTutorSendSms").on('submit', function(e){
+        e.preventDefault();
+        const selectedTutorIds = $('.areaTutorCheckbox:checked').map(function(){
+            return $(this).val();
+        }).get();
+
+        if (selectedTutorIds.length === 0) {
+            alert("Please select at least one tutor first.");
+            return;
+        }
+
+        $('#areaSmsJobId').val(window.areaSearchJobId);
+        $('#areaAllTutorIds').val(selectedTutorIds.join(','));
+        this.submit();
     });
 
   });

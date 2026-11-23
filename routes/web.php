@@ -479,6 +479,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::any('/admin/job/search-tutor',[AllJobOfferController::class,'searchTutor'])->name('admin.job.search-tutor');
+    Route::post('/admin/job/search-tutor-area',[AllJobOfferController::class,'searchTutorByArea'])->name('admin.job.search-tutor-area');
     Route::any('/admin/job/search',[AllJobOfferController::class,'jobSearch'])->name('admin.job.search');
     Route::any('/admin/job/search-single-available',[AllJobOfferController::class,'jobSearchSingleAvailable'])->name('admin.job.search-single-available');
     Route::any('/admin/job/search-single-all',[AllJobOfferController::class,'jobSearchSingleAll'])->name('admin.job.search-single-all');
