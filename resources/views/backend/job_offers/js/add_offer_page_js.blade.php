@@ -4,6 +4,57 @@
 
 let is_parent = '' ;
 
+    function escapeParentNote(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function (character) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[character];
+        });
+    }
+
+    function renderParentNotes(notes) {
+        const latestNotes = (Array.isArray(notes) ? notes : [])
+            .slice()
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 2);
+
+        const notesHtml = latestNotes.map((note) => {
+            const date = new Date(note.created_at).toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            return `
+                <div class="mb-4 border-bottom border-2">
+                    <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
+                        ${escapeParentNote(note.body || note.note_title)}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex justify-content-between align-items-center gap-3">
+                            <img src="" alt="map" class="img-fluid rounded-3 mb-3 shadow-lg" style="width: 40px; height: 40px" />
+                            <div>
+                                <p class="fw-semibold mb-0">${escapeParentNote(note.created_by)}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-0" style="font-size: 12px">Employee ID- ${escapeParentNote(note.emp_id)}</p>
+                            <p class="text-muted" style="font-size: 12px">${escapeParentNote(date)}</p>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
+
+        document.getElementById('parentNote').innerHTML = notesHtml;
+    }
+
     function parentSearch(phone) {
         var route = '{{ route("parentSearch") }}';
 
@@ -52,48 +103,11 @@ let is_parent = '' ;
                     $("#special_note").val(parent.condition_note);
 
 
-                    var parent_note = parent.parents_note
-
-                    let notesHtml = '';
-
-                    const latestNotes = parent.parents_note
-                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-                        .slice(0, 2);
-
-                    latestNotes.forEach((parent_note) => {
-                        const date = new Date(parent_note.created_at).toLocaleString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        });
-                        notesHtml += `
-                            <div class="mb-4 border-bottom border-2">
-                                <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
-                                    ${parent_note.body}
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div class="d-flex justify-content-between align-items-center gap-3">
-                                        <img src="" alt="map" class="img-fluid rounded-3 mb-3 shadow-lg" style="width: 40px; height: 40px" />
-                                        <div>
-                                            <p class="fw-semibold mb-0">${parent_note.created_by}</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p class="text-muted mb-0" style="font-size: 12px">Employee ID- ${parent_note.emp_id}</p>
-                                        <p class="text-muted" style="font-size: 12px">${date}</p>
-                                    </div>
-                                </div>
-                            </div>`;
-                    });
-                    document.getElementById('parentNote').innerHTML = notesHtml;
+                    renderParentNotes(parent.parents_note);
 
 
                 } else {
                     var parents_personal_info = parent.parents_personal_info
-                    var parent_note = parent.parents_note
 
                     this.is_parent = parent.id;
                     $("#displayError").html("");
@@ -111,41 +125,7 @@ let is_parent = '' ;
                     '</div>';
 
 
-                    let notesHtml = '';
-
-                    const latestNotes = parent.parents_note
-                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-                        .slice(0, 2);
-
-                    latestNotes.forEach((parent_note) => {
-                        const date = new Date(parent_note.created_at).toLocaleString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        });
-                        notesHtml += `
-                            <div class="mb-4 border-bottom border-2">
-                                <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
-                                    ${parent_note.body}
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div class="d-flex justify-content-between align-items-center gap-3">
-                                        <img src="" alt="map" class="img-fluid rounded-3 mb-3 shadow-lg" style="width: 40px; height: 40px" />
-                                        <div>
-                                            <p class="fw-semibold mb-0">${parent_note.created_by}</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p class="text-muted mb-0" style="font-size: 12px">Employee ID- ${parent_note.emp_id}</p>
-                                        <p class="text-muted" style="font-size: 12px">${date}</p>
-                                    </div>
-                                </div>
-                            </div>`;
-                    });
-                    document.getElementById('parentNote').innerHTML = notesHtml;
+                    renderParentNotes(parent.parents_note);
 
                     // const countJob = parent.job_offer_count;
                     // const countHtml = `${countJob}`;

@@ -668,11 +668,11 @@
                                                         <a class="dropdown-item" data-bs-toggle="modal"
                                                             data-bs-target="#alertModal" href="#">Alert</a>
                                                     </li>
-                                                    <!--<li>-->
-                                                    <!--    <a class="dropdown-item" data-bs-toggle="modal"-->
-                                                    <!--        data-bs-target="#noteModal_{{$parentt->id}}"-->
-                                                    <!--        href="#">Note</a>-->
-                                                    <!--</li>-->
+                                                    <li>
+                                                        <a class="dropdown-item" data-bs-toggle="modal"
+                                                            data-bs-target="#noteModal_{{$parentt->id}}"
+                                                            href="#">View Notes</a>
+                                                    </li>
                                                     <li>
                                                         <a class="dropdown-item" data-bs-toggle="modal"
                                                             data-bs-target="#createNoteModal_{{$parentt->id}}"
@@ -721,11 +721,7 @@
                                     $(document).ready(function () {
                                         $('[data-bs-target="#noteModal_{{$parentt->id}}"]').on('click',
                                             function () {
-                                                var parentId = {
-                                                    {
-                                                        $parentt - > id
-                                                    }
-                                                };
+                                                var parentId = {{ $parentt->id }};
 
                                                 $.ajax({
                                                     type: 'GET',
@@ -742,16 +738,16 @@
                                                                 <div class="p-3 bg-light rounded-3 border border-1 border-dark mb-3">
                                                                     <div class="d-flex justify-content-between align-items-center">
                                                                         <div>
-                                                                            <p class="mb-0 text-dark fs-5">${note.created_by}</p>
-                                                                            <p class="text-info" style="font-size: 12px">ID-${note.created_by_id}</p>
+                                                                            <p class="mb-0 text-dark fs-5">${$('<div>').text(note.created_by || '').html()}</p>
+                                                                            <p class="text-info" style="font-size: 12px">ID-${$('<div>').text(note.created_by_id || '').html()}</p>
                                                                         </div>
                                                                         <div>
-                                                                            <p>${note.created_at}</p>
+                                                                            <p>${$('<div>').text(note.created_at || '').html()}</p>
                                                                         </div>
                                                                     </div>
                                                                     <div>
-                                                                        <p class="fw-bold" style="font-size: 16px; color: #3b3c3d">${note.title}</p>
-                                                                        <p>${note.details}</p>
+                                                                        <p class="fw-bold" style="font-size: 16px; color: #3b3c3d">${$('<div>').text(note.title || '').html()}</p>
+                                                                        <p>${$('<div>').text(note.details || '').html()}</p>
                                                                     </div>
                                                                     <div class="d-flex justify-content-between align-items-center">
                                                                         <div>

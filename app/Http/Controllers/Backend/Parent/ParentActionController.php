@@ -131,14 +131,14 @@ class ParentActionController extends Controller
     public function fetchNoteByParentId($id)
     {
         try {
-            $notes = ParentNote::where('parents_id', $id)->get();
+            $notes = ParentNote::where('parents_id', $id)->orderByDesc('created_at')->get();
 
             if ($notes->isNotEmpty()) {
                 $formattedNotes = [];
 
                 foreach ($notes as $note) {
                     $formattedNotes[] = [
-                        'created_by' => $note->noteBy->name,
+                        'created_by' => optional($note->noteBy)->name ?? $note->created_by,
                         'created_by_id' => $note->created_by,
                         'created_at' => \Carbon\Carbon::parse($note->created_at)->format('d M Y, H:i'),
                         'title' => $note->note_title,

@@ -170,7 +170,7 @@
                                         @foreach ($lead->parentsNote->sortByDesc('created_at')->take(2) as $item)
                                             <div class="mb-4 border-bottom border-2">
                                                 <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
-                                                    {{ $item->note_title ?? '' }}
+                                                    {{ $item->body ?? $item->note_title ?? '' }}
                                                 </div>
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                                     <div class="d-flex justify-content-between align-items-center gap-3">
@@ -193,7 +193,7 @@
                                             @foreach ($hiringlead->parentsNote->sortByDesc('created_at')->take(2) as $item)
                                             <div class="mb-4 border-bottom border-2">
                                                 <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
-                                                    {{ $item->note_title ?? '' }}
+                                                    {{ $item->body ?? $item->note_title ?? '' }}
                                                 </div>
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                                     <div class="d-flex justify-content-between align-items-center gap-3">
@@ -216,7 +216,7 @@
                                             @foreach ($hiringleadTutor->parentsNote->sortByDesc('created_at')->take(2) as $item)
                                             <div class="mb-4 border-bottom border-2">
                                                 <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
-                                                    {{ $item->note_title ?? '' }}
+                                                    {{ $item->body ?? $item->note_title ?? '' }}
                                                 </div>
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                                     <div class="d-flex justify-content-between align-items-center gap-3">
