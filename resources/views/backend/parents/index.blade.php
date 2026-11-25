@@ -152,7 +152,7 @@
                                     <th scope="col" class="text-nowrap">Sms</th>
                                     <th scope="col" class="text-nowrap">Action By</th>
                                     <th scope="col" class="text-nowrap">Alert</th>
-                                    <th scope="col" class="text-nowrap">Note</th>
+                                    <th scope="col" class="text-nowrap">Parent Notes</th>
                                     <th scope="col" class="text-nowrap">Action</th>
                                 </tr>
                             </thead>
@@ -596,48 +596,10 @@
                                     </td>
 
                                     <td>
-                                        <button type="button" class="btn  @if($parentt->parent_manage_note == null) btn-secondary
-
-                                        @else
-                                            btn-danger
-                                        @endif " data-bs-toggle="modal"
-                                            data-bs-target="#additional_note_{{$parentt->id}}">
-                                            Note
+                                        <button type="button" class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#noteModal_{{$parentt->id}}">
+                                            View Notes
                                         </button>
-
-                                        <div class="modal fade" id="additional_note_{{$parentt->id}}" tabindex="-1"
-                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Note Modal</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <form id="additional-note-form-{{$parentt->id}}">
-                                                        @csrf
-                                                        <input type="hidden" name="parent_id" value="{{$parentt->id}}">
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label for="note" class="form-label">Note</label>
-                                                                <textarea name="parent_manage_note"
-                                                                    class="form-control rounded-3 shadow-none"
-                                                                    id="parent_manage_note_{{$parentt->id}}"
-                                                                    style="padding: 14px 18px">{{$parentt->parent_manage_note}}</textarea>
-                                                                <span
-                                                                    class="text-danger error-text parent_manage_note_error"></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Save
-                                                                changes</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </td>
 
 
@@ -667,11 +629,6 @@
                                                     <li>
                                                         <a class="dropdown-item" data-bs-toggle="modal"
                                                             data-bs-target="#alertModal" href="#">Alert</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" data-bs-toggle="modal"
-                                                            data-bs-target="#noteModal_{{$parentt->id}}"
-                                                            href="#">View Notes</a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item" data-bs-toggle="modal"
