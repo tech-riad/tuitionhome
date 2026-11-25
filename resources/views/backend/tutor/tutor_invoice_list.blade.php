@@ -229,13 +229,16 @@
                     </td>
                     {{-- {{ route('admin.invoice.show', $invoice->id) }} --}}
                     <td>
-                        <button type="button"
-                                class="btn btn-sm btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#duplicateInvoiceModal{{ $invoice->id }}">
-                            Duplicate
-                        </button>
-
+                        @if ($invoice->invoice_type === 'Tuition Fee' && $invoiceStatus !== 'paid')
+                            <button type="button"
+                                    class="btn btn-sm btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#duplicateInvoiceModal{{ $invoice->id }}">
+                                Duplicate
+                            </button>
+                        @else
+                            <span class="text-muted">—</span>
+                        @endif
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-primary invoice-notes-button"
@@ -283,6 +286,7 @@
                     </td>
 
                 </tr>
+                @if ($invoice->invoice_type === 'Tuition Fee' && $invoiceStatus !== 'paid')
                 <div class="modal fade" id="duplicateInvoiceModal{{ $invoice->id }}" tabindex="-1"
                     aria-labelledby="duplicateInvoiceModalLabel{{ $invoice->id }}" aria-hidden="true">
 
@@ -352,6 +356,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endforeach
 
             </tbody>

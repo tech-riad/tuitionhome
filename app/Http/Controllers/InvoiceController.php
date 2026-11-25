@@ -98,9 +98,13 @@ class InvoiceController extends Controller
         ]);
 
         $invoice = Invoice::findOrFail($id);
-        if (!$invoice->job_id) {
+        if (
+            !$invoice->job_id
+            || $invoice->invoice_type !== 'Tuition Fee'
+            || strtolower($invoice->status ?? '') === 'paid'
+        ) {
             return back()
-                ->withErrors(['invoice' => 'Only job-related invoices can be duplicated.'])
+                ->withErrors(['invoice' => 'Only unpaid Tuition Fee invoices can be duplicated.'])
                 ->withInput();
         }
 
