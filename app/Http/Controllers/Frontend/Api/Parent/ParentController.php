@@ -1825,6 +1825,14 @@ class ParentController extends Controller
         $popupImage = PopupImageData::where('parent_id',auth::user()->id)->where('status',1)->get();
         if ($popupImage)
         {
+            $popupImage->transform(function ($item) {
+                $item->image = $item->image
+                    ? (str_starts_with($item->image, 'uploads/')
+                        ? Storage::disk('r2')->url($item->image)
+                        : asset('storage/' . $item->image))
+                    : null;
+                return $item;
+            });
             return response()->json(['status'=>true,'message'=>'Get popup image successfully!','data'=>$popupImage]);
         }else
         {

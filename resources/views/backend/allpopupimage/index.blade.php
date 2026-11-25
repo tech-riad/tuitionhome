@@ -264,8 +264,13 @@
                                                 });
                                             </script>
                                             <td class="text-nowrap">
-                                                <a target="_blank" href="{{ asset('storage/' . $item->image) }}">
-                                                    <img height="50px" src="{{ asset('storage/' . $item->image) }}" alt="">
+                                                @php
+                                                    $popupImageUrl = $item->image && str_starts_with($item->image, 'uploads/')
+                                                        ? Storage::disk('r2')->url($item->image)
+                                                        : asset('storage/' . $item->image);
+                                                @endphp
+                                                <a target="_blank" href="{{ $popupImageUrl }}">
+                                                    <img height="50px" src="{{ $popupImageUrl }}" alt="">
                                                 </a>
                                             </td>
 

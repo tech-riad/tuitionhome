@@ -803,7 +803,7 @@ class NoticeController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('uploads', 'public');
+            $imagePath = $request->file('image')->store('uploads', 'r2');
         }
 
         $popup = new PopupNotification();
@@ -975,7 +975,7 @@ class NoticeController extends Controller
         $rawSql = vsprintf(str_replace('?', '"%s"', $query->toSql()), $query->getBindings());
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('uploads', 'public');
+            $imagePath = $request->file('image')->store('uploads', 'r2');
         }
         $popup = new PopupNotification();
         $popup->title           = $request->title;
@@ -1000,6 +1000,14 @@ class NoticeController extends Controller
         $popup = PopupNotification::find($id);
 
         if ($popup) {
+            if ($popup->image) {
+                if (str_starts_with($popup->image, 'uploads/') && Storage::disk('r2')->exists($popup->image)) {
+                    Storage::disk('r2')->delete($popup->image);
+                } elseif (Storage::disk('public')->exists($popup->image)) {
+                    Storage::disk('public')->delete($popup->image);
+                }
+            }
+
             $popup->forceDelete();
 
             $popupImage = PopupImageData::where('popupnotification_id', $id)->forceDelete();
@@ -1341,7 +1349,7 @@ class NoticeController extends Controller
         // Handle image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('uploads', 'public');
+            $imagePath = $request->file('image')->store('uploads', 'r2');
         }
 
         // If sending later, validate timing
@@ -1393,8 +1401,12 @@ class NoticeController extends Controller
         $popup = PopupImage::find($id);
 
         if ($popup) {
-            if ($popup->image && Storage::disk('public')->exists($popup->image)) {
-                Storage::disk('public')->delete($popup->image);
+            if ($popup->image) {
+                if (str_starts_with($popup->image, 'uploads/') && Storage::disk('r2')->exists($popup->image)) {
+                    Storage::disk('r2')->delete($popup->image);
+                } elseif (Storage::disk('public')->exists($popup->image)) {
+                    Storage::disk('public')->delete($popup->image);
+                }
             }
 
             $popup->forceDelete();

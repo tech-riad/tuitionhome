@@ -2763,6 +2763,14 @@ class TutorController extends Controller
         if ($popupImages->isEmpty()) {
             return response()->json(['status' => false, 'message' => 'No popup images found.']);
         }
+        $popupImages->transform(function ($item) {
+            $item->image = $item->image
+                ? (str_starts_with($item->image, 'uploads/')
+                    ? Storage::disk('r2')->url($item->image)
+                    : asset('storage/' . $item->image))
+                : null;
+            return $item;
+        });
         return response()->json(['status' => true, 'message' => 'Popup images retrieved successfully.', 'data' => $popupImages]);
     }
     private function createCustomToken($user, $scope)

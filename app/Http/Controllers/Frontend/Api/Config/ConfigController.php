@@ -141,9 +141,10 @@ class ConfigController extends Controller
         }
 
         $popup->transform(function ($item) {
-
             $item->image = $item->image
-                ? Storage::disk('r2')->url( $item->image)
+                ? (str_starts_with($item->image, 'uploads/')
+                    ? Storage::disk('r2')->url($item->image)
+                    : asset('storage/' . $item->image))
                 : null;
 
             return $item;
