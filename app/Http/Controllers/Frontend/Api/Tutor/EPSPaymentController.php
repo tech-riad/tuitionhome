@@ -786,6 +786,7 @@ class EPSPaymentController extends Controller
 
         if ($payment) {
             $query['invoice_id'] = $payment->invoice_id;
+            $query['invoice_details_id'] = $payment->invoice_check;
             $query['payment_id'] = $payment->id;
         }
 
