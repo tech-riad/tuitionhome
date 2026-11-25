@@ -376,7 +376,7 @@ class AllJobOfferController extends Controller
 
 
 
-        
+
 
         $paginationLimit = $request->input('pagination_limit', 50);
 
@@ -1860,22 +1860,12 @@ class AllJobOfferController extends Controller
 
         $searchCriteria = str_replace('==', '=', $searchCriteria);
 
-        $query = "SELECT id FROM job_offers WHERE $searchCriteria";
-
-        try {
-            $jobIds = DB::select($query);
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-
-        $jobIds = array_column($jobIds, 'id');
-
         $employees = User::whereIn('role_id', [3, 4])->orderBy('id', 'desc')->get();
 
 
         $all_jobs = JobOffer::with(['parent', 'reference', 'applications','additionalChild'])
-            ->whereIn('id', $jobIds)
-            ->orderBy('id', 'asc')
+            ->whereRaw($searchCriteria)
+            ->orderBy('id', 'desc')
             ->paginate($paginationLimit);
 
         $all_jobs->appends(['job_search' => $searchCriteria]);

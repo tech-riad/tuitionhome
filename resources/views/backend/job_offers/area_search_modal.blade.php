@@ -1,3 +1,6 @@
+@php
+    $smsLimit = $smsLimit ?? null;
+@endphp
 <div class="modal fade font-pop" id="AreaSearchModal" tabindex="-1" aria-labelledby="areaSearchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered px-4" style="max-width: 1000px">
         <div class="modal-content pt-4 pb-4 ps-1">
