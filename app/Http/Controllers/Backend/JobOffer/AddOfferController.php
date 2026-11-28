@@ -605,7 +605,7 @@ class AddOfferController extends Controller
             })
             ->pluck('id')
             ->shuffle()
-            ->take(40);
+            ->take(60);
             if($tutors_ids != null)
             {
                 $tutors = Tutor::whereIn('id', $tutors_ids)->get();
