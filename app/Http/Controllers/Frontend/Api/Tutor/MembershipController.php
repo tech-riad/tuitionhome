@@ -135,6 +135,29 @@ class MembershipController extends Controller
                     $invoiceNumber = $invoicePrefix . '-' . Str::upper(Str::random(6));
                 } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
+                $membership = null;
+                if (strtolower((string) $package->type) === 'premium') {
+                    $membership = PremiumMembership::where('tutor_id', $tutor->id)
+                        ->where('package_name', $package->package_name)
+                        ->whereIn('request_status', ['pending', 'accepted'])
+                        ->where(function ($query) {
+                            $query->whereNull('payment_status')
+                                ->orWhere('payment_status', 'unpaid');
+                        })
+                        ->latest()
+                        ->first();
+
+                    if (!$membership) {
+                        $membership = PremiumMembership::create([
+                            'tutor_id' => $tutor->id,
+                            'name' => $tutor->name,
+                            'request_status' => 'pending',
+                            'package_name' => $package->package_name,
+                            'payment_status' => 'unpaid',
+                        ]);
+                    }
+                }
+
                 $invoice = new Invoice();
                 $invoice->tutor_id = $tutor->id;
                 $invoice->invoice_number = $invoiceNumber;
@@ -150,7 +173,7 @@ class MembershipController extends Controller
                 $invoice->package_id = $package->id;
                 $invoice->invoice_type = $package->type;
                 $invoice->package_name = $package->package_name;
-                $invoice->membership_id = $sendMembershipRequest->id ?? null;
+                $invoice->membership_id = $membership ? $membership->id : null;
                 $invoice->save();
 
                 return $invoice;

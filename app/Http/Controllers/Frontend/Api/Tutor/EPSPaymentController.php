@@ -489,14 +489,12 @@ class EPSPaymentController extends Controller
 
                         $membership = PremiumMembership::find($invoice->membership_id);
 
-                        if (!$membership) {
-                            throw new Exception('Premium membership not found.');
+                        if ($membership) {
+                            $membership->update([
+                                'request_status' => 'accepted',
+                                'payment_status' => 'paid',
+                            ]);
                         }
-
-                        $membership->update([
-                            'request_status' => 'accepted',
-                            'payment_status' => 'paid',
-                        ]);
 
                         $tutor = Tutor::find($invoice->tutor_id);
 
@@ -606,9 +604,9 @@ class EPSPaymentController extends Controller
                         $tutorSmsRecharge->costing = 0;
                         $tutorSmsRecharge->save();
 
-                        $smsBalance = SmsBalance::where('tutor_id',$invoice->tutor_id)->first();
-                        $smsBalance->available_sms = $smsBalance->available_sms + $smsQuantity;
-                        $smsBalance->update();
+                        $smsBalance = SmsBalance::firstOrNew(['tutor_id' => $invoice->tutor_id]);
+                        $smsBalance->available_sms = (int) $smsBalance->available_sms + $smsQuantity;
+                        $smsBalance->save();
                     }
 
                     $invoice->update([
