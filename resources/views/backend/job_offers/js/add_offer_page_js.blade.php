@@ -33,26 +33,30 @@ let is_parent = '' ;
             });
 
             return `
-                <div class="mb-4 border-bottom border-2">
-                    <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
+                <article class="parent-note-card">
+                    <div class="parent-note-content">
                         ${escapeParentNote(note.body || note.note_title)}
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="d-flex justify-content-between align-items-center gap-3">
-                            <img src="" alt="map" class="img-fluid rounded-3 mb-3 shadow-lg" style="width: 40px; height: 40px" />
+                    <div class="parent-note-meta">
+                        <div class="parent-note-author">
+                            <span class="parent-note-avatar"><i class="bi bi-person"></i></span>
                             <div>
-                                <p class="fw-semibold mb-0">${escapeParentNote(note.created_by)}</p>
+                                <p class="parent-note-author-name">${escapeParentNote(note.created_by || 'Unknown')}</p>
+                                <p class="parent-note-employee">Employee ID: ${escapeParentNote(note.emp_id || 'N/A')}</p>
                             </div>
                         </div>
                         <div>
-                            <p class="text-muted mb-0" style="font-size: 12px">Employee ID- ${escapeParentNote(note.emp_id)}</p>
-                            <p class="text-muted" style="font-size: 12px">${escapeParentNote(date)}</p>
+                            <p class="parent-note-date">${escapeParentNote(date)}</p>
                         </div>
                     </div>
-                </div>`;
+                </article>`;
         }).join('');
 
-        document.getElementById('parentNote').innerHTML = notesHtml;
+        document.getElementById('parentNote').innerHTML = notesHtml || `
+            <div class="parent-note-empty">
+                <i class="bi bi-journal-x"></i>
+                <span>No parent notes available yet.</span>
+            </div>`;
     }
 
     function parentSearch(phone) {

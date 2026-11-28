@@ -8,6 +8,141 @@
         color: black;
     }
 
+    .parent-note-panel {
+        height: 665px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .parent-note-heading-icon,
+    .parent-note-avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        color: #c83d4b;
+        background: #fff0f1;
+        border-radius: 50%;
+    }
+
+    .parent-note-heading-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .parent-note-subtitle {
+        color: #7b8797;
+        font-size: 12px;
+        margin: 3px 0 0;
+    }
+
+    .parent-note-guardian {
+        color: #b42332;
+        background: #fff1f2;
+        border-radius: 20px;
+        font-size: 12px;
+        padding: 6px 10px;
+        white-space: nowrap;
+    }
+
+    .parent-note-list {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 2px 5px 2px 1px;
+    }
+
+    .parent-note-card {
+        background: #fff;
+        border: 1px solid #e8edf4;
+        border-left: 3px solid #df6470;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(31, 48, 73, .05);
+        margin-bottom: 12px;
+        padding: 14px;
+    }
+
+    .parent-note-content {
+        background: #fff8f8;
+        border-radius: 9px;
+        color: #39475a;
+        line-height: 1.55;
+        max-height: 150px;
+        overflow-y: auto;
+        overflow-wrap: anywhere;
+        padding: 12px 14px;
+        white-space: pre-wrap;
+    }
+
+    .parent-note-meta {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        justify-content: space-between;
+        margin-top: 12px;
+    }
+
+    .parent-note-author {
+        align-items: center;
+        display: flex;
+        gap: 9px;
+        min-width: 0;
+    }
+
+    .parent-note-avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .parent-note-author-name {
+        color: #263445;
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .parent-note-employee,
+    .parent-note-date {
+        color: #7b8797;
+        font-size: 11px;
+        margin: 2px 0 0;
+    }
+
+    .parent-note-date {
+        text-align: right;
+    }
+
+    .parent-note-empty {
+        align-items: center;
+        border: 1px dashed #d8e0ea;
+        border-radius: 12px;
+        color: #7b8797;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        justify-content: center;
+        min-height: 180px;
+        text-align: center;
+    }
+
+    .parent-note-empty i {
+        color: #d77a82;
+        font-size: 26px;
+    }
+
+    @media (max-width: 767.98px) {
+        .parent-note-panel {
+            height: auto;
+            min-height: 360px;
+        }
+
+        .parent-note-list {
+            max-height: 420px;
+        }
+    }
+
 </style>
 
 @endpush
@@ -155,84 +290,99 @@
                             </div>
                         </div>
                         <div>
-                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4" style="height:665px">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div>
-                                        <p class="fw-semibold fs-5 mb-0">Parent Note</p>
-                                        <p id="guardian_id" class="text-info" style="font-size: 12px">
-
-                                        </p>
+                            <div class="bg-white rounded-3 shadow-lg p-4 mb-4 parent-note-panel">
+                                <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="parent-note-heading-icon">
+                                            <i class="bi bi-journal-text"></i>
+                                        </span>
+                                        <div>
+                                            <p class="fw-semibold fs-5 mb-0">Parent Note</p>
+                                            <p class="parent-note-subtitle">Latest notes from this parent</p>
+                                        </div>
                                     </div>
+                                    <p id="guardian_id" class="parent-note-guardian mb-0"></p>
                                 </div>
 
-                                <div class="" id="parentNote">
+                                <div class="parent-note-list" id="parentNote">
+                                    @php
+                                        $hasParentNotes = (isset($lead) && $lead->parentsNote->isNotEmpty())
+                                            || (isset($hiringlead) && $hiringlead->parentsNote->isNotEmpty())
+                                            || (isset($hiringleadTutor) && $hiringleadTutor->parentsNote->isNotEmpty());
+                                    @endphp
+                                    @if (!$hasParentNotes)
+                                        <div class="parent-note-empty">
+                                            <i class="bi bi-journal-x"></i>
+                                            <span>No parent notes available yet.</span>
+                                        </div>
+                                    @endif
                                     @if (@$lead)
                                         @foreach ($lead->parentsNote->sortByDesc('created_at')->take(2) as $item)
-                                            <div class="mb-4 border-bottom border-2">
-                                                <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
+                                            <article class="parent-note-card">
+                                                <div class="parent-note-content">
                                                     {{ $item->body ?? $item->note_title ?? '' }}
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <div class="d-flex justify-content-between align-items-center gap-3">
-                                                        <img src="" alt="map" class="img-fluid rounded-3 mb-3 shadow-lg" style="width: 40px; height: 40px" />
+                                                <div class="parent-note-meta">
+                                                    <div class="parent-note-author">
+                                                        <span class="parent-note-avatar"><i class="bi bi-person"></i></span>
                                                         <div>
-                                                            <p class="fw-semibold mb-0">{{ $item->created_by ?? '' }}</p>
+                                                            <p class="parent-note-author-name">{{ $item->created_by ?? 'Unknown' }}</p>
+                                                            <p class="parent-note-employee">Employee ID: {{ $item->emp_id ?? 'N/A' }}</p>
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <p class="text-muted mb-0" style="font-size: 12px">Employee ID- {{ $item->emp_id ?? '' }}</p>
-                                                        <p class="text-muted" style="font-size: 12px">
+                                                        <p class="parent-note-date">
                                                             {{ $item->created_at ? $item->created_at->format('F j, Y \a\t h:i A') : '' }}
                                                         </p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </article>
                                         @endforeach
                                     @endif
                                     @if (@$hiringlead)
                                             @foreach ($hiringlead->parentsNote->sortByDesc('created_at')->take(2) as $item)
-                                            <div class="mb-4 border-bottom border-2">
-                                                <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
+                                            <article class="parent-note-card">
+                                                <div class="parent-note-content">
                                                     {{ $item->body ?? $item->note_title ?? '' }}
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <div class="d-flex justify-content-between align-items-center gap-3">
-                                                        <img src="" alt="map" class="img-fluid rounded-3 mb-3 shadow-lg" style="width: 40px; height: 40px" />
+                                                <div class="parent-note-meta">
+                                                    <div class="parent-note-author">
+                                                        <span class="parent-note-avatar"><i class="bi bi-person"></i></span>
                                                         <div>
-                                                            <p class="fw-semibold mb-0">{{ $item->created_by ?? '' }}</p>
+                                                            <p class="parent-note-author-name">{{ $item->created_by ?? 'Unknown' }}</p>
+                                                            <p class="parent-note-employee">Employee ID: {{ $item->emp_id ?? 'N/A' }}</p>
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <p class="text-muted mb-0" style="font-size: 12px">Employee ID- {{ $item->emp_id ?? '' }}</p>
-                                                        <p class="text-muted" style="font-size: 12px">
+                                                        <p class="parent-note-date">
                                                             {{ $item->created_at ? $item->created_at->format('F j, Y \a\t h:i A') : '' }}
                                                         </p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </article>
                                         @endforeach
                                     @endif
                                     @if (@$hiringleadTutor)
                                             @foreach ($hiringleadTutor->parentsNote->sortByDesc('created_at')->take(2) as $item)
-                                            <div class="mb-4 border-bottom border-2">
-                                                <div class="bg-light rounded-3 p-3 my-3" style="height: 150px; overflow-y: scroll">
+                                            <article class="parent-note-card">
+                                                <div class="parent-note-content">
                                                     {{ $item->body ?? $item->note_title ?? '' }}
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <div class="d-flex justify-content-between align-items-center gap-3">
-                                                        <img src="" alt="map" class="img-fluid rounded-3 mb-3 shadow-lg" style="width: 40px; height: 40px" />
+                                                <div class="parent-note-meta">
+                                                    <div class="parent-note-author">
+                                                        <span class="parent-note-avatar"><i class="bi bi-person"></i></span>
                                                         <div>
-                                                            <p class="fw-semibold mb-0">{{ $item->created_by ?? '' }}</p>
+                                                            <p class="parent-note-author-name">{{ $item->created_by ?? 'Unknown' }}</p>
+                                                            <p class="parent-note-employee">Employee ID: {{ $item->emp_id ?? 'N/A' }}</p>
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <p class="text-muted mb-0" style="font-size: 12px">Employee ID- {{ $item->emp_id ?? '' }}</p>
-                                                        <p class="text-muted" style="font-size: 12px">
+                                                        <p class="parent-note-date">
                                                             {{ $item->created_at ? $item->created_at->format('F j, Y \a\t h:i A') : '' }}
                                                         </p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </article>
                                         @endforeach
                                     @endif
 
