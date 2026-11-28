@@ -233,6 +233,10 @@
                                             Note
                                         </button>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                            href="{{ route('admin.job.see-condition', $problem_application->jobOffer->id) }}">See Condition</a>
+                                    </li>
                                 </div>
                             </ul>
                         </div>

@@ -272,6 +272,11 @@
                                             Payment
                                         </button>
                                     </li>
+                                    <li>
+                                                                <a class="btn" target="_blank"
+                                                                                href="{{ route('admin.job.see-condition',$confirm_application->jobOffer->id) }}">See
+                                                                                Condition</a>
+                                                            </li>
 
                                 </div>
                             </ul>

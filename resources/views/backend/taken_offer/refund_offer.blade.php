@@ -350,6 +350,10 @@
                                             Note
                                         </button>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                            href="{{ route('admin.job.see-condition', $refund->jobOffer->id) }}">See Condition</a>
+                                    </li>
 
                                     {{-- <li>
                                             <button type="button" class="dropdown-item"
