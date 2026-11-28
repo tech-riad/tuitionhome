@@ -525,72 +525,87 @@ class AddOfferController extends Controller
             $tutor_department = $job_offer->job_offer_tutor_departments->pluck('id')->implode(',');
             $tutor_study = $job_offer->job_offer_tutor_study_types->pluck('id')->implode(',');
             $tutor_gender = $job_offer->tutor_gender;
+            $hasValidJobCoordinates = is_numeric($job_offer->lat)
+                && is_numeric($job_offer->long)
+                && $job_offer->lat >= -90
+                && $job_offer->lat <= 90
+                && $job_offer->long >= -180
+                && $job_offer->long <= 180;
 
             $tutors_ids = Tutor::with(['tutor_personal_info', 'tutor_education', 'tutor_prefered_locations', 'smsBalances'])
             ->when($job_offer->tutor_gender !== 'any', function ($query) use ($job_offer) {
                 $query->where('gender', $job_offer->tutor_gender);
             })
-            ->whereHas('tutor_personal_info', function ($query) use ($job_offer) {
+            ->whereHas('tutor_personal_info', function ($query) use ($job_offer, $hasValidJobCoordinates) {
                 $query->where('country_id', $job_offer->country_id)
-                    ->when(!empty($job_offer->city_id), function ($query) use ($job_offer) {
+                    ->when(!$hasValidJobCoordinates && !empty($job_offer->city_id), function ($query) use ($job_offer) {
                         $query->where('city_id', $job_offer->city_id);
                     })
                     ->when(!empty($job_offer->tutor_religion), function ($query) use ($job_offer) {
                         $query->where('religion', $job_offer->tutor_religion);
                     });
             })
-            ->when(!empty($job_offer->location_id), function ($query) use ($job_offer) {
-                $query->whereHas('tutor_prefered_locations', function ($subQuery) use ($job_offer) {
-                    $subQuery->where('location_id', $job_offer->location_id);
+            ->when(!empty($job_offer->location_id), function ($query) use ($job_offer, $hasValidJobCoordinates) {
+                $query->where(function ($locationQuery) use ($job_offer, $hasValidJobCoordinates) {
+                    $locationQuery->whereHas('tutor_prefered_locations', function ($subQuery) use ($job_offer) {
+                        $subQuery->where('location_id', $job_offer->location_id);
+                    });
+
+                    if ($hasValidJobCoordinates) {
+                        $locationQuery->orWhere(function ($geoQuery) use ($job_offer) {
+                            $this->applyAutoMatchRadius($geoQuery, $job_offer, 10);
+                        });
+                    }
                 });
             })
-            // ->when(!empty($job_offer->tutor_group), function ($query) use ($job_offer) {
-            //     $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
-            //         $subQuery->where(function ($subSubQuery) use ($job_offer) {
-            //             $subSubQuery->where('group_or_major', $job_offer->tutor_group)
-            //                 ->where('degree_name', 'ssc');
-            //         })->orWhere(function ($subSubQuery) use ($job_offer) {
-            //             $subSubQuery->where('group_or_major', $job_offer->tutor_group)
-            //                 ->where('degree_name', 'hsc');
-            //         });
-            //     });
-            // })
-            // ->when(!empty($tutor_university), function ($query) use ($tutor_university) {
-            //     $query->whereHas('tutor_education', function ($subQuery) use ($tutor_university) {
-            //         $subQuery->whereIn('institute_id', explode(',', $tutor_university))
-            //             ->where('degree_name', 'honours');
-            //     });
-            // })
-            // ->when(!empty($job_offer->tutor_university_type), function ($query) use ($job_offer) {
-            //     $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
-            //         $subQuery->whereIn('university_type', explode(',', $job_offer->tutor_university_type))
-            //             ->where('degree_name', 'honours');
-            //     });
-            // })
-            // ->when(!empty($tutor_department), function ($query) use ($tutor_department) {
-            //     $query->whereHas('tutor_education', function ($subQuery) use ($tutor_department) {
-            //         $subQuery->whereIn('department_id', explode(',', $tutor_department))
-            //             ->where('degree_name', 'honours');
-            //     });
-            // })
-            // ->when(!empty($tutor_study), function ($query) use ($tutor_study) {
-            //     $query->whereHas('tutor_education', function ($subQuery) use ($tutor_study) {
-            //         $subQuery->whereIn('study_type_id', explode(',', $tutor_study))
-            //             ->where('degree_name', 'honours');
-            //     });
-            // })
-            // ->when(!empty($job_offer->tutor_curriculam_id), function ($query) use ($job_offer) {
-            //     $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
-            //         $subQuery->where('curriculum_id', $job_offer->tutor_curriculam_id);
-            //     });
-            // })
+            ->when(!empty($job_offer->tutor_group), function ($query) use ($job_offer) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
+                    $subQuery->where(function ($subSubQuery) use ($job_offer) {
+                        $subSubQuery->where('group_or_major', $job_offer->tutor_group)
+                            ->where('degree_name', 'ssc');
+                    })->orWhere(function ($subSubQuery) use ($job_offer) {
+                        $subSubQuery->where('group_or_major', $job_offer->tutor_group)
+                            ->where('degree_name', 'hsc');
+                    });
+                });
+            })
+            ->when(!empty($tutor_university), function ($query) use ($tutor_university) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($tutor_university) {
+                    $subQuery->whereIn('institute_id', explode(',', $tutor_university))
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when(!empty($job_offer->tutor_university_type), function ($query) use ($job_offer) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
+                    $subQuery->whereIn('university_type', explode(',', $job_offer->tutor_university_type))
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when(!empty($tutor_department), function ($query) use ($tutor_department) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($tutor_department) {
+                    $subQuery->whereIn('department_id', explode(',', $tutor_department))
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when(!empty($tutor_study), function ($query) use ($tutor_study) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($tutor_study) {
+                    $subQuery->whereIn('study_type_id', explode(',', $tutor_study))
+                        ->where('degree_name', 'honours');
+                });
+            })
+            ->when(!empty($job_offer->tutor_curriculam_id), function ($query) use ($job_offer) {
+                $query->whereHas('tutor_education', function ($subQuery) use ($job_offer) {
+                    $subQuery->where('curriculum_id', $job_offer->tutor_curriculam_id);
+                });
+            })
             ->where('is_active',1)
             ->where('is_sms',1)
             ->whereHas('smsBalances', function ($query) {
                 $query->where('available_sms', '>', 0);
             })
             ->pluck('id')
-            ->random(40);
+            ->shuffle()
+            ->take(40);
             if($tutors_ids != null)
             {
                 $tutors = Tutor::whereIn('id', $tutors_ids)->get();
@@ -664,6 +679,56 @@ class AddOfferController extends Controller
 
         }
 
+    }
+
+    private function applyAutoMatchRadius($query, JobOffer $jobOffer, $radiusKm)
+    {
+        $latitude = (float) $jobOffer->lat;
+        $longitude = (float) $jobOffer->long;
+        $distanceExpression = '(6371 * 2 * ASIN(SQRT(POWER(SIN(RADIANS(tutors.`lat` - ?) / 2), 2) + COS(RADIANS(?)) * COS(RADIANS(tutors.`lat`)) * POWER(SIN(RADIANS(tutors.`long` - ?) / 2), 2))))';
+        $distanceBindings = [$latitude, $latitude, $longitude];
+        $latitudeDelta = $radiusKm / 110.574;
+        $minimumLatitude = max(-90, $latitude - $latitudeDelta);
+        $maximumLatitude = min(90, $latitude + $latitudeDelta);
+        $maximumAbsoluteLatitude = max(abs($minimumLatitude), abs($maximumLatitude));
+        $latitudeColumn = DB::raw('CAST(tutors.lat AS DECIMAL(10, 6))');
+        $longitudeColumn = DB::raw('CAST(tutors.long AS DECIMAL(10, 6))');
+
+        $query->whereNotNull('tutors.lat')
+            ->whereNotNull('tutors.long')
+            ->whereBetween($latitudeColumn, [-90, 90])
+            ->whereBetween($longitudeColumn, [-180, 180])
+            ->whereBetween($latitudeColumn, [$minimumLatitude, $maximumLatitude]);
+
+        if ($minimumLatitude > -90 && $maximumLatitude < 90) {
+            $longitudeDelta = $radiusKm / (111.320 * cos(deg2rad($maximumAbsoluteLatitude)));
+
+            if ($longitudeDelta < 180) {
+                $minimumLongitude = $longitude - $longitudeDelta;
+                $maximumLongitude = $longitude + $longitudeDelta;
+
+                if ($minimumLongitude < -180) {
+                    $query->where(function ($longitudeQuery) use ($minimumLongitude, $maximumLongitude) {
+                        $longitudeColumn = DB::raw('CAST(tutors.long AS DECIMAL(10, 6))');
+                        $longitudeQuery->where($longitudeColumn, '>=', $minimumLongitude + 360)
+                            ->orWhere($longitudeColumn, '<=', $maximumLongitude);
+                    });
+                } elseif ($maximumLongitude > 180) {
+                    $query->where(function ($longitudeQuery) use ($minimumLongitude, $maximumLongitude) {
+                        $longitudeColumn = DB::raw('CAST(tutors.long AS DECIMAL(10, 6))');
+                        $longitudeQuery->where($longitudeColumn, '>=', $minimumLongitude)
+                            ->orWhere($longitudeColumn, '<=', $maximumLongitude - 360);
+                    });
+                } else {
+                    $query->whereBetween($longitudeColumn, [$minimumLongitude, $maximumLongitude]);
+                }
+            }
+        }
+
+        $query->whereRaw(
+            $distanceExpression . ' <= ?',
+            array_merge($distanceBindings, [$radiusKm])
+        );
     }
 
 
